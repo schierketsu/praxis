@@ -7,7 +7,31 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Включаем передачу cookies для аутентификации
 });
+
+// Получаем CSRF токен
+const getCsrfToken = async () => {
+  try {
+    const response = await api.get('/auth/csrf/');
+    return response.data.csrfToken;
+  } catch (error) {
+    console.warn('Не удалось получить CSRF токен:', error);
+    return null;
+  }
+};
+
+// Добавляем интерцептор для обработки ошибок аутентификации
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Если получили 401, перенаправляем на главную страницу
+      window.location.href = '/';
+    }
+    return Promise.reject(error);
+  }
+);
 
 // API для практик
 export const internshipsAPI = {
@@ -48,6 +72,45 @@ export const companiesAPI = {
 export const universitiesAPI = {
   getUniversities: async (params = {}) => {
     const response = await api.get('/universities/', { params });
+    return response.data;
+  },
+};
+
+// API для авторизации студентов
+export const authAPI = {
+  // Регистрация студента
+  register: async (studentData) => {
+    const response = await api.post('/auth/register/', studentData);
+    return response.data;
+  },
+
+  // Вход студента
+  login: async (credentials) => {
+    const response = await api.post('/auth/login/', credentials);
+    return response.data;
+  },
+
+  // Выход студента
+  logout: async () => {
+    const response = await api.post('/auth/logout/');
+    return response.data;
+  },
+
+  // Получить профиль студента
+  getProfile: async () => {
+    const response = await api.get('/auth/profile/');
+    return response.data;
+  },
+
+  // Обновить профиль студента
+  updateProfile: async (profileData) => {
+    const response = await api.put('/auth/profile/update/', profileData);
+    return response.data;
+  },
+
+  // Проверить статус авторизации
+  checkAuthStatus: async () => {
+    const response = await api.get('/auth/status/');
     return response.data;
   },
 };

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class University(models.Model):
@@ -106,3 +107,26 @@ class Internship(models.Model):
     
     def __str__(self):
         return f"{self.company.name} - {self.position}"
+
+
+class Student(models.Model):
+    """Модель студента"""
+    user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
+    university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name='Университет')
+    course = models.IntegerField(verbose_name='Курс', help_text='Номер курса (1-6)')
+    specialization = models.CharField(max_length=200, verbose_name='Специализация', blank=True)
+    phone = models.CharField(max_length=20, verbose_name='Телефон', blank=True)
+    bio = models.TextField(verbose_name='О себе', blank=True)
+    skills = models.JSONField(default=list, verbose_name='Навыки', blank=True)
+    interests = models.JSONField(default=list, verbose_name='Интересы', blank=True)
+    is_active = models.BooleanField(default=True, verbose_name='Активен')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Студент'
+        verbose_name_plural = 'Студенты'
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.get_full_name()} ({self.university.name})"

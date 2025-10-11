@@ -1,10 +1,17 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, status
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters_drf
 from rest_framework.decorators import action
-from rest_framework.response import Response
-from .models import University, Company, Internship
-from .serializers import UniversitySerializer, CompanySerializer, InternshipSerializer
+from django.contrib.auth import login, logout
+from django.contrib.auth.models import User
+from .models import University, Company, Internship, Student
+from .serializers import (
+    UniversitySerializer, CompanySerializer, InternshipSerializer,
+    StudentSerializer, StudentRegistrationSerializer, LoginSerializer
+)
 
 
 class InternshipFilter(filters_drf.FilterSet):
@@ -129,3 +136,125 @@ class InternshipViewSet(viewsets.ReadOnlyModelViewSet):
                 all_techs.update(internship.tech_stack)
         
         return Response(sorted(list(all_techs)))
+
+
+# API endpoints для авторизации
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def student_register(request):
+    """Регистрация студента"""
+    serializer = StudentRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            student = serializer.save()
+            return Response({
+                'message': 'Регистрация успешна',
+                'student_id': student.id,
+                'username': student.user.username
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({
+                'error': f'Ошибка при создании аккаунта: {str(e)}'
+            }, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def student_login(request):
+    """Вход студента"""
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.validated_data['user']
+        login(request, user)
+        
+        try:
+            student = Student.objects.get(user=user)
+            student_data = StudentSerializer(student).data
+            return Response({
+                'message': 'Вход выполнен успешно',
+                'student': student_data
+            }, status=status.HTTP_200_OK)
+        except Student.DoesNotExist:
+            return Response({
+                'error': 'Профиль студента не найден'
+            }, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def student_logout(request):
+    """Выход студента"""
+    logout(request)
+    return Response({
+        'message': 'Выход выполнен успешно'
+    }, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def student_profile(request):
+    """Получить профиль студента"""
+    try:
+        student = Student.objects.get(user=request.user)
+        serializer = StudentSerializer(student)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Student.DoesNotExist:
+        return Response({
+            'error': 'Профиль студента не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def student_update_profile(request):
+    """Обновить профиль студента"""
+    try:
+        student = Student.objects.get(user=request.user)
+        serializer = StudentSerializer(student, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Профиль обновлен успешно',
+                'student': serializer.data
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Student.DoesNotExist:
+        return Response({
+            'error': 'Профиль студента не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def check_auth_status(request):
+    """Проверить статус авторизации"""
+    if request.user.is_authenticated:
+        try:
+            student = Student.objects.get(user=request.user)
+            return Response({
+                'authenticated': True,
+                'student': StudentSerializer(student).data
+            })
+        except Student.DoesNotExist:
+            return Response({
+                'authenticated': True,
+                'student': None
+            })
+    return Response({
+        'authenticated': False,
+        'student': None
+    })
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def get_csrf_token(request):
+    """Получить CSRF токен"""
+    from django.middleware.csrf import get_token
+    csrf_token = get_token(request)
+    return Response({
+        'csrfToken': csrf_token
+    })
