@@ -124,9 +124,9 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                 hoverable
                 loading={loading}
                 onClick={() => handleCompanyClick(company)}
-                style={{
-                  height: '580px',
-                  borderRadius: '20px',
+                      style={{
+                        height: '580px',
+                        borderRadius: '20px',
                   overflow: 'hidden',
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                   backdropFilter: 'blur(10px)',

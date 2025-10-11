@@ -74,6 +74,8 @@ class StudentRegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField()
     first_name = serializers.CharField()
     last_name = serializers.CharField()
+    university = serializers.IntegerField(required=False, allow_null=True)
+    course = serializers.IntegerField(required=False, allow_null=True)
     
     class Meta:
         model = Student
@@ -109,8 +111,8 @@ class StudentRegistrationSerializer(serializers.ModelSerializer):
         # Создаем профиль студента
         student_data = {
             'user': user,
-            'university': validated_data['university'],
-            'course': validated_data['course'],
+            'university_id': validated_data.get('university'),
+            'course': validated_data.get('course'),
             'specialization': validated_data.get('specialization', ''),
             'phone': validated_data.get('phone', ''),
             'bio': validated_data.get('bio', ''),

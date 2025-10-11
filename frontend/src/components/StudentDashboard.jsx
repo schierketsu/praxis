@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Card, Typography, Button, Space, Tag, Row, Col, Avatar, Divider, message, Form, Input, Select } from 'antd';
-import { UserOutlined, EditOutlined, LogoutOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { UserOutlined, EditOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { universitiesAPI } from '../services/api';
+import AppHeader from './layout/AppHeader';
 
 const { Title, Text, Paragraph } = Typography;
 const { Content } = Layout;
@@ -11,6 +13,7 @@ const { TextArea } = Input;
 
 export default function StudentDashboard() {
   const { user, student, logout, updateProfile } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [currentStudent, setCurrentStudent] = useState(student);
@@ -59,18 +62,6 @@ export default function StudentDashboard() {
     }
   }, [currentStudent, isEditing, form]);
 
-  const handleLogout = async () => {
-    setLoading(true);
-    try {
-      await logout();
-      message.success('Выход выполнен успешно');
-    } catch (error) {
-      console.error('Ошибка выхода:', error);
-      message.error('Ошибка при выходе');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -156,6 +147,7 @@ export default function StudentDashboard() {
   if (!currentStudent) {
     return (
       <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+        <AppHeader />
         <Content style={{ 
           display: 'flex', 
           justifyContent: 'center', 
@@ -173,12 +165,13 @@ export default function StudentDashboard() {
 
   return (
     <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+      <AppHeader />
       <Content style={{ padding: '40px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Кнопка назад */}
           <Button
             icon={<ArrowLeftOutlined />}
-            onClick={() => window.history.back()}
+            onClick={() => navigate('/')}
             size="large"
             style={{
               marginBottom: '32px',
@@ -192,7 +185,7 @@ export default function StudentDashboard() {
               backdropFilter: 'blur(10px)'
             }}
           >
-            Назад
+            Назад к главной
           </Button>
 
           {/* Заголовок */}
@@ -287,10 +280,10 @@ export default function StudentDashboard() {
                   <Col xs={24} sm={12}>
                     <Form.Item
                       name="university"
-                      label="Университет"
-                      rules={[{ required: true, message: 'Выберите университет' }]}
+                      label="Учебное заведение"
+                      rules={[{ required: true, message: 'Выберите учебное заведение' }]}
                     >
-                      <Select placeholder="Выберите университет">
+                      <Select placeholder="Выберите учебное заведение">
                         {universities.map(uni => (
                           <Option key={uni.id} value={uni.id}>
                             {uni.name}
@@ -509,11 +502,11 @@ export default function StudentDashboard() {
                 <div style={{ marginBottom: '24px' }}>
                   <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
                     <BookOutlined style={{ marginRight: '12px' }} />
-                    Университет:
+                    Учебное заведение:
                   </Text>
                   <br />
                   <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
-                    {currentStudent.university_name}
+                    {currentStudent.university_name || 'Не указан'}
                   </Text>
                 </div>
               </Col>
@@ -524,7 +517,7 @@ export default function StudentDashboard() {
                   </Text>
                   <br />
                   <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
-                    {currentStudent.course} курс
+                    {currentStudent.course ? `${currentStudent.course} курс` : 'Не указан'}
                   </Text>
                 </div>
               </Col>
@@ -599,41 +592,24 @@ export default function StudentDashboard() {
             <Divider style={{ margin: '32px 0' }} />
 
             <div style={{ textAlign: 'center' }}>
-              <Space size="large">
-                <Button
-                  type="primary"
-                  icon={<EditOutlined />}
-                  onClick={handleEdit}
-                  size="large"
-                  style={{
-                    borderRadius: '12px',
-                    height: '48px',
-                    paddingLeft: '32px',
-                    paddingRight: '32px',
-                    fontWeight: '600',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    border: 'none',
-                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-                  }}
-                >
-                  Редактировать профиль
-                </Button>
-                <Button
-                  icon={<LogoutOutlined />}
-                  onClick={handleLogout}
-                  loading={loading}
-                  size="large"
-                  style={{
-                    borderRadius: '12px',
-                    height: '48px',
-                    paddingLeft: '32px',
-                    paddingRight: '32px',
-                    fontWeight: '600'
-                  }}
-                >
-                  Выйти
-                </Button>
-              </Space>
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                onClick={handleEdit}
+                size="large"
+                style={{
+                  borderRadius: '12px',
+                  height: '48px',
+                  paddingLeft: '32px',
+                  paddingRight: '32px',
+                  fontWeight: '600',
+                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  border: 'none',
+                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                }}
+              >
+                Редактировать профиль
+              </Button>
             </div>
               </>
             )}

@@ -20,9 +20,7 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
         first_name: values.first_name,
         last_name: values.last_name,
         password: values.password,
-        password_confirm: values.password_confirm,
-        university: 5, // Временно ставим первый доступный университет
-        course: 1 // Временно ставим первый курс
+        password_confirm: values.password_confirm
       };
 
       const response = await register(studentData);
@@ -169,6 +167,7 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
             </Form.Item>
           </Col>
         </Row>
+
 
         <Form.Item style={{ marginBottom: '24px', textAlign: 'center' }}>
           <Space size="middle">

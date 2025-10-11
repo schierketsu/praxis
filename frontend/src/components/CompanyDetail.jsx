@@ -186,14 +186,32 @@ export default function CompanyDetail() {
                     </div>
                   )}
 
-                  <Space wrap size="large">
-                    {company.website && (
-                      <Link href={company.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: '16px' }}>
-                        <GlobalOutlined style={{ marginRight: '8px' }} />
-                        {company.website}
-                      </Link>
-                    )}
-                  </Space>
+                            <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                              {company.website && (
+                                <Link href={company.website} target="_blank" rel="noopener noreferrer" style={{ fontSize: '16px' }}>
+                                  <GlobalOutlined style={{ marginRight: '8px' }} />
+                                  {company.website}
+                                </Link>
+                              )}
+                              
+                              <Button
+                                type="primary"
+                                size="large"
+                                style={{
+                                  borderRadius: '12px',
+                                  height: '48px',
+                                  paddingLeft: '32px',
+                                  paddingRight: '32px',
+                                  fontWeight: '600',
+                                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  border: 'none',
+                                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                                  width: 'fit-content'
+                                }}
+                              >
+                                Связаться
+                              </Button>
+                            </Space>
                 </Space>
               </Col>
               

@@ -112,8 +112,8 @@ class Internship(models.Model):
 class Student(models.Model):
     """Модель студента"""
     user = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name='Университет')
-    course = models.IntegerField(verbose_name='Курс', help_text='Номер курса (1-6)')
+    university = models.ForeignKey(University, on_delete=models.CASCADE, verbose_name='Университет', null=True, blank=True)
+    course = models.IntegerField(verbose_name='Курс', help_text='Номер курса (1-6)', null=True, blank=True)
     specialization = models.CharField(max_length=200, verbose_name='Специализация', blank=True)
     phone = models.CharField(max_length=20, verbose_name='Телефон', blank=True)
     bio = models.TextField(verbose_name='О себе', blank=True)

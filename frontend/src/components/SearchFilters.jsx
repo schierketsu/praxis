@@ -145,14 +145,14 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
             </Select>
           </Col>
 
-          <Col xs={24} sm={24} md={6}>
-            <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
-              Университет
-            </Text>
+                 <Col xs={24} sm={24} md={6}>
+                   <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
+                     Учебное заведение
+                   </Text>
             <Select
               showSearch
               allowClear
-              placeholder="Выберите университет"
+              placeholder="Выберите учебное заведение"
               value={selectedUniversity || undefined}
               onChange={(value) => {
                 onUniversityChange(value || '');

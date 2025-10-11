@@ -3,6 +3,7 @@ import { Layout, message, Spin, Typography } from 'antd';
 import SearchFilters from '../SearchFilters';
 import InternshipTable from '../InternshipTable';
 import { companiesAPI } from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 const { Title, Paragraph } = Typography;
 
@@ -14,6 +15,7 @@ const contentStyle = {
 };
 
 export default function AppContent() {
+  const { student } = useAuth();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({});
@@ -35,15 +37,24 @@ export default function AppContent() {
     }
   };
 
-  // Загрузка данных при монтировании компонента
+  // Устанавливаем значение по умолчанию для учебного заведения из профиля пользователя
   useEffect(() => {
-    fetchCompanies();
-  }, []);
+    if (student && student.university && !selectedUniversity) {
+      setSelectedUniversity(student.university);
+      // Автоматически применяем фильтр с учебным заведением пользователя
+      const params = { university: student.university };
+      setSearchParams(params);
+    }
+  }, [student, selectedUniversity]);
+
+  // Загрузка данных при изменении параметров поиска
+  useEffect(() => {
+    fetchCompanies(searchParams);
+  }, [searchParams]);
 
   // Обработчик поиска
   const handleSearch = (params) => {
     setSearchParams(params);
-    fetchCompanies(params);
   };
 
   // Обработчик сброса фильтров
