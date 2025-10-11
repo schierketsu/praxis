@@ -2,4 +2,20 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-variant: small-caps;
+}
+
+body {
+  font-variant: small-caps;
+  font-variant-caps: small-caps;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-variant: small-caps;
+  font-variant-caps: small-caps;
+}
+
+p, span, div, a, button {
+  font-variant: small-caps;
+  font-variant-caps: small-caps;
 }
