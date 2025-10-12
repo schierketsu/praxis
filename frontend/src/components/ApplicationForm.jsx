@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Input, Select, Button, message, Typography, Row, Col } from 'antd';
-import { SaveOutlined, CloseOutlined, BankOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { SaveOutlined, CloseOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI, applicationsAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -67,10 +67,7 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
     setSelectedCompany(companyId);
     if (companyId) {
       try {
-        console.log('Запрашиваем практики для компании ID:', companyId);
         const response = await internshipsAPI.getInternships({ company: companyId });
-        console.log('Загружены практики для компании:', companyId, response.results);
-        console.log('Количество практик:', response.results?.length);
         setInternships(response.results || []);
       } catch (error) {
         console.error('Ошибка загрузки практик:', error);
@@ -101,18 +98,12 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
         return;
       }
       
-      console.log('Пользователь аутентифицирован:', { user: user.username, student: student.id });
-      console.log('Отправляем данные заявки:', {
-        internship: values.internship,
-        comment: values.comment
-      });
       
       const response = await applicationsAPI.createApplication({
         internship: values.internship,
         comment: values.comment
       });
       
-      console.log('Создана заявка:', response);
       
       // Получаем данные компании и практики из локального состояния
       const selectedCompanyData = companies.find(c => c.id === values.company);
@@ -121,7 +112,6 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
       // Проверяем, что все необходимые поля присутствуют
       if (!response.id || !response.company_name || !response.position_name) {
         console.warn('Неполные данные заявки:', response);
-        console.log('Используем локальные данные:', { selectedCompanyData, selectedInternship });
       }
       
       // Преобразуем ответ API в формат для таблицы

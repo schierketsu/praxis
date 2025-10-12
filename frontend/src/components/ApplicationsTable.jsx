@@ -56,7 +56,6 @@ export default function ApplicationsTable({ preselectedCompany }) {
     setLoading(true);
     try {
       const response = await applicationsAPI.getApplications();
-      console.log('Загружены заявки:', response);
       
       // Преобразуем данные из API в формат для таблицы
       const formattedApplications = response.results?.map(app => ({
@@ -106,7 +105,6 @@ export default function ApplicationsTable({ preselectedCompany }) {
   };
 
   const handleCreateSave = (newApplication) => {
-    console.log('Добавляем новую заявку:', newApplication);
     
     // Проверяем, что данные полные
     if (!newApplication.company || !newApplication.position) {

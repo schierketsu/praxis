@@ -2,7 +2,6 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.html import format_html
 from django import forms
-import json
 from .models import University, Company, Internship, Student, Application
 
 
@@ -76,16 +75,13 @@ class StudentAdminForm(forms.ModelForm):
         if hasattr(self, 'cleaned_data') and self.cleaned_data:
             if 'skills' in self.cleaned_data:
                 skills_data = self.cleaned_data['skills']
-                print(f"DEBUG: Сохраняем skills: {skills_data}")
                 instance.skills = skills_data
             if 'interests' in self.cleaned_data:
                 interests_data = self.cleaned_data['interests']
-                print(f"DEBUG: Сохраняем interests: {interests_data}")
                 instance.interests = interests_data
         
         if commit:
             instance.save()
-            print(f"DEBUG: Сохранено в БД - skills: {instance.skills}, interests: {instance.interests}")
         return instance
 
 

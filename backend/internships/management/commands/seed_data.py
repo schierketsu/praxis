@@ -143,8 +143,6 @@ class Command(BaseCommand):
         'position': 'Создание умных устройств для промышленности',
         'description': 'Разработай электронные системы для автоматизации производства. Научишься программировать микроконтроллеры, создавать схемы и тестировать готовые устройства.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=30),
-        'end_date': today + timedelta(days=120),
         'requirements': 'Интерес к электронике и программированию. Опыт не обязателен - всему научим!',
         'tech_stack': ['C', 'C++', 'Arduino', 'STM32', 'Altium Designer'],
         'available_positions': 2,
@@ -155,8 +153,7 @@ class Command(BaseCommand):
         'position': 'Создание современных веб-приложений',
         'description': 'Разработай полноценное веб-приложение с нуля! От идеи до запуска. Научишься работать в команде, использовать современные технологии и создавать продукты, которыми пользуются тысячи людей.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=35),
-        'end_date': today + timedelta(days=125),
+  
         'requirements': 'Желание создавать крутые продукты. Остальному научим!',
         'tech_stack': ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Git'],
         'available_positions': 3,
@@ -167,8 +164,8 @@ class Command(BaseCommand):
         'position': 'Автоматизация бизнеса через CRM',
         'description': 'Настрой автоматизацию для реальных компаний! Изучишь как работают CRM-системы, создашь автоматические процессы и поможешь бизнесу работать эффективнее.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=40),
-        'end_date': today + timedelta(days=130),
+    
+ 
         'requirements': 'Логическое мышление и желание оптимизировать процессы.',
         'tech_stack': ['amoCRM', 'Автоматизация', 'Бизнес-процессы', 'CRM', 'Интеграции'],
         'available_positions': 2,
@@ -179,8 +176,7 @@ class Command(BaseCommand):
         'position': 'Разработка корпоративных решений',
         'description': 'Создай полноценное веб-приложение на Laravel! От проектирования базы данных до красивого интерфейса. Научишься работать с серверной частью и создавать надежные системы.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=45),
-        'end_date': today + timedelta(days=135),
+       
         'requirements': 'Базовые знания программирования. Остальному научим!',
         'tech_stack': ['PHP', 'Laravel', 'MySQL', 'HTML', 'CSS', 'JavaScript'],
         'available_positions': 2,
@@ -191,8 +187,7 @@ class Command(BaseCommand):
         'position': 'Создание мобильных приложений',
         'description': 'Разработай мобильное приложение для iOS и Android одновременно! Научишься создавать кроссплатформенные решения и понимать потребности пользователей.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=50),
-        'end_date': today + timedelta(days=140),
+     
         'requirements': 'Креативность и желание создавать удобные приложения.',
         'tech_stack': ['React Native', 'Flutter', 'JavaScript', 'Dart', 'Mobile Development'],
         'available_positions': 2,
@@ -203,8 +198,7 @@ class Command(BaseCommand):
         'position': 'Интеграция 1С с современными сервисами',
         'description': 'Создай умного Telegram-бота для 1С! Научишься работать с API, автоматизировать рутинные задачи и интегрировать разные системы. Реальные задачи для реального бизнеса.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=55),
-        'end_date': today + timedelta(days=145),
+       
         'requirements': 'Аналитический склад ума и готовность изучать новые технологии.',
         'tech_stack': ['1С', 'Telegram Bot API', 'Интеграции', 'Базы данных', 'Скрипты'],
         'available_positions': 1,
@@ -215,8 +209,7 @@ class Command(BaseCommand):
         'position': 'Цифровизация складских процессов',
         'description': 'Оптимизируй работу склада через современные IT-решения! Изучишь как устроена логистика, научишься работать с большими данными и создавать аналитические отчеты.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=60),
-        'end_date': today + timedelta(days=150),
+
         'requirements': 'Внимательность к деталям и интерес к аналитике.',
         'tech_stack': ['МойСклад', 'Складской учет', 'Логистика', 'Финансы', 'Аналитика'],
         'available_positions': 2,
@@ -227,8 +220,7 @@ class Command(BaseCommand):
         'position': 'Разработка корпоративных систем',
         'description': 'Создай масштабируемое ПО для крупных компаний! Научишься работать с Docker, базами данных и создавать надежные системы, которые работают 24/7.',
         'location': 'Чебоксары',
-        'start_date': today + timedelta(days=40),
-        'end_date': today + timedelta(days=130),
+      
         'requirements': 'Системное мышление и готовность работать с большими проектами.',
         'tech_stack': ['Python', 'Django', 'PostgreSQL', 'Docker', 'Linux'],
         'available_positions': 2,
@@ -239,8 +231,7 @@ class Command(BaseCommand):
         'position': 'Обеспечение качества ПО',
         'description': 'Стань гарантом качества цифровых продуктов! Научишься находить баги, автоматизировать тестирование и создавать надежные приложения. Каждый найденный баг - спасенный пользователь!',
         'location': 'Новочебоксарск',
-        'start_date': today + timedelta(days=45),
-        'end_date': today + timedelta(days=135),
+    
         'requirements': 'Внимательность и желание создавать качественные продукты.',
         'tech_stack': ['Selenium', 'Python', 'Pytest', 'Postman', 'SQL'],
         'available_positions': 2,
@@ -251,8 +242,7 @@ class Command(BaseCommand):
         'position': 'Разработка социальных функций',
         'description': 'Создавай функции для миллионов пользователей! Научишься работать с большими данными, оптимизировать производительность и создавать продукты, которыми пользуется вся страна.',
         'location': 'Санкт-Петербург',
-        'start_date': today + timedelta(days=30),
-        'end_date': today + timedelta(days=120),
+        
         'requirements': 'Страсть к созданию продуктов для людей. Остальному научим!',
         'tech_stack': ['PHP', 'Go', 'React', 'MySQL', 'Redis', 'Kafka'],
         'available_positions': 5,
@@ -263,8 +253,7 @@ class Command(BaseCommand):
         'position': 'Разработка поисковых алгоритмов',
         'description': 'Создавай умный поиск для миллионов запросов! Изучишь машинное обучение, обработку естественного языка и алгоритмы ранжирования. Поможешь людям находить нужную информацию.',
         'location': 'Москва',
-        'start_date': today + timedelta(days=35),
-        'end_date': today + timedelta(days=125),
+        
         'requirements': 'Математическое мышление и интерес к алгоритмам.',
         'tech_stack': ['Python', 'C++', 'Machine Learning', 'TensorFlow', 'PostgreSQL'],
         'available_positions': 3,
@@ -275,8 +264,7 @@ class Command(BaseCommand):
         'position': 'Разработка финтех-решений',
         'description': 'Создавай банковские продукты будущего! Научишься работать с финансовыми данными, создавать безопасные системы и разрабатывать мобильные приложения для банкинга.',
         'location': 'Москва',
-        'start_date': today + timedelta(days=40),
-        'end_date': today + timedelta(days=130),
+      
         'requirements': 'Внимательность к деталям и интерес к финансам.',
         'tech_stack': ['Java', 'Spring', 'Kotlin', 'PostgreSQL', 'Docker', 'Kubernetes'],
         'available_positions': 4,
@@ -287,8 +275,7 @@ class Command(BaseCommand):
         'position': 'Цифровизация банковских услуг',
         'description': 'Превращай традиционный банкинг в цифровой! Научишься работать с большими данными, создавать AI-решения и разрабатывать продукты для миллионов клиентов.',
         'location': 'Москва',
-        'start_date': today + timedelta(days=45),
-        'end_date': today + timedelta(days=135),
+ 
         'requirements': 'Системное мышление и готовность к инновациям.',
         'tech_stack': ['Python', 'Java', 'AI/ML', 'Big Data', 'Microservices', 'React'],
         'available_positions': 6,

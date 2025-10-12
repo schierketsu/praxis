@@ -43,19 +43,10 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
         body: {
           padding: '0',
           background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-          borderRadius: '20px'
+          borderRadius: '20px',
+          overflow: 'hidden',
+          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)'
         },
-        mask: {
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)'
-        }
-      }}
-      style={{
-        borderRadius: '20px',
-        overflow: 'hidden',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)'
-      }}
-      styles={{
         mask: {
           backdropFilter: 'blur(8px)',
           backgroundColor: 'rgba(0, 0, 0, 0.3)'

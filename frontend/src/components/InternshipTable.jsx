@@ -1,22 +1,194 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, Tag, Space, Typography, Button, Avatar, Row, Col, Divider } from 'antd';
 import { InfoCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import AuthModal from './AuthModal';
 
 const { Text, Link } = Typography;
 
+// Оптимизированный компонент карточки компании
+const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => {
+  const techs = getCompanyTechs(record.internships || []);
+  
+  return (
+    <div style={{ width: '100%', height: '100%' }}>
+      <Card
+        hoverable
+        style={{
+          height: '580px',
+          borderRadius: '16px',
+          border: 'none',
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(10px)',
+          boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+        styles={{ body: { padding: '24px', height: '100%', display: 'flex', flexDirection: 'column' } }}
+      >
+        {/* Логотип и название */}
+        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+          <Avatar
+            size={80}
+            src={record.logo}
+            style={{
+              marginBottom: '16px',
+              border: '3px solid rgba(102, 126, 234, 0.2)'
+            }}
+          />
+          <Text
+            strong
+            style={{
+              fontSize: '18px',
+              color: '#2c3e50',
+              display: 'block',
+              marginBottom: '8px'
+            }}
+          >
+            {record.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: '14px',
+              color: '#7f8c8d',
+              display: 'block',
+              lineHeight: '1.4'
+            }}
+          >
+            {record.description?.substring(0, 100)}...
+          </Text>
+        </div>
+
+        <Divider style={{ margin: '16px 0' }} />
+
+        {/* Статистика */}
+        <div style={{ marginBottom: '20px' }}>
+          <Row gutter={16}>
+            <Col span={12}>
+              <div style={{ textAlign: 'center' }}>
+                <Text strong style={{ fontSize: '20px', color: '#667eea' }}>
+                  {record.internships?.length || 0}
+                </Text>
+                <br />
+                <Text style={{ fontSize: '12px', color: '#7f8c8d' }}>
+                  Практик
+                </Text>
+              </div>
+            </Col>
+            <Col span={12}>
+              <div style={{ textAlign: 'center' }}>
+                <Text strong style={{ fontSize: '20px', color: '#667eea' }}>
+                  {techs.length}
+                </Text>
+                <br />
+                <Text style={{ fontSize: '12px', color: '#7f8c8d' }}>
+                  Технологий
+                </Text>
+              </div>
+            </Col>
+          </Row>
+        </div>
+
+        {/* Технологии */}
+        <div style={{ marginBottom: '20px' }}>
+          <Text
+            style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#2c3e50',
+              marginBottom: '8px',
+              display: 'block'
+            }}
+          >
+            Технологии:
+          </Text>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+            {techs.length > 0 ? (
+              <>
+                {techs.slice(0, 5).map(tech => (
+                  <Tag 
+                    key={tech} 
+                    size="small" 
+                    style={{ 
+                      borderRadius: '8px',
+                      backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                      color: '#667eea',
+                      border: 'none',
+                      fontWeight: '500'
+                    }}
+                  >
+                    {tech}
+                  </Tag>
+                ))}
+                {techs.length > 5 && (
+                  <Tag size="small" style={{ 
+                    borderRadius: '8px',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    color: '#667eea',
+                    border: 'none'
+                  }}>
+                    +{techs.length - 5}
+                  </Tag>
+                )}
+              </>
+            ) : (
+              <Text style={{ fontSize: '12px', color: '#8b9dc3' }}>
+                Технологии не указаны
+              </Text>
+            )}
+          </div>
+        </div>
+
+        <div style={{ marginTop: 'auto' }}>
+          <Button
+            type="primary"
+            icon={<InfoCircleOutlined />}
+            size="large"
+            block
+            onClick={() => onCompanyClick(record)}
+            style={{
+              borderRadius: '12px',
+              height: '44px',
+              fontWeight: '600',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+            }}
+          >
+            Подробнее
+          </Button>
+        </div>
+      </Card>
+    </div>
+  );
+});
+
 export default function InternshipTable({ data, loading, pagination, onTableChange, selectedTechs = [] }) {
   const navigate = useNavigate();
+  const { user, student } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [authModalVisible, setAuthModalVisible] = useState(false);
   const cardsPerView = 4;
 
-  const handleCompanyClick = (record) => {
+  const handleCompanyClick = useCallback((record) => {
     if (record.id) {
+      // Проверяем авторизацию пользователя
+      if (!user || !student) {
+        // Если пользователь не авторизован, показываем модальное окно авторизации
+        setAuthModalVisible(true);
+        return;
+      }
+      // Если пользователь авторизован, переходим на страницу компании
       navigate(`/company/${record.id}`);
     }
-  };
+  }, [user, student, navigate]);
 
-  const getCompanyTechs = (internships) => {
+  const handleAuthModalClose = useCallback(() => {
+    setAuthModalVisible(false);
+  }, []);
+
+  const getCompanyTechs = useCallback((internships) => {
     const allTechs = new Set();
     internships.forEach(internship => {
       if (internship.tech_stack) {
@@ -24,7 +196,25 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
       }
     });
     return Array.from(allTechs);
-  };
+  }, []);
+
+  // Мемоизируем отфильтрованные данные
+  const filteredData = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    
+    return data.filter(record => {
+      if (!record.internships || record.internships.length === 0) return false;
+      
+      // Фильтрация по технологиям
+      if (selectedTechs.length > 0) {
+        const companyTechs = getCompanyTechs(record.internships);
+        const hasMatchingTech = selectedTechs.some(tech => companyTechs.includes(tech));
+        if (!hasMatchingTech) return false;
+      }
+      
+      return true;
+    });
+  }, [data, selectedTechs, getCompanyTechs]);
 
   const handlePrev = () => {
     setCurrentIndex(prev => prev === 0 ? data.length - 1 : prev - 1);
@@ -134,11 +324,13 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   transition: 'all 0.3s ease',
                   cursor: 'pointer'
                 }}
-                bodyStyle={{
-                  padding: '24px',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column'
+                styles={{
+                  body: {
+                    padding: '24px',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column'
+                  }
                 }}
               >
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
@@ -260,6 +452,13 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
           );
         })}
       </div>
+      
+      {/* Модальное окно авторизации */}
+      <AuthModal
+        visible={authModalVisible}
+        onClose={handleAuthModalClose}
+        initialMode="login"
+      />
     </div>
   );
 }

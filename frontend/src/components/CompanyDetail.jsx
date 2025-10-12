@@ -33,7 +33,6 @@ export default function CompanyDetail() {
   const [loading, setLoading] = useState(true);
   const [authModalVisible, setAuthModalVisible] = useState(false);
 
-  console.log('CompanyDetail loaded with companyId:', companyId);
 
   useEffect(() => {
     fetchCompanyData();
@@ -47,14 +46,12 @@ export default function CompanyDetail() {
       const companyData = companyResponse.results.find(c => c.id === parseInt(companyId));
 
       if (companyData) {
-        console.log('Company data received:', companyData);
         setCompany(companyData);
 
         // Получаем практики этой компании
         const internshipsResponse = await internshipsAPI.getInternships({
           company_name: companyData.name
         });
-        console.log('Internships data received:', internshipsResponse.results || []);
         setInternships(internshipsResponse.results || []);
       } else {
         message.error('Компания не найдена');

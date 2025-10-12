@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="/assets/icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Платформа для поиска практик и стажировок в IT-компаниях" />
+    <meta name="keywords" content="практики, стажировки, IT, программирование, разработка" />
+    <title>Праксис - Платформа поиска практик</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" as="style" />
+    <link rel="preload" href="data:text/jsx;base64,aW1wb3J0IHsgY3JlYXRlUm9vdCB9IGZyb20gJ3JlYWN0LWRvbS9jbGllbnQnCmltcG9ydCAnLi9pbmRleC5jc3MnCmltcG9ydCBBcHAgZnJvbSAnLi9BcHAuanN4JwoKY29uc3Qgcm9vdCA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKCdyb290JykKCmNyZWF0ZVJvb3Qocm9vdCkucmVuZGVyKDxBcHAgLz4pCg==" as="script" />
+    
+    <!-- Critical CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+     crossorigin=""/>
+     
+    <!-- Performance hints -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="theme-color" content="#667eea" />
+    <script type="module" crossorigin src="/assets/index-nVrMVh79.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-vendor-Ct6ux_Fb.js">
+    <link rel="modulepreload" crossorigin href="/assets/router-BjWxKEch.js">
+    <link rel="modulepreload" crossorigin href="/assets/axios-DpZCZaHO.js">
+    <link rel="modulepreload" crossorigin href="/assets/antd-DWkf5yY6.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-BTZtASRR.css">
+  </head>
+  <body>
+    <div id="root">
+      <!-- Loading fallback -->
+      <div style="
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        height: 100vh; 
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      ">
+        <div style="text-align: center;">
+          <div style="
+            width: 40px; 
+            height: 40px; 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #667eea; 
+            border-radius: 50%; 
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+          "></div>
+          <p style="color: #667eea; font-weight: 600;">Загрузка...</p>
+        </div>
+      </div>
+    </div>
+    
+    <style>
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    </style>
+    
+  </body>
+</html>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import { authAPI } from '../services/api';
 
 const AuthContext = createContext();
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  const checkAuthStatus = async () => {
+  const checkAuthStatus = useCallback(async () => {
     try {
       const response = await authAPI.checkAuthStatus();
       if (response.authenticated && response.student) {
@@ -38,9 +38,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const login = async (credentials) => {
+  const login = useCallback(async (credentials) => {
     try {
       const response = await authAPI.login(credentials);
       setUser(response.student.user);
@@ -49,9 +49,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const register = async (studentData) => {
+  const register = useCallback(async (studentData) => {
     try {
       const response = await authAPI.register(studentData);
       // После регистрации автоматически входим
@@ -60,9 +60,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
-  };
+  }, [checkAuthStatus]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await authAPI.logout();
       setUser(null);
@@ -73,9 +73,9 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       setStudent(null);
     }
-  };
+  }, []);
 
-  const updateProfile = async (profileData) => {
+  const updateProfile = useCallback(async (profileData) => {
     try {
       const response = await authAPI.updateProfile(profileData);
       setStudent(response.student);
@@ -83,9 +83,10 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       throw error;
     }
-  };
+  }, []);
 
-  const value = {
+  // Мемоизируем значение контекста для предотвращения лишних ререндеров
+  const value = useMemo(() => ({
     user,
     student,
     loading,
@@ -95,7 +96,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     checkAuthStatus
-  };
+  }), [user, student, loading, login, register, logout, updateProfile, checkAuthStatus]);
 
   return (
     <AuthContext.Provider value={value}>

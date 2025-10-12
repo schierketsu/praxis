@@ -244,21 +244,17 @@ def student_update_profile(request):
             data['resume'] = None
         
         # Обрабатываем skills и interests
-        print(f"DEBUG: Обработка skills: {request.data.get('skills')}, тип: {type(request.data.get('skills'))}")
         if 'skills' in request.data:
             skills_value = request.data['skills']
             if isinstance(skills_value, str):
                 try:
                     data['skills'] = json.loads(skills_value)
-                    print(f"DEBUG: skills после JSON парсинга: {data['skills']}")
                 except json.JSONDecodeError:
                     data['skills'] = []
             elif isinstance(skills_value, list):
-                print(f"DEBUG: skills как список: {skills_value}")
                 # Если это список списков (QueryDict), берем первый элемент
                 if len(skills_value) > 0 and isinstance(skills_value[0], list):
                     data['skills'] = skills_value[0]
-                    print(f"DEBUG: skills после извлечения: {data['skills']}")
                 # Если пустой список, оставляем пустым
                 elif len(skills_value) == 0:
                     data['skills'] = []
@@ -267,21 +263,17 @@ def student_update_profile(request):
         else:
             data['skills'] = []
         
-        print(f"DEBUG: Обработка interests: {request.data.get('interests')}, тип: {type(request.data.get('interests'))}")
         if 'interests' in request.data:
             interests_value = request.data['interests']
             if isinstance(interests_value, str):
                 try:
                     data['interests'] = json.loads(interests_value)
-                    print(f"DEBUG: interests после JSON парсинга: {data['interests']}")
                 except json.JSONDecodeError:
                     data['interests'] = []
             elif isinstance(interests_value, list):
-                print(f"DEBUG: interests как список: {interests_value}")
                 # Если это список списков (QueryDict), берем первый элемент
                 if len(interests_value) > 0 and isinstance(interests_value[0], list):
                     data['interests'] = interests_value[0]
-                    print(f"DEBUG: interests после извлечения: {data['interests']}")
                 # Если пустой список, оставляем пустым
                 elif len(interests_value) == 0:
                     data['interests'] = []
@@ -290,16 +282,13 @@ def student_update_profile(request):
         else:
             data['interests'] = []
         
-        print(f"DEBUG: Данные для обновления: {data}")
         serializer = StudentSerializer(student, data=data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
-            print(f"DEBUG: Профиль успешно обновлен")
             return Response({
                 'message': 'Профиль обновлен успешно',
                 'student': serializer.data
             }, status=status.HTTP_200_OK)
-        print(f"DEBUG: Ошибки валидации: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Student.DoesNotExist:
         return Response({
@@ -348,7 +337,6 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     
     def create(self, request, *args, **kwargs):
         """Переопределяем create для лучшей обработки ошибок"""
-        print(f"DEBUG: ApplicationViewSet create - request.data: {request.data}")
         try:
             return super().create(request, *args, **kwargs)
         except Exception as e:

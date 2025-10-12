@@ -69,7 +69,6 @@ class StudentSerializer(serializers.ModelSerializer):
         return data
     
     def validate(self, attrs):
-        print(f"DEBUG: Валидация StudentSerializer с данными: {attrs}")
         return super().validate(attrs)
     
     class Meta:
@@ -197,7 +196,6 @@ class ApplicationCreateSerializer(serializers.ModelSerializer):
     
     def create(self, validated_data):
         # Получаем студента из контекста запроса
-        print(f"DEBUG: ApplicationCreateSerializer - validated_data: {validated_data}")
         try:
             student = Student.objects.get(user=self.context['request'].user)
             validated_data['student'] = student
@@ -206,15 +204,12 @@ class ApplicationCreateSerializer(serializers.ModelSerializer):
             if 'internship' in validated_data and validated_data['internship']:
                 internship = validated_data['internship']
                 validated_data['company'] = internship.company
-                print(f"DEBUG: ApplicationCreateSerializer - добавлена company: {internship.company}")
             
-            print(f"DEBUG: ApplicationCreateSerializer - после добавления student и company: {validated_data}")
             application = super().create(validated_data)
-            print(f"DEBUG: ApplicationCreateSerializer - создана заявка: {application}")
             # Перезагружаем объект с связанными данными
             return Application.objects.select_related('internship__company', 'student__user').get(id=application.id)
         except Student.DoesNotExist:
             raise serializers.ValidationError('Профиль студента не найден')
         except Exception as e:
-            print(f"DEBUG: ApplicationCreateSerializer - ошибка: {e}")
+            print(f"Ошибка создания заявки: {e}")
             raise
