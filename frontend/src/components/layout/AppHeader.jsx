@@ -60,6 +60,10 @@ export default function AppHeader() {
     navigate('/dashboard');
   };
 
+  const handleApplicationsClick = () => {
+    navigate('/applications');
+  };
+
   const userMenuItems = [
     {
       key: 'profile',
@@ -70,7 +74,8 @@ export default function AppHeader() {
     {
       key: 'settings',
       icon: <SettingOutlined />,
-      label: 'Заявки'
+      label: 'Заявки',
+      onClick: handleApplicationsClick
     },
     {
       type: 'divider'

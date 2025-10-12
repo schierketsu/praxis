@@ -242,9 +242,11 @@ export default function StudentProfile({ student, onLogout, onEdit }) {
           overflow: 'hidden',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)'
         }}
-        maskStyle={{
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)'
+        styles={{
+          mask: {
+            backdropFilter: 'blur(8px)',
+            backgroundColor: 'rgba(0, 0, 0, 0.3)'
+          }
         }}
       >
         <StudentProfileEdit

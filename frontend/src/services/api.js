@@ -104,13 +104,45 @@ export const authAPI = {
 
   // Обновить профиль студента
   updateProfile: async (profileData) => {
-    const response = await api.put('/auth/profile/update/', profileData);
+    const config = {
+      headers: {
+        'Content-Type': profileData instanceof FormData ? 'multipart/form-data' : 'application/json'
+      }
+    };
+    const response = await api.put('/auth/profile/update/', profileData, config);
     return response.data;
   },
 
   // Проверить статус авторизации
   checkAuthStatus: async () => {
     const response = await api.get('/auth/status/');
+    return response.data;
+  },
+};
+
+// API для заявок студентов
+export const applicationsAPI = {
+  // Получить заявки студента
+  getApplications: async () => {
+    const response = await api.get('/applications/');
+    return response.data;
+  },
+
+  // Создать новую заявку
+  createApplication: async (applicationData) => {
+    const response = await api.post('/applications/', applicationData);
+    return response.data;
+  },
+
+  // Обновить заявку (только отмена)
+  updateApplication: async (id, data) => {
+    const response = await api.patch(`/applications/${id}/`, data);
+    return response.data;
+  },
+
+  // Удалить заявку
+  deleteApplication: async (id) => {
+    const response = await api.delete(`/applications/${id}/`);
     return response.data;
   },
 };

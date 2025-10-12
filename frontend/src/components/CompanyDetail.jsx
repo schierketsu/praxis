@@ -17,6 +17,8 @@ import {
 } from 'antd';
 import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI } from '../services/api';
+import { useAuth } from '../contexts/AuthContext';
+import AuthModal from './AuthModal';
 import MapComponent from './MapComponent';
 import AppHeader from './layout/AppHeader';
 
@@ -25,9 +27,11 @@ const { Title, Text, Paragraph, Link } = Typography;
 export default function CompanyDetail() {
   const { companyId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [company, setCompany] = useState(null);
   const [internships, setInternships] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authModalVisible, setAuthModalVisible] = useState(false);
 
   console.log('CompanyDetail loaded with companyId:', companyId);
 
@@ -62,6 +66,22 @@ export default function CompanyDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleContactClick = () => {
+    // Проверяем авторизацию пользователя
+    if (!user) {
+      // Если пользователь не авторизован, показываем модальное окно авторизации
+      setAuthModalVisible(true);
+      return;
+    }
+    
+    // Если пользователь авторизован, переходим на страницу заявок с предзаполненной компанией
+    navigate('/applications', { 
+      state: { 
+        preselectedCompany: company 
+      } 
+    });
   };
 
   const internshipColumns = [
@@ -197,6 +217,7 @@ export default function CompanyDetail() {
                               <Button
                                 type="primary"
                                 size="large"
+                                onClick={handleContactClick}
                                 style={{
                                   borderRadius: '12px',
                                   height: '48px',
@@ -381,6 +402,21 @@ export default function CompanyDetail() {
           </div>
         </Layout.Content>
       </Layout>
+      
+      {/* Модальное окно авторизации */}
+      <AuthModal
+        visible={authModalVisible}
+        onClose={() => setAuthModalVisible(false)}
+        onSuccess={() => {
+          setAuthModalVisible(false);
+          // После успешной авторизации переходим на страницу заявок
+          navigate('/applications', { 
+            state: { 
+              preselectedCompany: company 
+            } 
+          });
+        }}
+      />
     </Layout>
   );
 }

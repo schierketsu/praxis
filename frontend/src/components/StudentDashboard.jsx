@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Card, Typography, Button, Space, Tag, Row, Col, Avatar, Divider, message, Form, Input, Select } from 'antd';
-import { UserOutlined, EditOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Layout, Card, Typography, Button, Space, Tag, Row, Col, Avatar, Divider, message, Form, Input, Select, Upload } from 'antd';
+import { UserOutlined, EditOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined, UploadOutlined, FileOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { universitiesAPI } from '../services/api';
@@ -23,6 +23,7 @@ export default function StudentDashboard() {
   const [interests, setInterests] = useState([]);
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
+  const [resumeFile, setResumeFile] = useState(null);
 
   // Обновляем данные студента при изменении
   useEffect(() => {
@@ -70,15 +71,35 @@ export default function StudentDashboard() {
   const handleSave = async (values) => {
     setLoading(true);
     try {
-      const profileData = {
-        ...values,
-        skills: skills,
-        interests: interests
-      };
+      // Создаем FormData для отправки файлов
+      const formData = new FormData();
+      
+      // Добавляем текстовые поля
+      Object.keys(values).forEach(key => {
+        if (key !== 'resume' && values[key] !== undefined) {
+          formData.append(key, values[key]);
+        }
+      });
+      
+      // Добавляем файл резюме, если он есть
+      if (resumeFile && resumeFile instanceof File) {
+        formData.append('resume', resumeFile);
+      } else if (values.resume === null) {
+        // Если пользователь удалил резюме, отправляем пустое значение
+        formData.append('resume', '');
+      }
+      
+      // Добавляем навыки и интересы
+      formData.append('skills', JSON.stringify(skills));
+      formData.append('interests', JSON.stringify(interests));
 
-      const response = await updateProfile(profileData);
+      const response = await updateProfile(formData);
       setCurrentStudent(response.student);
       setIsEditing(false);
+      
+      // Очищаем предпросмотр после успешной загрузки
+      setResumeFile(null);
+      
       message.success('Профиль обновлен успешно!');
     } catch (error) {
       console.error('Ошибка обновления профиля:', error);
@@ -105,6 +126,9 @@ export default function StudentDashboard() {
 
   const handleCancel = () => {
     setIsEditing(false);
+    // Очищаем предпросмотр
+    setResumeFile(null);
+    
     // Сбрасываем форму к исходным значениям
     if (currentStudent) {
       form.setFieldsValue({
@@ -334,6 +358,114 @@ export default function StudentDashboard() {
                   />
                 </Form.Item>
 
+                {/* Резюме */}
+                <Form.Item
+                  name="resume"
+                  label="Резюме"
+                >
+                  <div>
+                    {/* Показываем уже загруженное резюме */}
+                    {currentStudent.resume && !resumeFile && (
+                      <div style={{ marginBottom: '16px', padding: '12px', background: '#f0f9ff', borderRadius: '8px', border: '1px solid #e6f7ff' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <FileOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
+                            <div>
+                              <div style={{ fontWeight: '500', color: '#1890ff' }}>Резюме загружено</div>
+                              <div style={{ fontSize: '12px', color: '#666' }}>
+                                {currentStudent.resume.split('/').pop()}
+                              </div>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px' }}>
+                            <Button 
+                              type="link" 
+                              icon={<FileOutlined />}
+                              onClick={() => {
+                                const link = document.createElement('a');
+                                link.href = currentStudent.resume;
+                                link.download = 'resume.pdf';
+                                link.target = '_blank';
+                                document.body.appendChild(link);
+                                link.click();
+                                document.body.removeChild(link);
+                              }}
+                            >
+                              Скачать
+                            </Button>
+                            <Button 
+                              type="link" 
+                              danger 
+                              icon={<DeleteOutlined />}
+                              onClick={() => {
+                                // Устанавливаем пустое значение для удаления
+                                form.setFieldsValue({ resume: null });
+                                setResumeFile(null);
+                              }}
+                            >
+                              Удалить
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
+                    {/* Показываем новый выбранный файл */}
+                    {resumeFile && (
+                      <div style={{ marginBottom: '16px', padding: '12px', background: '#f5f5f5', borderRadius: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <FileOutlined style={{ marginRight: '8px', color: '#1890ff' }} />
+                            <span style={{ fontWeight: '500' }}>{resumeFile.name}</span>
+                            <span style={{ marginLeft: '8px', color: '#666', fontSize: '12px' }}>
+                              ({(resumeFile.size / 1024 / 1024).toFixed(2)} MB)
+                            </span>
+                          </div>
+                          <Button 
+                            type="link" 
+                            danger 
+                            icon={<DeleteOutlined />}
+                            onClick={() => {
+                              setResumeFile(null);
+                              form.setFieldsValue({ resume: null });
+                            }}
+                          >
+                            Удалить
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                    
+                    <Upload
+                      name="resume"
+                      beforeUpload={(file) => {
+                        const isPdf = file.type === 'application/pdf';
+                        const isDoc = file.type === 'application/msword' || file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                        if (!isPdf && !isDoc) {
+                          message.error('Можно загружать только PDF или DOC файлы!');
+                          return false;
+                        }
+                        const isLt5M = file.size / 1024 / 1024 < 5;
+                        if (!isLt5M) {
+                          message.error('Размер файла должен быть меньше 5MB!');
+                          return false;
+                        }
+                        
+                        // Создаем новый File объект с правильными данными
+                        const newFile = new File([file], file.name, { type: file.type });
+                        setResumeFile(newFile);
+                        form.setFieldsValue({ resume: newFile });
+                        return false; // Предотвращаем автоматическую загрузку
+                      }}
+                      showUploadList={false}
+                    >
+                      <Button icon={<FileOutlined />}>
+                        {resumeFile ? 'Изменить резюме' : (currentStudent.resume ? 'Заменить резюме' : 'Загрузить резюме')}
+                      </Button>
+                    </Upload>
+                  </div>
+                </Form.Item>
+
                 {/* Навыки */}
                 <Form.Item label="Навыки">
                   <div style={{ marginBottom: '8px' }}>
@@ -544,6 +676,41 @@ export default function StudentDashboard() {
                 <Paragraph style={{ marginTop: '8px', fontSize: '16px', lineHeight: '1.6' }}>
                   {currentStudent.bio}
                 </Paragraph>
+              </div>
+            )}
+
+            {/* Резюме */}
+            {currentStudent.resume && (
+              <div style={{ marginBottom: '24px' }}>
+                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                  Резюме:
+                </Text>
+                <br />
+                <div style={{ marginTop: '8px' }}>
+                  <Button 
+                    type="primary" 
+                    icon={<FileOutlined />}
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = currentStudent.resume;
+                      link.download = 'resume.pdf';
+                      link.target = '_blank';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    style={{ 
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                      borderRadius: '8px',
+                      height: '40px',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    Скачать резюме
+                  </Button>
+                </div>
               </div>
             )}
 

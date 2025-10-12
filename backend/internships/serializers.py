@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import University, Company, Internship, Student
+from .models import University, Company, Internship, Student, Application
 
 
 class UniversitySerializer(serializers.ModelSerializer):
@@ -56,12 +56,27 @@ class UserSerializer(serializers.ModelSerializer):
 class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     university_name = serializers.CharField(source='university.name', read_only=True)
+    resume = serializers.FileField(required=False, allow_null=True)
+    
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        if instance.resume:
+            request = self.context.get('request')
+            if request:
+                data['resume'] = request.build_absolute_uri(instance.resume.url)
+            else:
+                data['resume'] = instance.resume.url
+        return data
+    
+    def validate(self, attrs):
+        print(f"DEBUG: Валидация StudentSerializer с данными: {attrs}")
+        return super().validate(attrs)
     
     class Meta:
         model = Student
         fields = [
             'id', 'user', 'university', 'university_name', 'course', 
-            'specialization', 'phone', 'bio', 'skills', 'interests', 
+            'specialization', 'phone', 'bio', 'resume', 'skills', 'interests', 
             'is_active', 'created_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
@@ -143,3 +158,63 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Необходимо указать имя пользователя и пароль')
         
         return attrs
+
+
+class ApplicationSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    company_name = serializers.CharField(source='internship.company.name', read_only=True)
+    position_name = serializers.CharField(source='internship.position', read_only=True)
+    applied_date = serializers.DateTimeField(source='created_at', read_only=True)
+    
+    def to_representation(self, instance):
+        """Переопределяем для правильной обработки дат"""
+        data = super().to_representation(instance)
+        # Убеждаемся, что applied_date всегда есть
+        if not data.get('applied_date') and data.get('created_at'):
+            data['applied_date'] = data['created_at']
+        
+        # Отладочная информация (закомментировано для продакшена)
+        # print(f"ApplicationSerializer - instance: {instance}")
+        # print(f"ApplicationSerializer - company_name: {data.get('company_name')}")
+        # print(f"ApplicationSerializer - position_name: {data.get('position_name')}")
+        
+        return data
+    
+    class Meta:
+        model = Application
+        fields = [
+            'id', 'student', 'internship', 'status', 'comment', 
+            'student_name', 'company_name', 'position_name', 'applied_date',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class ApplicationCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Application
+        fields = ['company', 'internship', 'comment']
+    
+    def create(self, validated_data):
+        # Получаем студента из контекста запроса
+        print(f"DEBUG: ApplicationCreateSerializer - validated_data: {validated_data}")
+        try:
+            student = Student.objects.get(user=self.context['request'].user)
+            validated_data['student'] = student
+            
+            # Добавляем company из internship, если он есть
+            if 'internship' in validated_data and validated_data['internship']:
+                internship = validated_data['internship']
+                validated_data['company'] = internship.company
+                print(f"DEBUG: ApplicationCreateSerializer - добавлена company: {internship.company}")
+            
+            print(f"DEBUG: ApplicationCreateSerializer - после добавления student и company: {validated_data}")
+            application = super().create(validated_data)
+            print(f"DEBUG: ApplicationCreateSerializer - создана заявка: {application}")
+            # Перезагружаем объект с связанными данными
+            return Application.objects.select_related('internship__company', 'student__user').get(id=application.id)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError('Профиль студента не найден')
+        except Exception as e:
+            print(f"DEBUG: ApplicationCreateSerializer - ошибка: {e}")
+            raise

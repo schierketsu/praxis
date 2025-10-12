@@ -7,15 +7,21 @@ from django_filters import rest_framework as filters_drf
 from rest_framework.decorators import action
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
-from .models import University, Company, Internship, Student
+import json
+from .models import University, Company, Internship, Student, Application
 from .serializers import (
     UniversitySerializer, CompanySerializer, InternshipSerializer,
-    StudentSerializer, StudentRegistrationSerializer, LoginSerializer
+    StudentSerializer, StudentRegistrationSerializer, LoginSerializer,
+    ApplicationSerializer, ApplicationCreateSerializer
 )
 
 
 class InternshipFilter(filters_drf.FilterSet):
     """Фильтры для практик"""
+    company = filters_drf.NumberFilter(
+        field_name='company__id',
+        label='ID компании'
+    )
     company_name = filters_drf.CharFilter(
         field_name='company__name',
         lookup_expr='icontains',
@@ -56,7 +62,7 @@ class InternshipFilter(filters_drf.FilterSet):
     
     class Meta:
         model = Internship
-        fields = ['company_name', 'location', 'university', 'tech_stack']
+        fields = ['company', 'company_name', 'location', 'university', 'tech_stack']
 
 
 class UniversityViewSet(viewsets.ReadOnlyModelViewSet):
@@ -199,7 +205,12 @@ def student_profile(request):
     """Получить профиль студента"""
     try:
         student = Student.objects.get(user=request.user)
-        serializer = StudentSerializer(student)
+        print(f"Student profile requested for user: {request.user.username}")
+        print(f"Student resume field: {student.resume}")
+        print(f"Student resume type: {type(student.resume)}")
+        if student.resume:
+            print(f"Resume file name: {student.resume.name}")
+        serializer = StudentSerializer(student, context={'request': request})
         return Response(serializer.data, status=status.HTTP_200_OK)
     except Student.DoesNotExist:
         return Response({
@@ -213,13 +224,82 @@ def student_update_profile(request):
     """Обновить профиль студента"""
     try:
         student = Student.objects.get(user=request.user)
-        serializer = StudentSerializer(student, data=request.data, partial=True)
+        
+        # Создаем новый словарь с правильными данными
+        data = {}
+        
+        # Копируем все поля кроме skills и interests
+        for key, value in request.data.items():
+            if key not in ['skills', 'interests']:
+                if isinstance(value, list) and len(value) == 1:
+                    data[key] = value[0]
+                else:
+                    data[key] = value
+        
+        # Добавляем файлы из request.FILES
+        if 'resume' in request.FILES:
+            data['resume'] = request.FILES['resume']
+        elif 'resume' in request.data and request.data['resume'] == '':
+            # Если пользователь удалил резюме, устанавливаем None
+            data['resume'] = None
+        
+        # Обрабатываем skills и interests
+        print(f"DEBUG: Обработка skills: {request.data.get('skills')}, тип: {type(request.data.get('skills'))}")
+        if 'skills' in request.data:
+            skills_value = request.data['skills']
+            if isinstance(skills_value, str):
+                try:
+                    data['skills'] = json.loads(skills_value)
+                    print(f"DEBUG: skills после JSON парсинга: {data['skills']}")
+                except json.JSONDecodeError:
+                    data['skills'] = []
+            elif isinstance(skills_value, list):
+                print(f"DEBUG: skills как список: {skills_value}")
+                # Если это список списков (QueryDict), берем первый элемент
+                if len(skills_value) > 0 and isinstance(skills_value[0], list):
+                    data['skills'] = skills_value[0]
+                    print(f"DEBUG: skills после извлечения: {data['skills']}")
+                # Если пустой список, оставляем пустым
+                elif len(skills_value) == 0:
+                    data['skills'] = []
+            else:
+                data['skills'] = []
+        else:
+            data['skills'] = []
+        
+        print(f"DEBUG: Обработка interests: {request.data.get('interests')}, тип: {type(request.data.get('interests'))}")
+        if 'interests' in request.data:
+            interests_value = request.data['interests']
+            if isinstance(interests_value, str):
+                try:
+                    data['interests'] = json.loads(interests_value)
+                    print(f"DEBUG: interests после JSON парсинга: {data['interests']}")
+                except json.JSONDecodeError:
+                    data['interests'] = []
+            elif isinstance(interests_value, list):
+                print(f"DEBUG: interests как список: {interests_value}")
+                # Если это список списков (QueryDict), берем первый элемент
+                if len(interests_value) > 0 and isinstance(interests_value[0], list):
+                    data['interests'] = interests_value[0]
+                    print(f"DEBUG: interests после извлечения: {data['interests']}")
+                # Если пустой список, оставляем пустым
+                elif len(interests_value) == 0:
+                    data['interests'] = []
+            else:
+                data['interests'] = []
+        else:
+            data['interests'] = []
+        
+        print(f"DEBUG: Данные для обновления: {data}")
+        serializer = StudentSerializer(student, data=data, partial=True, context={'request': request})
         if serializer.is_valid():
             serializer.save()
+            print(f"DEBUG: Профиль успешно обновлен")
             return Response({
                 'message': 'Профиль обновлен успешно',
                 'student': serializer.data
             }, status=status.HTTP_200_OK)
+        print(f"DEBUG: Ошибки валидации: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     except Student.DoesNotExist:
         return Response({
@@ -258,3 +338,46 @@ def get_csrf_token(request):
     return Response({
         'csrfToken': csrf_token
     })
+
+
+class ApplicationViewSet(viewsets.ModelViewSet):
+    """API для заявок студентов"""
+    queryset = Application.objects.all()
+    serializer_class = ApplicationSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def create(self, request, *args, **kwargs):
+        """Переопределяем create для лучшей обработки ошибок"""
+        print(f"DEBUG: ApplicationViewSet create - request.data: {request.data}")
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            print(f"Ошибка создания заявки: {e}")
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
+    def get_queryset(self):
+        """Возвращаем только заявки текущего студента"""
+        try:
+            student = Student.objects.get(user=self.request.user)
+            return Application.objects.filter(student=student).select_related('internship__company')
+        except Student.DoesNotExist:
+            return Application.objects.none()
+    
+    def get_serializer_class(self):
+        """Используем разные сериализаторы для создания и просмотра"""
+        if self.action == 'create':
+            return ApplicationCreateSerializer
+        return ApplicationSerializer
+    
+    
+    def update(self, request, *args, **kwargs):
+        """Разрешаем только изменение статуса на 'cancelled'"""
+        instance = self.get_object()
+        if request.data.get('status') == 'cancelled':
+            instance.status = 'cancelled'
+            instance.save()
+            return Response(ApplicationSerializer(instance).data)
+        return Response({'error': 'Можно только отменить заявку'}, status=400)
