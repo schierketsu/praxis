@@ -188,3 +188,57 @@ class Application(models.Model):
         student_name = self.student.user.get_full_name() if self.student and self.student.user else "Неизвестный студент"
         position_name = self.internship.position if self.internship else "Неизвестная практика"
         return f"{student_name} - {position_name}"
+
+
+class Review(models.Model):
+    """Модель отзыва студента о компании"""
+    RATING_CHOICES = [
+        (1, '1 звезда'),
+        (2, '2 звезды'),
+        (3, '3 звезды'),
+        (4, '4 звезды'),
+        (5, '5 звезд'),
+    ]
+    
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Студент'
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        related_name='reviews',
+        verbose_name='Компания'
+    )
+    rating = models.IntegerField(
+        choices=RATING_CHOICES,
+        verbose_name='Рейтинг',
+        help_text='Оценка от 1 до 5 звезд'
+    )
+    comment = models.TextField(
+        verbose_name='Комментарий',
+        help_text='Отзыв о прохождении практики'
+    )
+    is_anonymous = models.BooleanField(
+        default=False,
+        verbose_name='Анонимный отзыв'
+    )
+    is_verified = models.BooleanField(
+        default=False,
+        verbose_name='Проверенный отзыв',
+        help_text='Отзыв от студента, который действительно проходил практику'
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = 'Отзыв'
+        verbose_name_plural = 'Отзывы'
+        ordering = ['-created_at']
+        unique_together = ['student', 'company']  # Один студент может оставить только один отзыв о компании
+    
+    def __str__(self):
+        student_name = self.student.user.get_full_name() if self.student and self.student.user else "Неизвестный студент"
+        return f"{student_name} - {self.company.name} ({self.rating}/5)"

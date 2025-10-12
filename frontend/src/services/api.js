@@ -147,4 +147,37 @@ export const applicationsAPI = {
   },
 };
 
+// API для отзывов студентов
+export const reviewsAPI = {
+  // Получить отзывы для компании
+  getCompanyReviews: async (companyId) => {
+    const response = await api.get(`/reviews/?company=${companyId}`);
+    return response.data;
+  },
+
+  // Получить отзывы студента
+  getStudentReviews: async () => {
+    const response = await api.get('/reviews/');
+    return response.data;
+  },
+
+  // Создать отзыв
+  createReview: async (reviewData) => {
+    const response = await api.post('/reviews/', reviewData);
+    return response.data;
+  },
+
+  // Обновить отзыв
+  updateReview: async (id, reviewData) => {
+    const response = await api.patch(`/reviews/${id}/`, reviewData);
+    return response.data;
+  },
+
+  // Удалить отзыв
+  deleteReview: async (id) => {
+    const response = await api.delete(`/reviews/${id}/`);
+    return response.data;
+  },
+};
+
 export default api;

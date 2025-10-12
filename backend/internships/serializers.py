@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import University, Company, Internship, Student, Application
+from .models import University, Company, Internship, Student, Application, Review
 
 
 class UniversitySerializer(serializers.ModelSerializer):
@@ -12,10 +12,12 @@ class UniversitySerializer(serializers.ModelSerializer):
 
 class CompanySerializer(serializers.ModelSerializer):
     logo_url = serializers.SerializerMethodField()
+    average_rating = serializers.SerializerMethodField()
+    total_reviews = serializers.SerializerMethodField()
     
     class Meta:
         model = Company
-        fields = ['id', 'name', 'description', 'website', 'address', 'latitude', 'longitude', 'logo_url']
+        fields = ['id', 'name', 'description', 'website', 'address', 'latitude', 'longitude', 'logo_url', 'average_rating', 'total_reviews']
     
     def get_logo_url(self, obj):
         if obj.logo:
@@ -24,6 +26,15 @@ class CompanySerializer(serializers.ModelSerializer):
                 return request.build_absolute_uri(obj.logo.url)
             return obj.logo.url
         return None
+    
+    def get_average_rating(self, obj):
+        reviews = obj.reviews.all()
+        if reviews.exists():
+            return round(sum(review.rating for review in reviews) / reviews.count(), 1)
+        return 0.0
+    
+    def get_total_reviews(self, obj):
+        return obj.reviews.count()
 
 
 class InternshipSerializer(serializers.ModelSerializer):
@@ -213,3 +224,33 @@ class ApplicationCreateSerializer(serializers.ModelSerializer):
         except Exception as e:
             print(f"Ошибка создания заявки: {e}")
             raise
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    student_user_id = serializers.IntegerField(source='student.user.id', read_only=True)
+    company_name = serializers.CharField(source='company.name', read_only=True)
+    created_date = serializers.DateTimeField(source='created_at', read_only=True)
+    
+    class Meta:
+        model = Review
+        fields = [
+            'id', 'student', 'student_user_id', 'company', 'rating', 'comment', 'is_anonymous', 
+            'is_verified', 'student_name', 'company_name', 'created_date', 'created_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at']
+
+
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['company', 'rating', 'comment', 'is_anonymous']
+    
+    def create(self, validated_data):
+        # Получаем студента из контекста запроса
+        try:
+            student = Student.objects.get(user=self.context['request'].user)
+            validated_data['student'] = student
+            return super().create(validated_data)
+        except Student.DoesNotExist:
+            raise serializers.ValidationError('Профиль студента не найден')

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib import messages
 from django.utils.html import format_html
 from django import forms
-from .models import University, Company, Internship, Student, Application
+from .models import University, Company, Internship, Student, Application, Review
 
 
 class StudentAdminForm(forms.ModelForm):
@@ -256,6 +256,31 @@ class ApplicationAdmin(admin.ModelAdmin):
         }),
         ('Комментарий', {
             'fields': ('comment',)
+        }),
+        ('Системная информация', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ['student', 'company', 'rating', 'is_anonymous', 'is_verified', 'created_at']
+    list_filter = ['rating', 'is_anonymous', 'is_verified', 'created_at', 'company']
+    search_fields = ['student__user__username', 'student__user__first_name', 'student__user__last_name', 'company__name', 'comment']
+    readonly_fields = ['created_at', 'updated_at']
+    ordering = ['-created_at']
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('student', 'company', 'rating')
+        }),
+        ('Отзыв', {
+            'fields': ('comment',)
+        }),
+        ('Настройки', {
+            'fields': ('is_anonymous', 'is_verified')
         }),
         ('Системная информация', {
             'fields': ('created_at', 'updated_at'),

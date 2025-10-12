@@ -21,6 +21,8 @@ import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 import MapComponent from './MapComponent';
 import AppHeader from './layout/AppHeader';
+import ReviewsSection from './ReviewsSection';
+import RatingDisplay from './RatingDisplay';
 
 const { Title, Text, Paragraph, Link } = Typography;
 
@@ -167,7 +169,7 @@ export default function CompanyDetail() {
             backdropFilter: 'blur(10px)'
           }}
         >
-          Назад к списку
+          На главную
         </Button>
 
         <Card
@@ -194,6 +196,15 @@ export default function CompanyDetail() {
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
                   <div>
                     <Title level={1} style={{ margin: 0, fontSize: '2.5rem' }}>{company.name}</Title>
+                    <div style={{ marginTop: '12px' }}>
+                      <RatingDisplay 
+                        rating={company.average_rating || 0} 
+                        showText={true}
+                        showCount={true}
+                        totalReviews={company.total_reviews || 0}
+                        style={{ fontSize: '16px' }}
+                      />
+                    </div>
                   </div>
 
                   {company.description && (
@@ -396,6 +407,9 @@ export default function CompanyDetail() {
             </Row>
           </Card>
         )}
+
+        {/* Секция отзывов */}
+        <ReviewsSection companyId={parseInt(companyId)} companyName={company.name} />
           </div>
         </Layout.Content>
       </Layout>

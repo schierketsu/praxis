@@ -4,6 +4,7 @@ import { InfoCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/ico
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
+import RatingDisplay from './RatingDisplay';
 
 const { Text, Link } = Typography;
 
@@ -354,6 +355,16 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   <Text strong style={{ fontSize: '18px', color: '#2c3e50' }}>
                     {company.name}
                   </Text>
+                  <div style={{ marginTop: '8px' }}>
+                    <RatingDisplay 
+                      rating={company.average_rating || 0} 
+                      showText={false}
+                      size="small"
+                      showCount={true}
+                      totalReviews={company.total_reviews || 0}
+                      style={{ justifyContent: 'center' }}
+                    />
+                  </div>
                 </div>
 
                 <div style={{ 

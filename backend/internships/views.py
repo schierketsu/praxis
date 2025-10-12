@@ -8,11 +8,11 @@ from rest_framework.decorators import action
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import User
 import json
-from .models import University, Company, Internship, Student, Application
+from .models import University, Company, Internship, Student, Application, Review
 from .serializers import (
     UniversitySerializer, CompanySerializer, InternshipSerializer,
     StudentSerializer, StudentRegistrationSerializer, LoginSerializer,
-    ApplicationSerializer, ApplicationCreateSerializer
+    ApplicationSerializer, ApplicationCreateSerializer, ReviewSerializer, ReviewCreateSerializer
 )
 
 
@@ -369,3 +369,39 @@ class ApplicationViewSet(viewsets.ModelViewSet):
             instance.save()
             return Response(ApplicationSerializer(instance).data)
         return Response({'error': 'Можно только отменить заявку'}, status=400)
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    """API для отзывов студентов о компаниях"""
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        """Возвращаем отзывы для конкретной компании или все отзывы студента"""
+        company_id = self.request.query_params.get('company')
+        if company_id:
+            return Review.objects.filter(company_id=company_id).select_related('student__user')
+        
+        # Если студент авторизован, показываем его отзывы
+        try:
+            student = Student.objects.get(user=self.request.user)
+            return Review.objects.filter(student=student).select_related('company')
+        except Student.DoesNotExist:
+            return Review.objects.none()
+    
+    def get_serializer_class(self):
+        """Используем разные сериализаторы для создания и просмотра"""
+        if self.action == 'create':
+            return ReviewCreateSerializer
+        return ReviewSerializer
+    
+    def create(self, request, *args, **kwargs):
+        """Создание отзыва с проверкой на дубликаты"""
+        try:
+            return super().create(request, *args, **kwargs)
+        except Exception as e:
+            return Response(
+                {'error': str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
