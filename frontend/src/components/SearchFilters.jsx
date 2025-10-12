@@ -128,6 +128,14 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
                 onSearch(params);
               }}
+              onClear={() => {
+                onLocationChange('');
+                // Автоматически применяем фильтр при очистке локации
+                const params = {};
+                if (selectedUniversity) params.university = selectedUniversity;
+                if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
+                onSearch(params);
+              }}
               style={{ 
                 width: '100%',
                 borderRadius: '12px'
@@ -163,6 +171,14 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
                 onSearch(params);
               }}
+              onClear={() => {
+                onUniversityChange('');
+                // Автоматически применяем фильтр при очистке университета
+                const params = {};
+                if (selectedLocation) params.location = selectedLocation;
+                if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
+                onSearch(params);
+              }}
               style={{ 
                 width: '100%',
                 borderRadius: '12px'
@@ -191,6 +207,14 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
               value={selectedTechs}
               onSelect={handleTechSelect}
               onDeselect={handleTechDeselect}
+              onClear={() => {
+                onTechChange([]);
+                // Автоматически применяем фильтр при очистке технологий
+                const params = {};
+                if (selectedLocation) params.location = selectedLocation;
+                if (selectedUniversity) params.university = selectedUniversity;
+                onSearch(params);
+              }}
               style={{ 
                 width: '100%',
                 borderRadius: '12px'

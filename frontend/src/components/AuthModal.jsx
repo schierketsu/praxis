@@ -15,7 +15,7 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
     if (mode === 'login') {
       message.success('Вход выполнен успешно!');
     } else {
-      message.success('Регистрация успешна! Рекомендуем заполнить профиль в личном кабинете.');
+      message.success('Регистрация и вход выполнены успешно! Рекомендуем заполнить профиль в личном кабинете.');
     }
     if (onSuccess) {
       onSuccess(response);

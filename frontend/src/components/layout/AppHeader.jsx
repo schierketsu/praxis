@@ -70,7 +70,7 @@ export default function AppHeader() {
     {
       key: 'settings',
       icon: <SettingOutlined />,
-      label: 'Настройки'
+      label: 'Заявки'
     },
     {
       type: 'divider'

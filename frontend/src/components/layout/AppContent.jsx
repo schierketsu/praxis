@@ -22,6 +22,7 @@ export default function AppContent() {
   const [selectedLocation, setSelectedLocation] = useState('');
   const [selectedUniversity, setSelectedUniversity] = useState('');
   const [selectedTechs, setSelectedTechs] = useState([]);
+  const [userInteractedWithUniversity, setUserInteractedWithUniversity] = useState(false);
 
   // Загрузка данных
   const fetchCompanies = async (params = {}) => {
@@ -39,13 +40,13 @@ export default function AppContent() {
 
   // Устанавливаем значение по умолчанию для учебного заведения из профиля пользователя
   useEffect(() => {
-    if (student && student.university && !selectedUniversity) {
+    if (student && student.university && !selectedUniversity && !userInteractedWithUniversity) {
       setSelectedUniversity(student.university);
       // Автоматически применяем фильтр с учебным заведением пользователя
       const params = { university: student.university };
       setSearchParams(params);
     }
-  }, [student, selectedUniversity]);
+  }, [student, selectedUniversity, userInteractedWithUniversity]);
 
   // Загрузка данных при изменении параметров поиска
   useEffect(() => {
@@ -57,12 +58,19 @@ export default function AppContent() {
     setSearchParams(params);
   };
 
+  // Обработчик изменения университета
+  const handleUniversityChange = (value) => {
+    setSelectedUniversity(value);
+    setUserInteractedWithUniversity(true);
+  };
+
   // Обработчик сброса фильтров
   const handleReset = () => {
     setSearchParams({});
     setSelectedLocation('');
     setSelectedUniversity('');
     setSelectedTechs([]);
+    setUserInteractedWithUniversity(false);
     fetchCompanies();
   };
 
@@ -118,7 +126,7 @@ export default function AppContent() {
           selectedUniversity={selectedUniversity}
           selectedTechs={selectedTechs}
           onLocationChange={setSelectedLocation}
-          onUniversityChange={setSelectedUniversity}
+          onUniversityChange={handleUniversityChange}
           onTechChange={setSelectedTechs}
         />
         

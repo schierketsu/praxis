@@ -8,7 +8,7 @@ const { Title, Text } = Typography;
 export default function StudentRegistration({ onSuccess, onCancel }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const { register } = useAuth();
+  const { register, login } = useAuth();
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -25,8 +25,23 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
 
       const response = await register(studentData);
       
-      if (onSuccess) {
-        onSuccess(response);
+      // Автоматически авторизуем пользователя после успешной регистрации
+      try {
+        await login({
+          username: values.username,
+          password: values.password
+        });
+        
+        if (onSuccess) {
+          onSuccess(response);
+        }
+      } catch (loginError) {
+        console.error('Ошибка автоматической авторизации:', loginError);
+        // Регистрация прошла успешно, но авторизация не удалась
+        // Показываем сообщение об успешной регистрации
+        if (onSuccess) {
+          onSuccess(response);
+        }
       }
     } catch (error) {
       console.error('Ошибка регистрации:', error);
