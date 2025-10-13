@@ -248,7 +248,8 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   const showNavigation = data.length > 4;
 
   return (
-    <div style={{ position: 'relative', width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
+    <div id="internship-carousel" style={{ position: 'relative', width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
+
       {/* Кнопка "Назад" - показываем только если данных больше 4 */}
       {showNavigation && (
         <Button
@@ -314,16 +315,15 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
               <Card
                 hoverable
                 loading={loading}
-                onClick={() => handleCompanyClick(company)}
-                      style={{
-                        height: '580px',
-                        borderRadius: '20px',
+                style={{
+                  height: '580px',
+                  borderRadius: '20px',
                   overflow: 'hidden',
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                   backdropFilter: 'blur(10px)',
                   border: '1px solid rgba(255, 255, 255, 0.3)',
                   transition: 'all 0.3s ease',
-                  cursor: 'pointer'
+                  boxShadow: 'none'
                 }}
                 styles={{
                   body: {
@@ -334,21 +334,44 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   }
                 }}
               >
-                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <Avatar 
-                    src={company.logo_url} 
-                    size={80}
-                    style={{ 
-                      backgroundColor: '#f0f2f5',
-                      border: '3px solid #fff',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                      borderRadius: '16px',
-                      objectFit: 'contain'
-                    }}
-                    shape="square"
-                  >
-                    {company.name.charAt(0)}
-                  </Avatar>
+                {/* Логотип компании */}
+                <div style={{ 
+                  textAlign: 'center', 
+                  marginBottom: '24px',
+                  position: 'relative'
+                }}>
+                  <div style={{
+                    position: 'relative',
+                    display: 'inline-block'
+                  }}>
+                    <Avatar 
+                      src={company.logo_url} 
+                      size={90}
+                      style={{ 
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        border: '4px solid rgba(255, 255, 255, 0.8)',
+                        boxShadow: 'var(--shadow-medium)',
+                        borderRadius: '20px',
+                        objectFit: 'contain',
+                        transition: 'var(--transition)'
+                      }}
+                      shape="square"
+                    >
+                      {company.name.charAt(0)}
+                    </Avatar>
+                    {/* Декоративное кольцо */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '-8px',
+                      left: '-8px',
+                      right: '-8px',
+                      bottom: '-8px',
+                      borderRadius: '28px',
+                      background: 'var(--primary-gradient)',
+                      opacity: 0.1,
+                      zIndex: -1
+                    }} />
+                  </div>
                 </div>
 
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
@@ -387,8 +410,6 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   </Text>
                 </div>
 
-
-
                 <div style={{ 
                   marginBottom: '20px', 
                   height: '80px',
@@ -410,11 +431,13 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                               key={tech} 
                               size="small" 
                               style={{ 
-                                borderRadius: '8px',
-                                backgroundColor: isSelected ? '#667eea' : 'rgba(102, 126, 234, 0.1)',
-                                color: isSelected ? 'white' : '#667eea',
-                                border: 'none',
-                                fontWeight: '500'
+                                borderRadius: '6px',
+                                backgroundColor: isSelected ? '#4c63d2' : '#f0f4ff',
+                                color: isSelected ? 'white' : '#4c63d2',
+                                border: isSelected ? 'none' : '1px solid #e0e7ff',
+                                fontWeight: '500',
+                                fontSize: '12px',
+                                padding: '4px 8px'
                               }}
                             >
                               {tech}
@@ -423,10 +446,13 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                         })}
                         {techs.length > 5 && (
                           <Tag size="small" style={{ 
-                            borderRadius: '8px',
-                            backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                            color: '#667eea',
-                            border: 'none'
+                            borderRadius: '6px',
+                            backgroundColor: '#f0f4ff',
+                            color: '#4c63d2',
+                            border: '1px solid #e0e7ff',
+                            fontWeight: '500',
+                            fontSize: '12px',
+                            padding: '4px 8px'
                           }}>
                             +{techs.length - 5}
                           </Tag>
@@ -446,6 +472,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                     icon={<InfoCircleOutlined />}
                     size="large"
                     block
+                    onClick={() => handleCompanyClick(company)}
                     style={{
                       borderRadius: '12px',
                       height: '44px',
@@ -463,6 +490,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
           );
         })}
       </div>
+
       
       {/* Модальное окно авторизации */}
       <AuthModal

@@ -170,7 +170,7 @@ export default function StudentDashboard() {
 
   if (!currentStudent) {
     return (
-      <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+      <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
         <AppHeader />
         <Content style={{ 
           display: 'flex', 
@@ -178,9 +178,17 @@ export default function StudentDashboard() {
           alignItems: 'center',
           padding: '40px 24px'
         }}>
-          <Card style={{ textAlign: 'center', maxWidth: '400px' }}>
-            <Title level={3}>Профиль не найден</Title>
-            <Text type="secondary">Данные пользователя не загружены</Text>
+          <Card style={{ 
+            textAlign: 'center', 
+            maxWidth: '400px',
+            background: 'var(--glass-bg)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: 'var(--border-radius-lg)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: 'var(--shadow-soft)'
+          }}>
+            <Title level={3} style={{ color: 'var(--text-primary)' }}>Профиль не найден</Title>
+            <Text style={{ color: 'var(--text-secondary)' }}>Данные пользователя не загружены</Text>
           </Card>
         </Content>
       </Layout>
@@ -188,7 +196,7 @@ export default function StudentDashboard() {
   }
 
   return (
-    <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+    <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
       <AppHeader />
       <Content style={{ padding: '40px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -199,14 +207,14 @@ export default function StudentDashboard() {
             size="large"
             style={{
               marginBottom: '32px',
-              borderRadius: '12px',
+              borderRadius: 'var(--border-radius)',
               height: '48px',
               fontWeight: '600',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#667eea',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              backdropFilter: 'blur(10px)'
+              background: 'rgba(255, 255, 255, 0.9)',
+              border: '1px solid rgba(37, 99, 235, 0.2)',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--shadow-soft)',
+              transition: 'var(--transition)'
             }}
           >
             Назад к главной
@@ -216,15 +224,20 @@ export default function StudentDashboard() {
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <Title level={1} style={{ 
               margin: '0 0 16px 0',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'var(--primary-gradient)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               fontSize: '48px',
-              fontWeight: '800'
+              fontWeight: '800',
+              letterSpacing: '-0.02em'
             }}>
               Личный кабинет
             </Title>
-            <Text type="secondary" style={{ fontSize: '18px' }}>
+            <Text style={{ 
+              fontSize: '18px',
+              color: 'var(--text-secondary)',
+              fontWeight: '500'
+            }}>
               Управляйте своим профилем и настройками
             </Text>
           </div>
@@ -233,15 +246,15 @@ export default function StudentDashboard() {
           <Card
             style={{
               marginBottom: '32px',
-              borderRadius: '24px',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-              backdropFilter: 'blur(10px)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+              borderRadius: 'var(--border-radius-lg)',
+              background: 'var(--glass-bg)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid var(--glass-border)',
+              boxShadow: 'var(--shadow-soft)'
             }}
             styles={{
               body: {
-                padding: '40px'
+                padding: '48px'
               }
             }}
           >
@@ -255,15 +268,20 @@ export default function StudentDashboard() {
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                   <Title level={2} style={{ 
                     margin: '0 0 16px 0',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'var(--primary-gradient)',
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent',
                     fontSize: '32px',
-                    fontWeight: '700'
+                    fontWeight: '800',
+                    letterSpacing: '-0.02em'
                   }}>
                     Редактирование профиля
                   </Title>
-                  <Text type="secondary" style={{ fontSize: '16px' }}>
+                  <Text style={{ 
+                    fontSize: '16px',
+                    color: 'var(--text-secondary)',
+                    fontWeight: '500'
+                  }}>
                     Измените информацию о себе
                   </Text>
                 </div>
@@ -481,8 +499,10 @@ export default function StudentDashboard() {
                         icon={<PlusOutlined />} 
                         onClick={addSkill}
                         style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          border: 'none'
+                          background: 'var(--primary-gradient)',
+                          border: 'none',
+                          borderRadius: 'var(--border-radius)',
+                          transition: 'var(--transition)'
                         }}
                       >
                         Добавить
@@ -519,8 +539,10 @@ export default function StudentDashboard() {
                         icon={<PlusOutlined />} 
                         onClick={addInterest}
                         style={{
-                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                          border: 'none'
+                          background: 'var(--primary-gradient)',
+                          border: 'none',
+                          borderRadius: 'var(--border-radius)',
+                          transition: 'var(--transition)'
                         }}
                       >
                         Добавить
@@ -553,14 +575,16 @@ export default function StudentDashboard() {
                       icon={<SaveOutlined />}
                       size="large"
                       style={{
-                        borderRadius: '12px',
-                        height: '48px',
+                        borderRadius: 'var(--border-radius)',
+                        height: '52px',
                         paddingLeft: '32px',
                         paddingRight: '32px',
                         fontWeight: '600',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        background: 'var(--primary-gradient)',
                         border: 'none',
-                        boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                        boxShadow: 'var(--shadow-soft)',
+                        fontSize: '16px',
+                        transition: 'var(--transition)'
                       }}
                     >
                       Сохранить изменения
@@ -570,11 +594,15 @@ export default function StudentDashboard() {
                       onClick={handleCancel}
                       size="large"
                       style={{
-                        borderRadius: '12px',
-                        height: '48px',
+                        borderRadius: 'var(--border-radius)',
+                        height: '52px',
                         paddingLeft: '32px',
                         paddingRight: '32px',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        background: 'rgba(255, 255, 255, 0.9)',
+                        border: '1px solid rgba(37, 99, 235, 0.2)',
+                        color: 'var(--text-primary)',
+                        transition: 'var(--transition)'
                       }}
                     >
                       Отмена
@@ -589,15 +617,25 @@ export default function StudentDashboard() {
                     size={120}
                     icon={<UserOutlined />}
                     style={{
-                      backgroundColor: '#667eea',
+                      background: 'var(--primary-gradient)',
                       marginBottom: '24px',
-                      boxShadow: '0 8px 24px rgba(102, 126, 234, 0.3)'
+                      boxShadow: 'var(--shadow-medium)',
+                      border: '4px solid rgba(255, 255, 255, 0.8)'
                     }}
                   />
-                  <Title level={2} style={{ margin: '0 0 8px 0', color: '#2c3e50' }}>
+                  <Title level={2} style={{ 
+                    margin: '0 0 8px 0', 
+                    color: 'var(--text-primary)',
+                    fontSize: '32px',
+                    fontWeight: '700'
+                  }}>
                     {currentStudent.user?.first_name} {currentStudent.user?.last_name}
                   </Title>
-                  <Text type="secondary" style={{ fontSize: '18px' }}>
+                  <Text style={{ 
+                    fontSize: '18px',
+                    color: 'var(--text-secondary)',
+                    fontWeight: '500'
+                  }}>
                     @{currentStudent.user?.username}
                   </Text>
                 </div>
@@ -605,24 +643,34 @@ export default function StudentDashboard() {
             <Row gutter={[32, 32]}>
               <Col xs={24} lg={12}>
                 <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
-                    <MailOutlined style={{ marginRight: '12px' }} />
+                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                    <MailOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
                     Email:
                   </Text>
                   <br />
-                  <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
+                  <Text style={{ 
+                    fontSize: '16px', 
+                    marginTop: '8px', 
+                    display: 'block',
+                    color: 'var(--text-secondary)'
+                  }}>
                     {currentStudent.user?.email || 'Не указан'}
                   </Text>
                 </div>
               </Col>
               <Col xs={24} lg={12}>
                 <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
-                    <PhoneOutlined style={{ marginRight: '12px' }} />
+                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                    <PhoneOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
                     Телефон:
                   </Text>
                   <br />
-                  <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
+                  <Text style={{ 
+                    fontSize: '16px', 
+                    marginTop: '8px', 
+                    display: 'block',
+                    color: 'var(--text-secondary)'
+                  }}>
                     {currentStudent.phone || 'Не указан'}
                   </Text>
                 </div>
@@ -632,23 +680,33 @@ export default function StudentDashboard() {
             <Row gutter={[32, 32]}>
               <Col xs={24} lg={12}>
                 <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
-                    <BookOutlined style={{ marginRight: '12px' }} />
+                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                    <BookOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
                     Учебное заведение:
                   </Text>
                   <br />
-                  <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
+                  <Text style={{ 
+                    fontSize: '16px', 
+                    marginTop: '8px', 
+                    display: 'block',
+                    color: 'var(--text-secondary)'
+                  }}>
                     {currentStudent.university_name || 'Не указан'}
                   </Text>
                 </div>
               </Col>
               <Col xs={24} lg={12}>
                 <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                     Курс:
                   </Text>
                   <br />
-                  <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
+                  <Text style={{ 
+                    fontSize: '16px', 
+                    marginTop: '8px', 
+                    display: 'block',
+                    color: 'var(--text-secondary)'
+                  }}>
                     {currentStudent.course ? `${currentStudent.course} курс` : 'Не указан'}
                   </Text>
                 </div>
@@ -657,11 +715,16 @@ export default function StudentDashboard() {
 
             {currentStudent.specialization && (
               <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                   Специализация:
                 </Text>
                 <br />
-                <Text style={{ fontSize: '16px', marginTop: '8px', display: 'block' }}>
+                <Text style={{ 
+                  fontSize: '16px', 
+                  marginTop: '8px', 
+                  display: 'block',
+                  color: 'var(--text-secondary)'
+                }}>
                   {currentStudent.specialization}
                 </Text>
               </div>
@@ -669,11 +732,16 @@ export default function StudentDashboard() {
 
             {currentStudent.bio && (
               <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                   О себе:
                 </Text>
                 <br />
-                <Paragraph style={{ marginTop: '8px', fontSize: '16px', lineHeight: '1.6' }}>
+                <Paragraph style={{ 
+                  marginTop: '8px', 
+                  fontSize: '16px', 
+                  lineHeight: '1.6',
+                  color: 'var(--text-secondary)'
+                }}>
                   {currentStudent.bio}
                 </Paragraph>
               </div>
@@ -682,7 +750,7 @@ export default function StudentDashboard() {
             {/* Резюме */}
             {currentStudent.resume && (
               <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                   Резюме:
                 </Text>
                 <br />
@@ -700,12 +768,13 @@ export default function StudentDashboard() {
                       document.body.removeChild(link);
                     }}
                     style={{ 
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      background: 'var(--primary-gradient)',
                       border: 'none',
-                      borderRadius: '8px',
+                      borderRadius: 'var(--border-radius)',
                       height: '40px',
                       fontSize: '14px',
-                      fontWeight: '500'
+                      fontWeight: '500',
+                      transition: 'var(--transition)'
                     }}
                   >
                     Скачать резюме
@@ -716,17 +785,21 @@ export default function StudentDashboard() {
 
             {currentStudent.skills && currentStudent.skills.length > 0 && (
               <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                   Навыки:
                 </Text>
                 <br />
                 <div style={{ marginTop: '8px' }}>
                   {currentStudent.skills.map((skill, index) => (
-                    <Tag key={index} color="blue" style={{ 
+                    <Tag key={index} style={{ 
                       marginBottom: '8px', 
                       padding: '4px 12px',
                       fontSize: '14px',
-                      borderRadius: '8px'
+                      borderRadius: 'var(--border-radius)',
+                      backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                      color: '#2563eb',
+                      border: '1px solid rgba(37, 99, 235, 0.15)',
+                      fontWeight: '500'
                     }}>
                       {skill}
                     </Tag>
@@ -737,17 +810,21 @@ export default function StudentDashboard() {
 
             {currentStudent.interests && currentStudent.interests.length > 0 && (
               <div style={{ marginBottom: '32px' }}>
-                <Text strong style={{ color: '#667eea', fontSize: '16px' }}>
+                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
                   Интересы:
                 </Text>
                 <br />
                 <div style={{ marginTop: '8px' }}>
                   {currentStudent.interests.map((interest, index) => (
-                    <Tag key={index} color="green" style={{ 
+                    <Tag key={index} style={{ 
                       marginBottom: '8px', 
                       padding: '4px 12px',
                       fontSize: '14px',
-                      borderRadius: '8px'
+                      borderRadius: 'var(--border-radius)',
+                      backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                      color: '#10b981',
+                      border: '1px solid rgba(16, 185, 129, 0.15)',
+                      fontWeight: '500'
                     }}>
                       {interest}
                     </Tag>
@@ -765,14 +842,16 @@ export default function StudentDashboard() {
                 onClick={handleEdit}
                 size="large"
                 style={{
-                  borderRadius: '12px',
-                  height: '48px',
+                  borderRadius: 'var(--border-radius)',
+                  height: '52px',
                   paddingLeft: '32px',
                   paddingRight: '32px',
                   fontWeight: '600',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: 'var(--primary-gradient)',
                   border: 'none',
-                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                  boxShadow: 'var(--shadow-soft)',
+                  fontSize: '16px',
+                  transition: 'var(--transition)'
                 }}
               >
                 Редактировать профиль

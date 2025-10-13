@@ -1,21 +1,292 @@
+/* Современные CSS переменные для единообразного дизайна */
+:root {
+  --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  --secondary-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
+  --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+  --background-gradient: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --shadow-soft: 0 4px 20px rgba(37, 99, 235, 0.1);
+  --shadow-medium: 0 8px 30px rgba(37, 99, 235, 0.15);
+  --shadow-strong: 0 12px 40px rgba(37, 99, 235, 0.2);
+  --border-radius: 12px;
+  --border-radius-lg: 20px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Z-index система */
+  --z-index-modal: 1000;
+  --z-index-dropdown: 100;
+  --z-index-header: 10;
+  --z-index-content: 1;
+  --z-index-navigation: 10;
+}
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-variant: small-caps;
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
 }
 
 body {
-  font-variant: small-caps;
-  font-variant-caps: small-caps;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--background-gradient);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Убираем small-caps для более современного вида */
 h1, h2, h3, h4, h5, h6 {
-  font-variant: small-caps;
-  font-variant-caps: small-caps;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: 2rem;
+  font-weight: 600;
 }
 
 p, span, div, a, button {
-  font-variant: small-caps;
-  font-variant-caps: small-caps;
+  font-weight: 400;
+}
+
+/* Современные кнопки */
+button {
+  font-family: inherit;
+  font-weight: 600;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Стили для карточек */
+.card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Анимации */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* Utility классы для частых стилей */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.container-large {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-soft);
+  transition: var(--transition);
+}
+
+.glass-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium);
+}
+
+.gradient-text {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-button {
+  background: var(--primary-gradient);
+  border: none;
+  border-radius: var(--border-radius);
+  color: white;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.gradient-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+.centered {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.relative {
+  position: relative;
+}
+
+.absolute {
+  position: absolute;
+}
+
+/* Z-index utility классы */
+.z-modal { z-index: var(--z-index-modal); }
+.z-dropdown { z-index: var(--z-index-dropdown); }
+.z-header { z-index: var(--z-index-header); }
+.z-content { z-index: var(--z-index-content); }
+.z-navigation { z-index: var(--z-index-navigation); }
+
+/* Оптимизация конфликтов с библиотеками */
+/* Ant Design оптимизация */
+.ant-card {
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+.ant-btn {
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+.ant-typography {
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+/* Leaflet карты */
+.leaflet-container {
+  font-variant: normal !important;
+  font-variant-caps: normal !important;
+}
+
+/* Переопределение reset стилей для совместимости */
+.ant-card-body {
+  font-variant: normal !important;
+}
+
+.ant-btn-primary {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+}
+
+.ant-btn-primary:hover {
+  background: var(--secondary-gradient) !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Убираем тень при наведении на карточки карусели */
+.ant-card:hover {
+  box-shadow: none !important;
+}
+
+.ant-card-hoverable:hover {
+  box-shadow: none !important;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+  
+  h2 {
+    font-size: 2rem;
+  }
+  
+  h3 {
+    font-size: 1.5rem;
+  }
+}
+
+
+/* Стили для скроллбара */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-gradient);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--secondary-gradient);
 }

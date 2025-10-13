@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Layout, message, Spin, Typography } from 'antd';
 import SearchFilters from '../SearchFilters';
 import InternshipTable from '../InternshipTable';
+import Hero from '../Hero';
+import Features from '../Features';
 import { companiesAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -9,9 +11,10 @@ const { Title, Paragraph } = Typography;
 
 const contentStyle = {
   minHeight: 'calc(100vh - 80px)',
-  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-  padding: '40px 24px',
-  position: 'relative'
+  background: 'var(--background-gradient)',
+  padding: '60px 24px',
+  position: 'relative',
+  overflow: 'hidden'
 };
 
 export default function AppContent() {
@@ -76,47 +79,10 @@ export default function AppContent() {
 
   return (
     <Layout.Content style={contentStyle}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{ 
-          textAlign: 'center', 
-          marginBottom: '48px',
-          padding: '60px 0',
-          background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-          borderRadius: '24px',
-          backdropFilter: 'blur(10px)',
-          border: '1px solid rgba(255, 255, 255, 0.3)',
-          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
-        }}>
-          <Title 
-            level={1} 
-            style={{ 
-              margin: 0, 
-              fontSize: '48px',
-              fontWeight: '800',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              lineHeight: '1.2',
-              letterSpacing: '-1px'
-            }}
-          >
-            Найди свою практику мечты
-          </Title>
-          <Paragraph 
-            style={{ 
-              margin: '24px 0 0 0', 
-              fontSize: '20px', 
-              color: '#4a5568',
-              fontWeight: '500',
-              maxWidth: '600px',
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              lineHeight: '1.6'
-            }}
-          >
-            Соединяем талантливых студентов с ведущими IT-компаниями
-          </Paragraph>
-        </div>
+      <Hero />
+      <Features />
+      
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
         
         <SearchFilters
           onSearch={handleSearch}

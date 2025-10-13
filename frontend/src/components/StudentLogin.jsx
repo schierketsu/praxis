@@ -47,26 +47,33 @@ export default function StudentLogin({ onSuccess, onCancel, onSwitchToRegister }
   return (
     <div
       style={{
-        padding: '40px',
-        background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)',
+        padding: '48px',
+        background: 'var(--glass-bg)',
         backdropFilter: 'blur(20px)',
-        borderRadius: '20px',
-        border: '1px solid rgba(255, 255, 255, 0.4)',
-        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)'
+        borderRadius: '24px',
+        border: '1px solid var(--glass-border)',
+        boxShadow: 'var(--shadow-soft)',
+        position: 'relative',
+        overflow: 'hidden'
       }}
     >
-      <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <Title level={2} style={{ 
           margin: '0 0 16px 0',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'var(--primary-gradient)',
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent',
-          fontSize: '28px',
-          fontWeight: '700'
+          fontSize: '32px',
+          fontWeight: '800',
+          letterSpacing: '-0.02em'
         }}>
           Вход в систему
         </Title>
-        <Text type="secondary" style={{ fontSize: '16px' }}>
+        <Text style={{ 
+          fontSize: '16px',
+          color: 'var(--text-secondary)',
+          fontWeight: '500'
+        }}>
           Войдите в свой аккаунт
         </Text>
       </div>
@@ -114,25 +121,31 @@ export default function StudentLogin({ onSuccess, onCancel, onSwitchToRegister }
               size="large"
               block
               style={{
-                borderRadius: '12px',
-                height: '48px',
+                borderRadius: '16px',
+                height: '52px',
                 fontWeight: '600',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'var(--primary-gradient)',
                 border: 'none',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                boxShadow: 'var(--shadow-soft)',
+                fontSize: '16px',
+                transition: 'var(--transition)'
               }}
             >
               Войти
             </Button>
             
             <div style={{ textAlign: 'center' }}>
-              <Text type="secondary">
+              <Text style={{ 
+                color: 'var(--text-secondary)',
+                fontSize: '15px'
+              }}>
                 Нет аккаунта?{' '}
                 <Link 
                   onClick={onSwitchToRegister}
                   style={{ 
-                    color: '#667eea',
-                    fontWeight: '600'
+                    color: 'var(--text-primary)',
+                    fontWeight: '600',
+                    textDecoration: 'none'
                   }}
                 >
                   Зарегистрироваться
@@ -143,23 +156,6 @@ export default function StudentLogin({ onSuccess, onCancel, onSwitchToRegister }
         </Form.Item>
       </Form>
 
-      {onCancel && (
-        <div style={{ textAlign: 'center' }}>
-          <Button
-            size="large"
-            onClick={onCancel}
-            style={{
-              borderRadius: '12px',
-              height: '40px',
-              paddingLeft: '24px',
-              paddingRight: '24px',
-              fontWeight: '600'
-            }}
-          >
-            Отмена
-          </Button>
-        </div>
-      )}
     </div>
   );
 }

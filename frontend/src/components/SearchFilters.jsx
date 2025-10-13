@@ -87,9 +87,13 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
         onClose={onClose}
         style={{ 
           marginRight: 3,
-          fontSize: '14px',
+          fontSize: '12px',
           padding: '4px 8px',
-          borderRadius: '4px'
+          borderRadius: '6px',
+          backgroundColor: '#f0f4ff',
+          color: '#4c63d2',
+          border: '1px solid #e0e7ff',
+          fontWeight: '500'
         }}
       >
         {label}
@@ -100,12 +104,13 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
   return (
     <Card 
       style={{ 
-        marginBottom: '32px',
+        marginBottom: '40px',
         borderRadius: '20px',
         background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+        transition: 'all 0.3s ease'
       }}
     >
       <Space direction="vertical" size="middle" style={{ width: '100%' }}>
@@ -250,7 +255,8 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 fontWeight: '600',
                 background: 'rgba(102, 126, 234, 0.1)',
                 border: '1px solid rgba(102, 126, 234, 0.3)',
-                color: '#667eea'
+                color: '#667eea',
+                transition: 'all 0.3s ease'
               }}
             >
               Сбросить

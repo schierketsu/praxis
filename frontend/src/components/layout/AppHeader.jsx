@@ -14,20 +14,21 @@ const headerStyle = {
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
-  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-  backdropFilter: 'blur(10px)',
-  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-  position: 'relative'
+  background: 'var(--primary-gradient)',
+  boxShadow: 'var(--shadow-soft)',
+  backdropFilter: 'blur(20px)',
+  borderBottom: '1px solid var(--glass-border)',
+  position: 'relative',
+  zIndex: 1000
 };
 
 const titleStyle = {
   color: 'white',
   margin: 0,
-  fontSize: '36px',
+  fontSize: '28px',
   fontWeight: '700',
-  textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-  letterSpacing: '-0.5px'
+  textShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+  letterSpacing: '-0.3px'
 };
 
 export default function AppHeader() {
@@ -103,7 +104,7 @@ export default function AppHeader() {
           position: 'relative'
         }}>
           <Title level={3} style={titleStyle}>
-            Праксис
+            практикастудентам.рф
           </Title>
         </div>
 

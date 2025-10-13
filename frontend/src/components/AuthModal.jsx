@@ -42,14 +42,15 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
       styles={{
         body: {
           padding: '0',
-          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
-          borderRadius: '20px',
+          background: 'var(--background-gradient)',
+          borderRadius: '24px',
           overflow: 'hidden',
-          boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)'
+          boxShadow: 'var(--shadow-strong)',
+          border: '1px solid var(--glass-border)'
         },
         mask: {
-          backdropFilter: 'blur(8px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)'
+          backdropFilter: 'blur(20px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.4)'
         }
       }}
     >
