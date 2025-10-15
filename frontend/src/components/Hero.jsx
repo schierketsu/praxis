@@ -206,7 +206,7 @@ const Hero = () => {
                   flexDirection: 'column',
                   gap: '24px',
                   padding: '24px',
-                  background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+                  background: 'transparent',
                   borderRadius: '12px',
                   minHeight: '400px'
                 }}>

@@ -47,8 +47,7 @@ const Features = () => {
 
   return (
     <div style={{ 
-      background: 'var(--background-gradient)',
-      padding: '100px 0',
+      padding: '60px 0',
       position: 'relative'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
