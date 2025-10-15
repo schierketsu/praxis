@@ -182,3 +182,13 @@ if DEBUG:
         "http://127.0.0.1:5173",
         "http://127.0.0.1:5174",
     ]
+
+# Настройки email для отправки уведомлений
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.studprakt.ru'
+EMAIL_PORT = 587  # Порт SMTP для mailcow
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'noreply@studprakt.ru'  # Email отправителя
+EMAIL_HOST_PASSWORD = 'crumcrum666'# Пароль от email
+DEFAULT_FROM_EMAIL = 'noreply@studprakt.ru'
+SERVER_EMAIL = 'noreply@studprakt.ru'

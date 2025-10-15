@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.core.files import File
-from datetime import date, timedelta
+from datetime import date
 import os
 from internships.models import University, Company, Internship
 
@@ -37,7 +37,8 @@ class Command(BaseCommand):
                 'address': 'пр-т. Ивана Яковлева, 3, Чебоксары, Чувашская Респ., 428000',
                 'latitude': 56.11427957912669,
                 'longitude': 47.257093448374484,
-                'logo': 'assets/ekralogo.png'
+                'logo': 'assets/ekralogo.png',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'ООО "Команда Ф5"', 
@@ -46,7 +47,8 @@ class Command(BaseCommand):
                 'address': 'ул. Карла Маркса, 52, Чебоксары, Чувашская Респ., 428003',
                 'latitude': 56.13478674663598,
                 'longitude': 47.243809224071576,
-                'logo': 'assets/f5logo.jpg'
+                'logo': 'assets/f5logo.jpg',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'ООО "Кейсистемс"', 
@@ -55,7 +57,8 @@ class Command(BaseCommand):
                 'address': 'пр-т Максима Горького, 18Б, Чебоксары, Чувашская Респ., 428000',
                 'latitude': 56.14916133691919,
                 'longitude': 47.18977735581993,
-                'logo': 'assets/keyslogo.png'
+                'logo': 'assets/keyslogo.png',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'Тестовая компания', 
@@ -64,7 +67,8 @@ class Command(BaseCommand):
                 'address': 'ул. Винокурова, 53, Новочебоксарск, Чувашская Респ., 429965',
                 'latitude': 56.10792856104269,
                 'longitude': 47.48265236377324,
-                'logo': 'assets/testlogo.png'
+                'logo': 'assets/testlogo.png',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'ВКонтакте', 
@@ -73,7 +77,8 @@ class Command(BaseCommand):
                 'address': 'ул. Льва Толстого, 16, Санкт-Петербург, 197022',
                 'latitude': 59.9565,
                 'longitude': 30.3245,
-                'logo': 'assets/vk.jpg'
+                'logo': 'assets/vk.jpg',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'Яндекс', 
@@ -82,7 +87,8 @@ class Command(BaseCommand):
                 'address': 'ул. Льва Толстого, 16, Москва, 119021',
                 'latitude': 55.7558,
                 'longitude': 37.6176,
-                'logo': 'assets/yandex.svg.png'
+                'logo': 'assets/yandex.svg.png',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'Альфа-Банк', 
@@ -91,7 +97,8 @@ class Command(BaseCommand):
                 'address': 'ул. Каланчёвская, 27, Москва, 107078',
                 'latitude': 55.7694,
                 'longitude': 37.6500,
-                'logo': 'assets/alfa.jpg'
+                'logo': 'assets/alfa.jpg',
+                'email': 'crumplemi@yandex.ru'
             },
             {
                 'name': 'Сбербанк', 
@@ -100,7 +107,8 @@ class Command(BaseCommand):
                 'address': 'ул. Вавилова, 19, Москва, 117997',
                 'latitude': 55.7104,
                 'longitude': 37.5856,
-                'logo': 'assets/sber.png'
+                'logo': 'assets/sber.png',
+                'email': 'crumplemi@yandex.ru'
             },
         ]
         
@@ -153,7 +161,6 @@ class Command(BaseCommand):
         'position': 'Создание современных веб-приложений',
         'description': 'Разработай полноценное веб-приложение с нуля! От идеи до запуска. Научишься работать в команде, использовать современные технологии и создавать продукты, которыми пользуются тысячи людей.',
         'location': 'Чебоксары',
-  
         'requirements': 'Желание создавать крутые продукты. Остальному научим!',
         'tech_stack': ['JavaScript', 'React', 'Node.js', 'MongoDB', 'Git'],
         'available_positions': 3,
@@ -287,6 +294,7 @@ class Command(BaseCommand):
             # Удаляем universities из данных для создания объекта
             internship_data_copy = internship_data.copy()
             universities = internship_data_copy.pop('universities')
+            
             
             internship, created = Internship.objects.get_or_create(
                 company=internship_data_copy['company'],

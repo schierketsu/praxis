@@ -232,13 +232,13 @@ export default function CompanyDetail() {
                                   paddingLeft: '32px',
                                   paddingRight: '32px',
                                   fontWeight: '600',
-                                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                  background: 'var(--primary-gradient)',
                                   border: 'none',
-                                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
+                                  boxShadow: 'var(--shadow-soft)',
                                   width: 'fit-content'
                                 }}
                               >
-                                Связаться
+                                Оставить заявку
                               </Button>
                             </Space>
                 </Space>
@@ -310,12 +310,13 @@ export default function CompanyDetail() {
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
               <Title level={2} style={{ 
                 margin: '0 0 24px 0', 
-                color: '#2c3e50',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'var(--primary-gradient)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
                 fontSize: '28px',
-                fontWeight: '700'
+                fontWeight: '700',
+                letterSpacing: '-0.01em'
               }}>
                 Вы сможете выбрать одно из направлений:
               </Title>

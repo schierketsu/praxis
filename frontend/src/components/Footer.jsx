@@ -73,17 +73,17 @@ const Footer = () => {
               </Title>
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  что-то
+                  ссылка1
                 </Link>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  что-то ещё
+                  ссылка2
+                </Link>
+                {/* <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
+                  *
                 </Link>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  что-то лучше
-                </Link>
-                <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  то самое
-                </Link>
+                  *
+                </Link> */}
               </Space>
             </div>
           </Col>
@@ -97,19 +97,19 @@ const Footer = () => {
                 <Space>
                   <MailOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    info@практикастудентам.рф
+                    info@studprakt.ru
                   </span>
                 </Space>
-                <Space>
+                {/* <Space>
                   <PhoneOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    +номер
+                    +7 912 505 62 03
                   </span>
-                </Space>
+                </Space> */}
                 <Space>
                   <EnvironmentOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    адрес
+                  Московский просп., 15, Чебоксары
                   </span>
                 </Space>
               </Space>

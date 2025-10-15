@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Input, Select, Button, message, Typography, Row, Col } from 'antd';
-import { SaveOutlined, CloseOutlined, CalendarOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { Form, Input, Select, Button, message, Typography, Row, Col, Spin } from 'antd';
+import { SaveOutlined, CloseOutlined, CalendarOutlined, EnvironmentOutlined, LoadingOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI, applicationsAPI } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -26,6 +26,7 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
   const [internships, setInternships] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [hasUsedPreselectedCompany, setHasUsedPreselectedCompany] = useState(false);
 
   useEffect(() => {
@@ -91,6 +92,10 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
   };
 
   const handleSubmit = async (values) => {
+    if (submitting) return; // Предотвращаем повторную отправку
+    
+    setSubmitting(true);
+    
     try {
       // Проверяем аутентификацию
       if (!user || !student) {
@@ -98,30 +103,24 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
         return;
       }
       
-      
+      // Оптимизированный запрос с минимальными данными
       const response = await applicationsAPI.createApplication({
         internship: values.internship,
         comment: values.comment
       });
       
-      
       // Получаем данные компании и практики из локального состояния
       const selectedCompanyData = companies.find(c => c.id === values.company);
       const selectedInternship = internships.find(i => i.id === values.internship);
       
-      // Проверяем, что все необходимые поля присутствуют
-      if (!response.id || !response.company_name || !response.position_name) {
-        console.warn('Неполные данные заявки:', response);
-      }
-      
-      // Преобразуем ответ API в формат для таблицы
+      // Создаем заявку с локальными данными для быстрого отображения
       const newApplication = {
         id: response.id,
-        company: response.company_name || selectedCompanyData?.name || 'Загрузка...',
-        position: response.position_name || selectedInternship?.position || 'Загрузка...',
+        company: selectedCompanyData?.name || response.company_name || 'Загрузка...',
+        position: selectedInternship?.position || response.position_name || 'Загрузка...',
         status: response.status || 'pending',
-        appliedDate: formatDate(response.applied_date || response.created_at),
-        description: response.comment || values.comment || ''
+        appliedDate: formatDate(response.applied_date || response.created_at || new Date().toISOString()),
+        description: values.comment || ''
       };
       
       message.success('Заявка успешно создана!');
@@ -129,13 +128,38 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
       onSave(newApplication);
     } catch (error) {
       console.error('Ошибка создания заявки:', error);
-      console.error('Детали ошибки:', error.response?.data);
       message.error(`Ошибка при создании заявки: ${error.response?.data?.detail || error.message || 'Неизвестная ошибка'}`);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div style={{ padding: '24px', position: 'relative' }}>
+      {/* Индикатор загрузки при отправке */}
+      {submitting && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(255, 255, 255, 0.9)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          borderRadius: '12px'
+        }}>
+          <Spin size="large" />
+          <Text style={{ marginTop: '16px', fontSize: '16px', fontWeight: '600' }}>
+            Отправляем заявку...
+          </Text>
+        </div>
+      )}
+      
       <div style={{ marginBottom: '24px', textAlign: 'center' }}>
         <Title level={3} style={{ margin: 0, color: '#2d3748' }}>
           Новая заявка
@@ -261,19 +285,22 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
           <Button
             type="primary"
             htmlType="submit"
-            icon={<SaveOutlined />}
-            loading={loading}
+            icon={submitting ? <LoadingOutlined /> : <SaveOutlined />}
+            loading={submitting}
+            disabled={submitting}
             size="large"
             style={{
               borderRadius: '12px',
               height: '48px',
               fontWeight: '600',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: submitting ? 'rgba(102, 126, 234, 0.7)' : 'var(--primary-gradient)',
               border: 'none',
-              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+              boxShadow: submitting ? 'none' : 'var(--shadow-soft)',
+              transition: 'all 0.3s ease',
+              opacity: submitting ? 0.8 : 1
             }}
           >
-            Создать заявку
+            {submitting ? 'Отправляем...' : 'Создать заявку'}
           </Button>
         </div>
       </Form>

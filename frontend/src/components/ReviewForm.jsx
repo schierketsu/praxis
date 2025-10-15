@@ -101,7 +101,7 @@ export default function ReviewForm({
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <Title level={2} style={{ 
             margin: '0 0 16px 0',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'var(--primary-gradient)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             fontSize: '28px',
@@ -154,9 +154,9 @@ export default function ReviewForm({
                   borderRadius: '12px',
                   height: '48px',
                   fontWeight: '600',
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  background: 'var(--primary-gradient)',
                   border: 'none',
-                  boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                  boxShadow: 'var(--shadow-soft)'
                 }}
               >
                 {isEditing ? 'Обновить отзыв' : 'Отправить отзыв'}

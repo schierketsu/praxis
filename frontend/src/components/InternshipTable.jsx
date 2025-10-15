@@ -152,9 +152,9 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
               borderRadius: '12px',
               height: '44px',
               fontWeight: '600',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'var(--primary-gradient)',
               border: 'none',
-              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+              boxShadow: 'var(--shadow-soft)'
             }}
           >
             Подробнее
@@ -265,9 +265,9 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
             zIndex: 10,
             width: '48px',
             height: '48px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'var(--primary-gradient)',
             border: 'none',
-            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+            boxShadow: 'var(--shadow-soft)'
           }}
         />
       )}
@@ -287,9 +287,9 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
             zIndex: 10,
             width: '48px',
             height: '48px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'var(--primary-gradient)',
             border: 'none',
-            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+            boxShadow: 'var(--shadow-soft)'
           }}
         />
       )}
@@ -477,9 +477,9 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                       borderRadius: '12px',
                       height: '44px',
                       fontWeight: '600',
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      background: 'var(--primary-gradient)',
                       border: 'none',
-                      boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                      boxShadow: 'var(--shadow-soft)'
                     }}
                   >
                     Подробнее

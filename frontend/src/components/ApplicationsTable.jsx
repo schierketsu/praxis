@@ -105,14 +105,16 @@ export default function ApplicationsTable({ preselectedCompany }) {
   };
 
   const handleCreateSave = (newApplication) => {
-    
     // Проверяем, что данные полные
     if (!newApplication.company || !newApplication.position) {
       console.warn('Неполные данные заявки, обновляем с сервера');
+      // Показываем уведомление о загрузке данных
+      message.loading('Загружаем данные заявки...', 1);
       fetchApplications();
     } else {
-      // Добавляем новую заявку в начало списка
+      // Добавляем новую заявку в начало списка с анимацией
       setApplications(prev => [newApplication, ...prev]);
+      message.success('Заявка добавлена в список!');
     }
     
     setCreateModalVisible(false);
@@ -224,9 +226,9 @@ export default function ApplicationsTable({ preselectedCompany }) {
               borderRadius: '12px',
               height: '48px',
               fontWeight: '600',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'var(--primary-gradient)',
               border: 'none',
-              boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+              boxShadow: 'var(--shadow-soft)'
             }}
           >
             Новая заявка

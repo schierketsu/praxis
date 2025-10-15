@@ -14,6 +14,7 @@ from .serializers import (
     StudentSerializer, StudentRegistrationSerializer, LoginSerializer,
     ApplicationSerializer, ApplicationCreateSerializer, ReviewSerializer, ReviewCreateSerializer
 )
+from .utils import send_application_notification_email
 
 
 class InternshipFilter(filters_drf.FilterSet):
@@ -336,11 +337,31 @@ class ApplicationViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     
     def create(self, request, *args, **kwargs):
-        """Переопределяем create для лучшей обработки ошибок"""
+        """Переопределяем create для лучшей обработки ошибок и отправки email"""
         try:
-            return super().create(request, *args, **kwargs)
+            # Создаем заявку
+            response = super().create(request, *args, **kwargs)
+            
+            # Если заявка создана успешно, отправляем email уведомление
+            if response.status_code == status.HTTP_201_CREATED:
+                try:
+                    # Получаем созданную заявку по студенту и практике
+                    student = Student.objects.get(user=request.user)
+                    internship_id = request.data.get('internship')
+                    application = Application.objects.filter(
+                        student=student,
+                        internship_id=internship_id
+                    ).first()
+                    
+                    if application:
+                        # Отправляем email уведомление
+                        send_application_notification_email(application)
+                except Exception as email_error:
+                    # Логируем ошибку, но не прерываем выполнение
+                    pass
+            
+            return response
         except Exception as e:
-            print(f"Ошибка создания заявки: {e}")
             return Response(
                 {'error': str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST

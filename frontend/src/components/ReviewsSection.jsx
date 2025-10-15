@@ -102,12 +102,13 @@ export default function ReviewsSection({ companyId, companyName }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <Title level={2} style={{ 
             margin: 0, 
-            color: '#2c3e50',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'var(--primary-gradient)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
             fontSize: '28px',
-            fontWeight: '700'
+            fontWeight: '700',
+            letterSpacing: '-0.01em'
           }}>
             Отзывы студентов
           </Title>
@@ -123,12 +124,12 @@ export default function ReviewsSection({ companyId, companyName }) {
                 setReviewFormVisible(true);
               }}
               style={{
-                borderRadius: '12px',
+                borderRadius: 'var(--border-radius)',
                 height: '40px',
                 fontWeight: '600',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                background: 'var(--primary-gradient)',
                 border: 'none',
-                boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
+                boxShadow: 'var(--shadow-soft)'
               }}
             >
               {userReview ? 'Редактировать отзыв' : 'Оставить отзыв'}

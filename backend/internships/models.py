@@ -56,6 +56,11 @@ class Company(models.Model):
         blank=True,
         verbose_name='Логотип компании'
     )
+    email = models.EmailField(
+        blank=True,
+        verbose_name='Email компании',
+        help_text='Email для получения уведомлений о заявках'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
@@ -79,8 +84,8 @@ class Internship(models.Model):
     position = models.CharField(max_length=200, verbose_name='Должность')
     description = models.TextField(verbose_name='Описание')
     location = models.CharField(max_length=100, verbose_name='Локация')
-    start_date = models.DateField(verbose_name='Дата начала')
-    end_date = models.DateField(verbose_name='Дата окончания')
+    start_date = models.DateField(null=True, blank=True, verbose_name='Дата начала')
+    end_date = models.DateField(null=True, blank=True, verbose_name='Дата окончания')
     requirements = models.TextField(verbose_name='Требования')
     tech_stack = models.JSONField(
         default=list,
