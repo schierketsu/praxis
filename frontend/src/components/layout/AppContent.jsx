@@ -79,8 +79,12 @@ export default function AppContent() {
 
   return (
     <Layout.Content style={contentStyle}>
-      <Hero />
-      <Features />
+      {!student && (
+        <>
+          <Hero />
+          <Features />
+        </>
+      )}
       
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
         

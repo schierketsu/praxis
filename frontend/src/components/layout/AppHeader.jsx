@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Button, Space, Typography, Dropdown, Avatar, Modal } from 'antd';
 import { UserOutlined, LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -56,6 +56,21 @@ export default function AppHeader() {
   const handleLogout = async () => {
     await logout();
   };
+
+  // Обработчик события для открытия модального окна
+  useEffect(() => {
+    const handleOpenAuthModal = (event) => {
+      const { mode } = event.detail;
+      setAuthModalMode(mode);
+      setAuthModalVisible(true);
+    };
+
+    window.addEventListener('openAuthModal', handleOpenAuthModal);
+    
+    return () => {
+      window.removeEventListener('openAuthModal', handleOpenAuthModal);
+    };
+  }, []);
 
   const handleProfileClick = () => {
     navigate('/dashboard');

@@ -22,8 +22,16 @@ const Hero = () => {
 
   // Обработчики
   const handleStartSearch = useCallback(() => {
-    navigate('/internships');
-  }, [navigate]);
+    const searchSection = document.querySelector('[data-testid="search-filters"]') || 
+                         document.querySelector('.ant-form') ||
+                         document.querySelector('[class*="search"]');
+    if (searchSection) {
+      searchSection.scrollIntoView({ behavior: 'smooth' });
+    } else {
+      // Fallback - прокрутка к началу страницы
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   const handleLearnMore = useCallback(() => {
     const infoSection = document.getElementById('info-section');
@@ -65,7 +73,13 @@ const Hero = () => {
       description: 'Разместите вакансии стажировок и найдите перспективных студентов для вашей команды. Быстро, эффективно, бесплатно.',
       primaryButton: 'Разместить вакансию',
       secondaryButton: 'Узнать больше',
-      onPrimaryClick: () => navigate('/company-registration'),
+      onPrimaryClick: () => {
+        // Открываем модальное окно регистрации через событие
+        const event = new CustomEvent('openAuthModal', { 
+          detail: { mode: 'register' } 
+        });
+        window.dispatchEvent(event);
+      },
       onSecondaryClick: handleLearnMore,
       stats: [
         { title: 'Студентов', value: 500, suffix: '+' },

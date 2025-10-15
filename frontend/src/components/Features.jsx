@@ -25,8 +25,8 @@ const Features = () => {
     },
     {
       icon: <TeamOutlined style={{ fontSize: '28px', color: 'white' }} />,
-      title: 'Сообщество',
-      description: 'Общайтесь с другими студентами, делитесь опытом прохождения практик и получайте советы'
+      title: 'Прямая связь',
+      description: 'Подавайте заявки напрямую в IT-компании и получайте быстрые ответы от работодателей'
     },
     {
       icon: <RocketOutlined style={{ fontSize: '28px', color: 'white' }} />,
