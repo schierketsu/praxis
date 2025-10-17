@@ -13,20 +13,26 @@ const Hero = () => {
     const checkScreenSize = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
-    
+
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   // Обработчики
   const handleStartSearch = useCallback(() => {
-    const searchSection = document.querySelector('[data-testid="search-filters"]') || 
-                         document.querySelector('.ant-form') ||
-                         document.querySelector('[class*="search"]');
+    // Ищем секцию поиска по нескольким селекторам
+    const searchSection = document.querySelector('[data-testid="search-filters"]') ||
+      document.querySelector('.ant-card') ||
+      document.querySelector('[class*="search"]') ||
+      document.querySelector('.ant-form');
+
     if (searchSection) {
-      searchSection.scrollIntoView({ behavior: 'smooth' });
+      // Прокручиваем к секции поиска с небольшим отступом
+      const rect = searchSection.getBoundingClientRect();
+      const scrollTop = window.pageYOffset + rect.top - 100; // 100px отступ сверху
+      window.scrollTo({ top: scrollTop, behavior: 'smooth' });
     } else {
       // Fallback - прокрутка к началу страницы
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -75,8 +81,8 @@ const Hero = () => {
       secondaryButton: 'Узнать больше',
       onPrimaryClick: () => {
         // Открываем модальное окно регистрации через событие
-        const event = new CustomEvent('openAuthModal', { 
-          detail: { mode: 'register' } 
+        const event = new CustomEvent('openAuthModal', {
+          detail: { mode: 'register' }
         });
         window.dispatchEvent(event);
       },
@@ -96,10 +102,10 @@ const Hero = () => {
 
   // Компонент для отображения статистики
   const StatisticItem = React.memo(({ title, value, suffix, valueStyle, titleStyle }) => (
-    <Statistic 
-      title={title} 
-      value={value} 
-      suffix={suffix} 
+    <Statistic
+      title={title}
+      value={value}
+      suffix={suffix}
       valueStyle={valueStyle}
       titleStyle={titleStyle}
     />
@@ -181,7 +187,7 @@ const Hero = () => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       if (document.head.contains(style)) {
         document.head.removeChild(style);
@@ -190,12 +196,12 @@ const Hero = () => {
   }, []);
 
   return (
-    <div style={{ 
+    <div style={{
       padding: '0px 0 40px 0',
       position: 'relative'
     }}>
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 16px', width: '100%' }}>
-        <Carousel 
+        <Carousel
           className="hero-carousel"
           arrows={false}
           dots={true}
@@ -224,9 +230,9 @@ const Hero = () => {
                   borderRadius: '12px',
                   minHeight: '400px'
                 }}>
-                  <div style={{ 
-                    fontSize: isMobile ? '32px' : '48px', 
-                    fontWeight: '700', 
+                  <div style={{
+                    fontSize: isMobile ? '32px' : '48px',
+                    fontWeight: '700',
                     color: '#1a202c',
                     lineHeight: '1.2',
                     textAlign: isMobile ? 'center' : 'left'
@@ -237,9 +243,9 @@ const Hero = () => {
                       {slide.titleHighlight}
                     </span>
                   </div>
-                  
-                  <div style={{ 
-                    fontSize: isMobile ? '16px' : '20px', 
+
+                  <div style={{
+                    fontSize: isMobile ? '16px' : '20px',
                     color: '#64748b',
                     lineHeight: '1.6',
                     textAlign: isMobile ? 'center' : 'left'
@@ -247,8 +253,8 @@ const Hero = () => {
                     {slide.description}
                   </div>
 
-                  <div style={{ 
-                    display: 'flex', 
+                  <div style={{
+                    display: 'flex',
                     gap: '16px',
                     flexDirection: isMobile ? 'column' : 'row',
                     alignItems: isMobile ? 'center' : 'flex-start'
@@ -292,8 +298,8 @@ const Hero = () => {
                     </Button>
                   </div>
 
-                  <div style={{ 
-                    display: 'flex', 
+                  <div style={{
+                    display: 'flex',
                     gap: isMobile ? '16px' : '24px',
                     flexDirection: isMobile ? 'column' : 'row',
                     alignItems: isMobile ? 'center' : 'flex-start'
@@ -304,14 +310,14 @@ const Hero = () => {
                         title={stat.title}
                         value={stat.value}
                         suffix={stat.suffix}
-                        valueStyle={{ 
-                          color: '#2563eb', 
-                          fontSize: isMobile ? '1.5rem' : '2rem', 
-                          fontWeight: '700' 
+                        valueStyle={{
+                          color: '#2563eb',
+                          fontSize: isMobile ? '1.5rem' : '2rem',
+                          fontWeight: '700'
                         }}
-                        titleStyle={{ 
-                          color: '#718096', 
-                          fontSize: isMobile ? '0.9rem' : '1rem' 
+                        titleStyle={{
+                          color: '#718096',
+                          fontSize: isMobile ? '0.9rem' : '1rem'
                         }}
                       />
                     ))}
@@ -351,16 +357,16 @@ const Hero = () => {
                           cursor: 'pointer',
                           backdropFilter: 'blur(10px)'
                         }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                          e.currentTarget.style.transform = 'translateY(-3px)';
-                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = 'none';
-                        }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                            e.currentTarget.style.transform = 'translateY(-3px)';
+                            e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                            e.currentTarget.style.transform = 'translateY(0)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }}
                         >
                           <div style={{
                             width: '48px',

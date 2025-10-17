@@ -85,7 +85,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
         color="blue"
         closable={closable}
         onClose={onClose}
-        style={{ 
+        style={{
           marginRight: 3,
           fontSize: '12px',
           padding: '4px 8px',
@@ -102,8 +102,9 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
   };
 
   return (
-    <Card 
-      style={{ 
+    <Card
+      data-testid="search-filters"
+      style={{
         marginBottom: '40px',
         borderRadius: '20px',
         background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
@@ -141,7 +142,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
                 onSearch(params);
               }}
-              style={{ 
+              style={{
                 width: '100%',
                 borderRadius: '12px'
               }}
@@ -158,10 +159,10 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
             </Select>
           </Col>
 
-                 <Col xs={24} sm={24} md={6}>
-                   <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
-                     Учебное заведение
-                   </Text>
+          <Col xs={24} sm={24} md={6}>
+            <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
+              Учебное заведение
+            </Text>
             <Select
               showSearch
               allowClear
@@ -184,7 +185,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
                 onSearch(params);
               }}
-              style={{ 
+              style={{
                 width: '100%',
                 borderRadius: '12px'
               }}
@@ -220,7 +221,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
                 if (selectedUniversity) params.university = selectedUniversity;
                 onSearch(params);
               }}
-              style={{ 
+              style={{
                 width: '100%',
                 borderRadius: '12px'
               }}

@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Spin, Typography } from 'antd';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const { Text } = Typography;
 
@@ -7,37 +9,7 @@ export default function MapComponent({ address, companyName, latitude, longitude
   const [loading, setLoading] = useState(true);
   const [mapError, setMapError] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
-
-  // Мемоизируем URL карты, чтобы избежать пересоздания при каждом рендере
-  const mapUrl = useMemo(() => {
-    // Если есть координаты, используем их
-    if (latitude && longitude) {
-      const lat = parseFloat(latitude);
-      const lon = parseFloat(longitude);
-      
-      // Создаем bounding box вокруг точки
-      const offset = 0.01; // Примерно 1 км
-      const bbox = `${lon - offset},${lat - offset},${lon + offset},${lat + offset}`;
-      
-      return `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat},${lon}`;
-    }
-    
-    // Если координат нет, но есть адрес, используем адрес
-    if (address) {
-      const encodedAddress = encodeURIComponent(`${address}, ${companyName}`);
-      return `https://www.openstreetmap.org/export/embed.html?bbox=47.0,56.0,47.5,56.2&layer=mapnik&q=${encodedAddress}`;
-    }
-    
-    return null;
-  }, [address, companyName, latitude, longitude]);
-
-  // Оптимизированная загрузка без искусственной задержки
-  useEffect(() => {
-    if (mapUrl) {
-      // Убираем искусственную задержку и загружаем карту сразу
-      setLoading(false);
-    }
-  }, [mapUrl]);
+  const [map, setMap] = useState(null);
 
   // Ленивая загрузка карты - загружаем только когда компонент становится видимым
   useEffect(() => {
@@ -59,19 +31,72 @@ export default function MapComponent({ address, companyName, latitude, longitude
     return () => observer.disconnect();
   }, [companyName]);
 
-  const handleMapError = useCallback(() => {
-    setMapError(true);
-  }, []);
+  // Инициализация карты
+  useEffect(() => {
+    if (!isVisible) return;
+
+    const mapContainer = document.getElementById(`map-container-${companyName}`);
+    if (!mapContainer) return;
+
+    try {
+      // Определяем координаты
+      let lat, lon;
+
+      if (latitude && longitude) {
+        lat = parseFloat(latitude);
+        lon = parseFloat(longitude);
+      } else {
+        // Если координат нет, используем координаты Москвы как fallback
+        lat = 55.7558;
+        lon = 37.6176;
+      }
+
+      // Создаем карту
+      const leafletMap = L.map(mapContainer, {
+        center: [lat, lon],
+        zoom: latitude && longitude ? 15 : 10,
+        zoomControl: true,
+        attributionControl: false // Убираем подпись Leaflet
+      });
+
+      // Добавляем тайлы OpenStreetMap
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: false, // Убираем подпись
+        maxZoom: 19
+      }).addTo(leafletMap);
+
+      // Добавляем маркер, если есть точные координаты
+      if (latitude && longitude) {
+        const marker = L.marker([lat, lon]).addTo(leafletMap);
+        // Убираем popup с названием компании
+      }
+
+      setMap(leafletMap);
+      setLoading(false);
+    } catch (error) {
+      console.error('Ошибка создания карты:', error);
+      setMapError(true);
+      setLoading(false);
+    }
+
+    // Очистка при размонтировании
+    return () => {
+      if (map) {
+        map.remove();
+        setMap(null);
+      }
+    };
+  }, [isVisible, companyName, latitude, longitude, address]);
 
   if (loading) {
     return (
-      <div 
+      <div
         id={`map-container-${companyName}`}
-        style={{ 
-          width: '100%', 
-          height: '250px', 
-          display: 'flex', 
-          alignItems: 'center', 
+        style={{
+          width: '100%',
+          height: '250px',
+          display: 'flex',
+          alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#f5f5f5',
           borderRadius: '8px'
@@ -82,64 +107,45 @@ export default function MapComponent({ address, companyName, latitude, longitude
     );
   }
 
-  if (!mapUrl || mapError) {
+  if (mapError) {
     return (
-      <div 
+      <div
         id={`map-container-${companyName}`}
         style={{
           width: '100%',
           height: '250px',
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#f5f5f5',
           borderRadius: '8px',
-          color: '#999'
+          color: '#999',
+          padding: '20px'
         }}
       >
-        <Text>Карта недоступна</Text>
+        <Text style={{ marginBottom: '16px', textAlign: 'center' }}>
+          Карта недоступна
+        </Text>
+        {address && (
+          <Text style={{ fontSize: '14px', textAlign: 'center', color: '#666' }}>
+            Адрес: {address}
+          </Text>
+        )}
       </div>
     );
   }
 
   return (
-    <div 
+    <div
       id={`map-container-${companyName}`}
-      style={{ 
-        width: '100%', 
-        height: '400px',
+      style={{
+        width: '100%',
+        height: '250px',
         borderRadius: '8px',
         overflow: 'hidden',
         border: '1px solid #e8e8e8'
       }}
-    >
-      {isVisible ? (
-        <iframe
-          width="100%"
-          height="100%"
-          frameBorder="0"
-          scrolling="no"
-          marginHeight="0"
-          marginWidth="0"
-          src={mapUrl}
-          style={{ border: 0 }}
-          onError={handleMapError}
-          title={`Карта расположения ${companyName}`}
-          loading="lazy"
-        />
-      ) : (
-        <div style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#f5f5f5',
-          color: '#999'
-        }}>
-          <Text>Загрузка карты...</Text>
-        </div>
-      )}
-    </div>
+    />
   );
 }

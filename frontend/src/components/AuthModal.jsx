@@ -28,7 +28,7 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
   };
 
   const handleCancel = () => {
-    setMode('login'); // Сбрасываем на режим входа
+    // Не сбрасываем режим, оставляем текущий
     onClose();
   };
 

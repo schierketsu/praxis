@@ -43,6 +43,11 @@ export default function AppHeader() {
     // Состояние авторизации обновится автоматически через AuthContext
   };
 
+  const handleModalClose = () => {
+    setAuthModalVisible(false);
+    // Не сбрасываем режим, чтобы при повторном открытии был тот же режим
+  };
+
   const handleLoginClick = () => {
     setAuthModalMode('login');
     setAuthModalVisible(true);
@@ -66,7 +71,7 @@ export default function AppHeader() {
     };
 
     window.addEventListener('openAuthModal', handleOpenAuthModal);
-    
+
     return () => {
       window.removeEventListener('openAuthModal', handleOpenAuthModal);
     };
@@ -147,8 +152,8 @@ export default function AppHeader() {
                 }}
               >
                 <Space>
-                  <Avatar 
-                    size="small" 
+                  <Avatar
+                    size="small"
                     icon={<UserOutlined />}
                     style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}
                   />
@@ -202,7 +207,7 @@ export default function AppHeader() {
 
       <AuthModal
         visible={authModalVisible}
-        onClose={() => setAuthModalVisible(false)}
+        onClose={handleModalClose}
         onSuccess={handleAuthSuccess}
         initialMode={authModalMode}
       />
