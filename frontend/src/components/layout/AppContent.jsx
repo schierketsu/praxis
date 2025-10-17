@@ -90,17 +90,19 @@ export default function AppContent() {
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
 
-        <SearchFilters
-          onSearch={handleSearch}
-          onReset={handleReset}
-          loading={loading}
-          selectedLocation={selectedLocation}
-          selectedUniversity={selectedUniversity}
-          selectedTechs={selectedTechs}
-          onLocationChange={setSelectedLocation}
-          onUniversityChange={handleUniversityChange}
-          onTechChange={setSelectedTechs}
-        />
+        <div style={{ marginBottom: '24px' }}>
+          <SearchFilters
+            onSearch={handleSearch}
+            onReset={handleReset}
+            loading={loading}
+            selectedLocation={selectedLocation}
+            selectedUniversity={selectedUniversity}
+            selectedTechs={selectedTechs}
+            onLocationChange={setSelectedLocation}
+            onUniversityChange={handleUniversityChange}
+            onTechChange={setSelectedTechs}
+          />
+        </div>
 
         <Spin spinning={loading}>
           <InternshipTable

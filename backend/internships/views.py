@@ -99,7 +99,11 @@ class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
             
             # Получаем уникальные компании из отфильтрованных практик
             company_ids = filtered_internships.values_list('company_id', flat=True).distinct()
-            companies = Company.objects.filter(id__in=company_ids)
+            companies = Company.objects.filter(
+                id__in=company_ids,
+                is_verified=True,
+                is_active=True
+            )
             
             # Группируем практики по компаниям
             companies_data = []
@@ -114,6 +118,26 @@ class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
             return Response(companies_data)
         except Exception as e:
             print(f"Error in with_internships: {e}")
+            return Response({'error': str(e)}, status=500)
+    
+    @action(detail=False, methods=['get'])
+    def for_students(self, request):
+        """Получить верифицированные компании с практиками для студентов"""
+        try:
+            # Получаем только верифицированные и активные компании с практиками
+            companies_with_internships = Company.objects.filter(
+                is_verified=True,
+                is_active=True,
+                internships__is_active=True
+            ).distinct().order_by('name')
+            
+            serializer = CompanySerializer(companies_with_internships, many=True, context={'request': request})
+            return Response({
+                'results': serializer.data,
+                'count': companies_with_internships.count()
+            })
+        except Exception as e:
+            print(f"Error in for_students: {e}")
             return Response({'error': str(e)}, status=500)
 
 

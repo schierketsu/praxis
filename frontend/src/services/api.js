@@ -66,6 +66,12 @@ export const companiesAPI = {
     const response = await api.get('/companies/with_internships/', { params });
     return response.data;
   },
+
+  // Получить все компании с практиками для студентов
+  getCompaniesForStudents: async (params = {}) => {
+    const response = await api.get('/companies/for_students/', { params });
+    return response.data;
+  },
 };
 
 // API для университетов

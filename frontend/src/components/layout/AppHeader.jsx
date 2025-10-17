@@ -58,15 +58,6 @@ export default function AppHeader() {
     setAuthModalVisible(true);
   };
 
-  const handleCompanyLoginClick = () => {
-    setAuthModalMode('company-login');
-    setAuthModalVisible(true);
-  };
-
-  const handleCompanyRegisterClick = () => {
-    setAuthModalMode('company-register');
-    setAuthModalVisible(true);
-  };
 
   const handleLogout = async () => {
     await logout();
@@ -213,24 +204,6 @@ export default function AppHeader() {
                 }}
               >
                 Регистрация
-              </Button>
-              <Button
-                icon={<UserOutlined />}
-                size="large"
-                onClick={handleCompanyLoginClick}
-                style={{
-                  borderRadius: '12px',
-                  height: '44px',
-                  padding: '0 24px',
-                  fontWeight: '600',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  color: 'white',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Для компаний
               </Button>
             </Space>
           )}

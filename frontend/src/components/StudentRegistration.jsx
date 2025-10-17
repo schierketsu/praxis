@@ -5,7 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 
 const { Title, Text } = Typography;
 
-export default function StudentRegistration({ onSuccess, onCancel }) {
+export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLogin }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const { register, login } = useAuth();
@@ -24,14 +24,14 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
       };
 
       const response = await register(studentData);
-      
+
       // Автоматически авторизуем пользователя после успешной регистрации
       try {
         await login({
           username: values.username,
           password: values.password
         });
-        
+
         if (onSuccess) {
           onSuccess(response);
         }
@@ -81,7 +81,7 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
       }}
     >
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <Title level={2} style={{ 
+        <Title level={2} style={{
           margin: '0 0 16px 0',
           background: 'var(--primary-gradient)',
           WebkitBackgroundClip: 'text',
@@ -92,7 +92,7 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
         }}>
           Регистрация студента
         </Title>
-        <Text style={{ 
+        <Text style={{
           fontSize: '16px',
           color: 'var(--text-secondary)',
           fontWeight: '500',
@@ -217,6 +217,30 @@ export default function StudentRegistration({ onSuccess, onCancel }) {
           </Space>
         </Form.Item>
       </Form>
+
+      <div style={{ textAlign: 'center' }}>
+        <Space>
+          <Text style={{
+            color: 'var(--text-secondary)',
+            fontSize: '14px'
+          }}>
+            Уже зарегистрированы?
+          </Text>
+          <Button
+            type="link"
+            onClick={onSwitchToLogin}
+            style={{
+              color: 'var(--primary-color)',
+              fontWeight: '600',
+              padding: '0',
+              height: 'auto',
+              fontSize: '14px'
+            }}
+          >
+            Войти
+          </Button>
+        </Space>
+      </div>
     </div>
   );
 }

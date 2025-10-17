@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Card, Tag, Space, Typography, Button, Avatar, Row, Col, Divider } from 'antd';
+import { Card, Tag, Space, Typography, Button, Avatar, Row, Col, Divider, Tooltip } from 'antd';
 import { InfoCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -11,6 +11,17 @@ const { Text, Link } = Typography;
 // Оптимизированный компонент карточки компании
 const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => {
   const techs = getCompanyTechs(record.internships || []);
+
+  // Отладочная информация
+  console.log('CompanyCard rendered for:', record.name);
+  console.log('Company card data:', record);
+  console.log('has_blue_checkmark:', record.has_blue_checkmark);
+  console.log('Company name:', record.name);
+  if (record.name === 'ВКонтакте') {
+    console.log('ВКонтакте CompanyCard data:', record);
+    console.log('ВКонтакте has_blue_checkmark:', record.has_blue_checkmark);
+    console.log('ВКонтакте will show checkmark:', record.has_blue_checkmark === true);
+  }
 
   return (
     <div style={{ width: '100%', height: '100%' }}>
@@ -38,17 +49,35 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
               border: '3px solid rgba(102, 126, 234, 0.2)'
             }}
           />
-          <Text
-            strong
-            style={{
-              fontSize: '18px',
-              color: '#2c3e50',
-              display: 'block',
-              marginBottom: '8px'
-            }}
-          >
-            {record.name}
-          </Text>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', marginBottom: '8px' }}>
+            <Text
+              strong
+              style={{
+                fontSize: '18px',
+                color: '#2c3e50',
+                display: 'block'
+              }}
+            >
+              {record.name}
+            </Text>
+            {record.has_blue_checkmark && (
+              <Tooltip
+                title="Компания официально подтверждена и использует наш сервис для ответа на ваши заявки"
+                placement="top"
+              >
+                <img
+                  src="/checkblue.png"
+                  alt="Verified"
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    cursor: 'help',
+                    display: 'block'
+                  }}
+                />
+              </Tooltip>
+            )}
+          </div>
           <Text
             style={{
               fontSize: '14px',
@@ -172,6 +201,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const cardsPerView = 4;
 
+
   const handleCompanyClick = useCallback((record) => {
     if (record.id) {
       // Проверяем авторизацию пользователя
@@ -247,6 +277,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
 
   const visibleCards = getVisibleCards();
   const showNavigation = data.length > 4;
+
 
   return (
     <div id="internship-carousel" style={{ position: 'relative', width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
@@ -376,9 +407,28 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                 </div>
 
                 <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                  <Text strong style={{ fontSize: '18px', color: '#2c3e50' }}>
-                    {company.name}
-                  </Text>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                    <Text strong style={{ fontSize: '18px', color: '#2c3e50' }}>
+                      {company.name}
+                    </Text>
+                    {company.has_blue_checkmark && (
+                      <Tooltip
+                        title="Компания официально подтверждена и использует наш сервис для ответа на ваши заявки"
+                        placement="top"
+                      >
+                        <img
+                          src="/checkblue.png"
+                          alt="Verified"
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            cursor: 'help',
+                            display: 'block'
+                          }}
+                        />
+                      </Tooltip>
+                    )}
+                  </div>
                   <div style={{ marginTop: '8px' }}>
                     <RatingDisplay
                       rating={company.average_rating || 0}

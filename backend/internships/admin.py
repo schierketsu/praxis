@@ -95,10 +95,34 @@ class UniversityAdmin(admin.ModelAdmin):
 
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
-    list_display = ['name', 'website', 'created_at']
-    list_filter = ['created_at']
-    search_fields = ['name', 'description']
+    list_display = ['name', 'website', 'is_verified', 'is_active', 'has_blue_checkmark', 'created_at']
+    list_filter = ['is_verified', 'is_active', 'has_blue_checkmark', 'created_at']
+    search_fields = ['name', 'description', 'email']
     ordering = ['name']
+    
+    fieldsets = (
+        ('Основная информация', {
+            'fields': ('name', 'description', 'website', 'email', 'logo')
+        }),
+        ('Адрес', {
+            'fields': ('address', 'latitude', 'longitude'),
+            'classes': ('collapse',)
+        }),
+        ('Статусы', {
+            'fields': ('is_verified', 'is_active', 'has_blue_checkmark'),
+            'description': 'Синяя галочка - компания официально подтверждена и использует сервис для ответа на заявки'
+        }),
+        ('Пользователь', {
+            'fields': ('user',),
+            'classes': ('collapse',)
+        }),
+        ('Системная информация', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        })
+    )
+    
+    readonly_fields = ['created_at', 'updated_at']
 
 
 @admin.register(Internship)

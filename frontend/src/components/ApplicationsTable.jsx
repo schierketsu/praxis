@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Card, Tag, Typography, Space, Button, message, Spin, Empty, Modal } from 'antd';
 import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { applicationsAPI } from '../services/api';
 import ApplicationForm from './ApplicationForm';
@@ -20,6 +21,7 @@ const formatDate = (dateString) => {
 
 export default function ApplicationsTable({ preselectedCompany }) {
   const { user, student } = useAuth();
+  const navigate = useNavigate();
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
@@ -40,7 +42,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
         setCreateModalVisible(true);
         setHasUsedPreselectedCompany(true);
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [preselectedCompany, hasUsedPreselectedCompany]);
@@ -56,7 +58,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
     setLoading(true);
     try {
       const response = await applicationsAPI.getApplications();
-      
+
       // Преобразуем данные из API в формат для таблицы
       const formattedApplications = response.results?.map(app => ({
         id: app.id,
@@ -66,7 +68,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
         appliedDate: formatDate(app.applied_date || app.created_at),
         description: app.comment
       })) || [];
-      
+
       setApplications(formattedApplications);
     } catch (error) {
       console.error('Ошибка загрузки заявок:', error);
@@ -84,7 +86,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
       rejected: { color: 'red', text: 'Отклонена' },
       cancelled: { color: 'red', text: 'Отменена' }
     };
-    
+
     const config = statusConfig[status] || { color: 'default', text: status };
     return <Tag color={config.color}>{config.text}</Tag>;
   };
@@ -116,7 +118,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
       setApplications(prev => [newApplication, ...prev]);
       message.success('Заявка добавлена в список!');
     }
-    
+
     setCreateModalVisible(false);
   };
 
@@ -247,7 +249,11 @@ export default function ApplicationsTable({ preselectedCompany }) {
                   description="У вас пока нет отправленных заявок"
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
                 >
-                  <Button type="primary" size="large">
+                  <Button
+                    type="primary"
+                    size="large"
+                    onClick={() => navigate('/')}
+                  >
                     Найти практики
                   </Button>
                 </Empty>

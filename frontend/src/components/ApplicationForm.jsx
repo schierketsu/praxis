@@ -54,7 +54,8 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
   const fetchCompanies = async () => {
     setLoadingData(true);
     try {
-      const response = await companiesAPI.getCompanies();
+      // Используем новый endpoint для студентов
+      const response = await companiesAPI.getCompaniesForStudents();
       setCompanies(response.results || []);
     } catch (error) {
       console.error('Ошибка загрузки компаний:', error);
@@ -93,26 +94,26 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
 
   const handleSubmit = async (values) => {
     if (submitting) return; // Предотвращаем повторную отправку
-    
+
     setSubmitting(true);
-    
+
     try {
       // Проверяем аутентификацию
       if (!user || !student) {
         message.error('Необходимо войти в систему для создания заявки');
         return;
       }
-      
+
       // Оптимизированный запрос с минимальными данными
       const response = await applicationsAPI.createApplication({
         internship: values.internship,
         comment: values.comment
       });
-      
+
       // Получаем данные компании и практики из локального состояния
       const selectedCompanyData = companies.find(c => c.id === values.company);
       const selectedInternship = internships.find(i => i.id === values.internship);
-      
+
       // Создаем заявку с локальными данными для быстрого отображения
       const newApplication = {
         id: response.id,
@@ -122,7 +123,7 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
         appliedDate: formatDate(response.applied_date || response.created_at || new Date().toISOString()),
         description: values.comment || ''
       };
-      
+
       message.success('Заявка успешно создана!');
       clearForm();
       onSave(newApplication);
@@ -159,14 +160,14 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
           </Text>
         </div>
       )}
-      
+
       <div style={{ marginBottom: '24px', textAlign: 'center' }}>
         <Title level={3} style={{ margin: 0, color: '#2d3748' }}>
           Новая заявка
         </Title>
         <Text type="secondary" style={{ fontSize: '16px' }}>
-          Заполните форму для подачи заявки на практику 
-          
+          Заполните форму для подачи заявки на практику
+
         </Text>
       </div>
 
@@ -216,8 +217,8 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
                 optionLabelProp="label"
               >
                 {internships.map(internship => (
-                  <Option 
-                    key={internship.id} 
+                  <Option
+                    key={internship.id}
                     value={internship.id}
                     label={internship.position}
                   >
@@ -262,9 +263,9 @@ export default function ApplicationForm({ onSave, onCancel, loading, preselected
           />
         </Form.Item>
 
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'flex-end', 
+        <div style={{
+          display: 'flex',
+          justifyContent: 'flex-end',
           gap: '12px',
           marginTop: '24px',
           paddingTop: '24px',

@@ -80,6 +80,11 @@ class Company(models.Model):
         verbose_name='Активна',
         help_text='Компания активна в системе'
     )
+    has_blue_checkmark = models.BooleanField(
+        default=False,
+        verbose_name='Синяя галочка',
+        help_text='Компания официально подтверждена и использует сервис для ответа на заявки'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

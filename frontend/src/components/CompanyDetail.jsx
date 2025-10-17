@@ -13,7 +13,8 @@ import {
   Row,
   Col,
   Divider,
-  Layout
+  Layout,
+  Tooltip
 } from 'antd';
 import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI, companyDetailAPI } from '../services/api';
@@ -48,6 +49,8 @@ export default function CompanyDetail() {
 
       if (companyData) {
         setCompany(companyData);
+        console.log('Company data loaded:', companyData);
+        console.log('has_blue_checkmark:', companyData.has_blue_checkmark);
 
         // Получаем практики этой компании
         const internshipsResponse = await internshipsAPI.getInternships({
@@ -194,7 +197,26 @@ export default function CompanyDetail() {
                   <Col xs={24} lg={16}>
                     <Space direction="vertical" size="large" style={{ width: '100%' }}>
                       <div>
-                        <Title level={1} style={{ margin: 0, fontSize: '2.5rem' }}>{company.name}</Title>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+                          <Title level={1} style={{ margin: 0, fontSize: '2.5rem' }}>{company.name}</Title>
+                          {company.has_blue_checkmark && (
+                            <Tooltip
+                              title="Компания официально подтверждена и использует наш сервис для ответа на ваши заявки"
+                              placement="top"
+                            >
+                              <img
+                                src="/checkblue.png"
+                                alt="Verified"
+                                style={{
+                                  width: '36px',
+                                  height: '36px',
+                                  cursor: 'help',
+                                  display: 'block'
+                                }}
+                              />
+                            </Tooltip>
+                          )}
+                        </div>
                         <div style={{ marginTop: '12px' }}>
                           <RatingDisplay
                             rating={company.average_rating || 0}

@@ -80,15 +80,16 @@ export const AuthProvider = ({ children }) => {
 
   const register = useCallback(async (userData) => {
     try {
-      // Пытаемся зарегистрироваться как студент
-      try {
-        const response = await authAPI.register(userData);
+      // Определяем тип регистрации по наличию поля 'name' (только у компаний)
+      if (userData.name) {
+        // Регистрация компании
+        const response = await companyAPI.register(userData);
         // После регистрации автоматически входим
         await checkAuthStatus();
         return response;
-      } catch (studentError) {
-        // Если не получилось как студент, пробуем как компания
-        const response = await companyAPI.register(userData);
+      } else {
+        // Регистрация студента
+        const response = await authAPI.register(userData);
         // После регистрации автоматически входим
         await checkAuthStatus();
         return response;

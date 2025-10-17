@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Form, Input, Button, Typography, Space, message, Row, Col } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined, GlobalOutlined, EnvironmentOutlined } from '@ant-design/icons';
-import { companyAPI } from '../services/api';
+import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
 import { useAuth } from '../contexts/AuthContext';
 
 const { Title, Text } = Typography;
-const { TextArea } = Input;
 
-export default function CompanyRegistration({ onSuccess }) {
+export default function CompanyRegistration({ onSuccess, onSwitchToLogin }) {
     const [loading, setLoading] = useState(false);
     const { register } = useAuth();
 
@@ -46,24 +44,44 @@ export default function CompanyRegistration({ onSuccess }) {
     };
 
     return (
-        <div style={{ textAlign: 'center', padding: '20px' }}>
-            <Title level={2} style={{
-                marginBottom: '24px',
-                background: 'var(--primary-gradient)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                fontSize: '28px',
-                fontWeight: '700'
-            }}>
-                Регистрация компании
-            </Title>
+        <div style={{
+            background: 'var(--glass-bg)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '24px',
+            border: '1px solid var(--glass-border)',
+            boxShadow: 'var(--shadow-soft)',
+            padding: '40px',
+            maxWidth: '600px',
+            margin: '0 auto',
+            overflow: 'hidden'
+        }}>
+            <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                <Title level={2} style={{
+                    margin: '0 0 16px 0',
+                    background: 'var(--primary-gradient)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    fontSize: '32px',
+                    fontWeight: '800',
+                    letterSpacing: '-0.02em'
+                }}>
+                    Регистрация компании
+                </Title>
+                <Text style={{
+                    fontSize: '16px',
+                    color: 'var(--text-secondary)',
+                    fontWeight: '500',
+                    lineHeight: '1.6'
+                }}>
+                    Создайте аккаунт компании для публикации практик. После регистрации ваша компания будет отправлена на модерацию.
+                </Text>
+            </div>
 
             <Form
                 name="company-registration"
                 onFinish={handleSubmit}
                 layout="vertical"
                 size="large"
-                style={{ maxWidth: '600px', margin: '0 auto' }}
             >
                 <Row gutter={16}>
                     <Col xs={24} sm={12}>
@@ -75,7 +93,6 @@ export default function CompanyRegistration({ onSuccess }) {
                             <Input
                                 prefix={<UserOutlined />}
                                 placeholder="Имя"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -87,7 +104,6 @@ export default function CompanyRegistration({ onSuccess }) {
                         >
                             <Input
                                 placeholder="Фамилия"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -103,7 +119,6 @@ export default function CompanyRegistration({ onSuccess }) {
                             <Input
                                 prefix={<UserOutlined />}
                                 placeholder="Имя пользователя"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -119,7 +134,6 @@ export default function CompanyRegistration({ onSuccess }) {
                             <Input
                                 prefix={<MailOutlined />}
                                 placeholder="email@company.com"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -138,7 +152,6 @@ export default function CompanyRegistration({ onSuccess }) {
                             <Input.Password
                                 prefix={<LockOutlined />}
                                 placeholder="Пароль"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -161,7 +174,6 @@ export default function CompanyRegistration({ onSuccess }) {
                             <Input.Password
                                 prefix={<LockOutlined />}
                                 placeholder="Подтвердите пароль"
-                                style={{ borderRadius: '12px', height: '48px' }}
                             />
                         </Form.Item>
                     </Col>
@@ -178,109 +190,56 @@ export default function CompanyRegistration({ onSuccess }) {
                     />
                 </Form.Item>
 
-                <Form.Item
-                    name="description"
-                    label="Описание компании"
-                >
-                    <TextArea
-                        rows={3}
-                        placeholder="Расскажите о деятельности компании..."
-                        style={{ borderRadius: '12px' }}
-                    />
-                </Form.Item>
 
-                <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            name="website"
-                            label="Веб-сайт"
+                <Form.Item style={{ marginBottom: '24px', textAlign: 'center' }}>
+                    <Space size="middle">
+                        <Button
+                            type="primary"
+                            htmlType="submit"
+                            loading={loading}
+                            size="large"
+                            style={{
+                                borderRadius: '16px',
+                                height: '52px',
+                                paddingLeft: '32px',
+                                paddingRight: '32px',
+                                fontWeight: '600',
+                                background: 'var(--primary-gradient)',
+                                border: 'none',
+                                boxShadow: 'var(--shadow-soft)',
+                                fontSize: '16px',
+                                transition: 'var(--transition)'
+                            }}
                         >
-                            <Input
-                                prefix={<GlobalOutlined />}
-                                placeholder="https://example.com"
-                                style={{ borderRadius: '12px', height: '48px' }}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            name="address"
-                            label="Адрес"
-                        >
-                            <Input
-                                prefix={<EnvironmentOutlined />}
-                                placeholder="Адрес компании"
-                                style={{ borderRadius: '12px', height: '48px' }}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Row gutter={16}>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            name="latitude"
-                            label="Широта (опционально)"
-                        >
-                            <Input
-                                placeholder="56.11427957912669"
-                                style={{ borderRadius: '12px', height: '48px' }}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col xs={24} sm={12}>
-                        <Form.Item
-                            name="longitude"
-                            label="Долгота (опционально)"
-                        >
-                            <Input
-                                placeholder="47.257093448374484"
-                                style={{ borderRadius: '12px', height: '48px' }}
-                            />
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                <Form.Item>
-                    <Button
-                        type="primary"
-                        htmlType="submit"
-                        loading={loading}
-                        block
-                        style={{
-                            borderRadius: '12px',
-                            height: '48px',
-                            fontWeight: '600',
-                            background: 'var(--primary-gradient)',
-                            border: 'none',
-                            boxShadow: 'var(--shadow-soft)',
-                            fontSize: '16px'
-                        }}
-                    >
-                        Зарегистрировать компанию
-                    </Button>
+                            Зарегистрироваться
+                        </Button>
+                    </Space>
                 </Form.Item>
             </Form>
 
-            <Text style={{ color: 'var(--text-secondary)', fontSize: '14px' }}>
-                Уже есть аккаунт?
-                <Button
-                    type="link"
-                    style={{
-                        padding: '0 4px',
-                        color: '#667eea',
-                        fontWeight: '600'
-                    }}
-                    onClick={() => {
-                        // Переключаем на вход
-                        window.dispatchEvent(new CustomEvent('openAuthModal', {
-                            detail: { mode: 'company-login' }
-                        }));
-                    }}
-                >
-                    Войти
-                </Button>
-            </Text>
+            <div style={{ textAlign: 'center' }}>
+                <Space>
+                    <Text style={{
+                        color: 'var(--text-secondary)',
+                        fontSize: '14px'
+                    }}>
+                        Уже зарегистрированы?
+                    </Text>
+                    <Button
+                        type="link"
+                        onClick={onSwitchToLogin}
+                        style={{
+                            color: 'var(--primary-color)',
+                            fontWeight: '600',
+                            padding: '0',
+                            height: 'auto',
+                            fontSize: '14px'
+                        }}
+                    >
+                        Войти
+                    </Button>
+                </Space>
+            </div>
         </div>
     );
 }
