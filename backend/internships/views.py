@@ -251,6 +251,7 @@ def student_update_profile(request):
     try:
         student = Student.objects.get(user=request.user)
         
+        
         # Создаем новый словарь с правильными данными
         data = {}
         
@@ -268,6 +269,13 @@ def student_update_profile(request):
         elif 'resume' in request.data and request.data['resume'] == '':
             # Если пользователь удалил резюме, устанавливаем None
             data['resume'] = None
+            
+        # Обрабатываем аватар
+        if 'avatar' in request.FILES:
+            data['avatar'] = request.FILES['avatar']
+        elif 'avatar' in request.data and request.data['avatar'] == '':
+            # Если пользователь удалил аватар, устанавливаем None
+            data['avatar'] = None
         
         # Обрабатываем skills и interests
         if 'skills' in request.data:
@@ -331,7 +339,7 @@ def check_auth_status(request):
             student = Student.objects.get(user=request.user)
             return Response({
                 'authenticated': True,
-                'student': StudentSerializer(student).data
+                'student': StudentSerializer(student, context={'request': request}).data
             })
         except Student.DoesNotExist:
             return Response({
@@ -581,7 +589,7 @@ def check_company_auth_status(request):
             company = Company.objects.get(user=request.user)
             return Response({
                 'authenticated': True,
-                'company': CompanyProfileSerializer(company).data
+                'company': CompanyProfileSerializer(company, context={'request': request}).data
             })
         except Company.DoesNotExist:
             return Response({

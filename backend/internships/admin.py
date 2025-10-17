@@ -150,7 +150,7 @@ class StudentAdmin(admin.ModelAdmin):
             'fields': ('user', 'university', 'course', 'specialization', 'is_active')
         }),
         ('Контактная информация', {
-            'fields': ('phone', 'bio')
+            'fields': ('phone', 'bio', 'avatar')
         }),
         ('Резюме', {
             'fields': ('resume_display',),

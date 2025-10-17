@@ -153,6 +153,12 @@ class Student(models.Model):
     specialization = models.CharField(max_length=200, verbose_name='Специализация', blank=True)
     phone = models.CharField(max_length=20, verbose_name='Телефон', blank=True)
     bio = models.TextField(verbose_name='О себе', blank=True)
+    avatar = models.ImageField(
+        upload_to='student_avatars/',
+        null=True,
+        blank=True,
+        verbose_name='Аватар студента'
+    )
     resume = models.FileField(upload_to='student_resumes/', verbose_name='Резюме', blank=True, null=True)
     skills = models.JSONField(default=list, verbose_name='Навыки', blank=True)
     interests = models.JSONField(default=list, verbose_name='Интересы', blank=True)

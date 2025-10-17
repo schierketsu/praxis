@@ -24,6 +24,7 @@ export default function StudentDashboard() {
   const [newSkill, setNewSkill] = useState('');
   const [newInterest, setNewInterest] = useState('');
   const [resumeFile, setResumeFile] = useState(null);
+  const [avatarFile, setAvatarFile] = useState(null);
 
   // Обновляем данные студента при изменении
   useEffect(() => {
@@ -32,6 +33,9 @@ export default function StudentDashboard() {
       setSkills(student.skills || []);
       setInterests(student.interests || []);
     }
+    // Очищаем предпросмотр файлов при обновлении данных
+    setResumeFile(null);
+    setAvatarFile(null);
   }, [student]);
 
   // Загружаем список университетов
@@ -60,6 +64,9 @@ export default function StudentDashboard() {
         phone: currentStudent.phone,
         bio: currentStudent.bio
       });
+      // Очищаем предпросмотр файлов при входе в режим редактирования
+      setResumeFile(null);
+      setAvatarFile(null);
     }
   }, [currentStudent, isEditing, form]);
 
@@ -73,14 +80,14 @@ export default function StudentDashboard() {
     try {
       // Создаем FormData для отправки файлов
       const formData = new FormData();
-      
+
       // Добавляем текстовые поля
       Object.keys(values).forEach(key => {
-        if (key !== 'resume' && values[key] !== undefined) {
+        if (key !== 'resume' && key !== 'avatar' && values[key] !== undefined) {
           formData.append(key, values[key]);
         }
       });
-      
+
       // Добавляем файл резюме, если он есть
       if (resumeFile && resumeFile instanceof File) {
         formData.append('resume', resumeFile);
@@ -88,18 +95,28 @@ export default function StudentDashboard() {
         // Если пользователь удалил резюме, отправляем пустое значение
         formData.append('resume', '');
       }
-      
+
+      // Добавляем файл аватара, если он есть
+      if (avatarFile && avatarFile instanceof File) {
+        formData.append('avatar', avatarFile);
+      } else if (values.avatar === 'DELETE') {
+        // Если пользователь удалил аватар, отправляем пустое значение
+        formData.append('avatar', '');
+      }
+
       // Добавляем навыки и интересы
       formData.append('skills', JSON.stringify(skills));
       formData.append('interests', JSON.stringify(interests));
 
+
       const response = await updateProfile(formData);
       setCurrentStudent(response.student);
       setIsEditing(false);
-      
+
       // Очищаем предпросмотр после успешной загрузки
       setResumeFile(null);
-      
+      setAvatarFile(null);
+
       message.success('Профиль обновлен успешно!');
     } catch (error) {
       console.error('Ошибка обновления профиля:', error);
@@ -128,7 +145,8 @@ export default function StudentDashboard() {
     setIsEditing(false);
     // Очищаем предпросмотр
     setResumeFile(null);
-    
+    setAvatarFile(null);
+
     // Сбрасываем форму к исходным значениям
     if (currentStudent) {
       form.setFieldsValue({
@@ -172,14 +190,14 @@ export default function StudentDashboard() {
     return (
       <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
         <AppHeader />
-        <Content style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
+        <Content style={{
+          display: 'flex',
+          justifyContent: 'center',
           alignItems: 'center',
           padding: '40px 24px'
         }}>
-          <Card style={{ 
-            textAlign: 'center', 
+          <Card style={{
+            textAlign: 'center',
             maxWidth: '400px',
             background: 'var(--glass-bg)',
             backdropFilter: 'blur(20px)',
@@ -222,7 +240,7 @@ export default function StudentDashboard() {
 
           {/* Заголовок */}
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
-            <Title level={1} style={{ 
+            <Title level={1} style={{
               margin: '0 0 16px 0',
               background: 'var(--primary-gradient)',
               WebkitBackgroundClip: 'text',
@@ -233,7 +251,7 @@ export default function StudentDashboard() {
             }}>
               Личный кабинет
             </Title>
-            <Text style={{ 
+            <Text style={{
               fontSize: '18px',
               color: 'var(--text-secondary)',
               fontWeight: '500'
@@ -266,7 +284,7 @@ export default function StudentDashboard() {
                 size="large"
               >
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                  <Title level={2} style={{ 
+                  <Title level={2} style={{
                     margin: '0 0 16px 0',
                     background: 'var(--primary-gradient)',
                     WebkitBackgroundClip: 'text',
@@ -277,7 +295,7 @@ export default function StudentDashboard() {
                   }}>
                     Редактирование профиля
                   </Title>
-                  <Text style={{ 
+                  <Text style={{
                     fontSize: '16px',
                     color: 'var(--text-secondary)',
                     fontWeight: '500'
@@ -306,6 +324,67 @@ export default function StudentDashboard() {
                     </Form.Item>
                   </Col>
                 </Row>
+
+                {/* Аватар */}
+                <Form.Item label="Аватар">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <Avatar
+                      size={80}
+                      src={avatarFile ? URL.createObjectURL(avatarFile) : currentStudent?.avatar_url}
+                      icon={<UserOutlined />}
+                      style={{
+                        background: (avatarFile || currentStudent?.avatar_url) ? 'transparent' : 'var(--primary-gradient)',
+                        boxShadow: 'var(--shadow-small)',
+                        border: '2px solid rgba(255, 255, 255, 0.8)'
+                      }}
+                    />
+                    <div>
+                      <Upload
+                        name="avatar"
+                        beforeUpload={(file) => {
+                          const isImage = file.type.startsWith('image/');
+                          if (!isImage) {
+                            message.error('Можно загружать только изображения!');
+                            return false;
+                          }
+                          const isLt2M = file.size / 1024 / 1024 < 2;
+                          if (!isLt2M) {
+                            message.error('Размер файла должен быть меньше 2MB!');
+                            return false;
+                          }
+
+                          // Создаем новый File объект с правильными данными
+                          const newFile = new File([file], file.name, { type: file.type });
+                          setAvatarFile(newFile);
+                          // Не устанавливаем в форму, так как файлы не передаются через форму
+                          message.success('Аватар выбран! Нажмите "Сохранить изменения" для загрузки.');
+                          return false; // Предотвращаем автоматическую загрузку
+                        }}
+                        showUploadList={false}
+                      >
+                        <Button icon={<UploadOutlined />}>
+                          {currentStudent?.avatar_url ? 'Изменить аватар' : 'Загрузить аватар'}
+                        </Button>
+                      </Upload>
+                      {(currentStudent?.avatar_url || avatarFile) && (
+                        <Button
+                          type="text"
+                          danger
+                          size="small"
+                          onClick={() => {
+                            setAvatarFile(null);
+                            // Устанавливаем специальное значение для удаления
+                            form.setFieldsValue({ avatar: 'DELETE' });
+                            message.success('Аватар будет удален после сохранения');
+                          }}
+                          style={{ marginLeft: '8px' }}
+                        >
+                          Удалить
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </Form.Item>
 
                 <Form.Item
                   name="email"
@@ -370,8 +449,8 @@ export default function StudentDashboard() {
                   name="bio"
                   label="О себе"
                 >
-                  <TextArea 
-                    rows={3} 
+                  <TextArea
+                    rows={3}
                     placeholder="Расскажите о себе, своих интересах и целях..."
                   />
                 </Form.Item>
@@ -396,8 +475,8 @@ export default function StudentDashboard() {
                             </div>
                           </div>
                           <div style={{ display: 'flex', gap: '8px' }}>
-                            <Button 
-                              type="link" 
+                            <Button
+                              type="link"
                               icon={<FileOutlined />}
                               onClick={() => {
                                 const link = document.createElement('a');
@@ -411,9 +490,9 @@ export default function StudentDashboard() {
                             >
                               Скачать
                             </Button>
-                            <Button 
-                              type="link" 
-                              danger 
+                            <Button
+                              type="link"
+                              danger
                               icon={<DeleteOutlined />}
                               onClick={() => {
                                 // Устанавливаем пустое значение для удаления
@@ -427,7 +506,7 @@ export default function StudentDashboard() {
                         </div>
                       </div>
                     )}
-                    
+
                     {/* Показываем новый выбранный файл */}
                     {resumeFile && (
                       <div style={{ marginBottom: '16px', padding: '12px', background: '#f5f5f5', borderRadius: '8px' }}>
@@ -439,9 +518,9 @@ export default function StudentDashboard() {
                               ({(resumeFile.size / 1024 / 1024).toFixed(2)} MB)
                             </span>
                           </div>
-                          <Button 
-                            type="link" 
-                            danger 
+                          <Button
+                            type="link"
+                            danger
                             icon={<DeleteOutlined />}
                             onClick={() => {
                               setResumeFile(null);
@@ -453,7 +532,7 @@ export default function StudentDashboard() {
                         </div>
                       </div>
                     )}
-                    
+
                     <Upload
                       name="resume"
                       beforeUpload={(file) => {
@@ -468,7 +547,7 @@ export default function StudentDashboard() {
                           message.error('Размер файла должен быть меньше 5MB!');
                           return false;
                         }
-                        
+
                         // Создаем новый File объект с правильными данными
                         const newFile = new File([file], file.name, { type: file.type });
                         setResumeFile(newFile);
@@ -494,9 +573,9 @@ export default function StudentDashboard() {
                         onChange={(e) => setNewSkill(e.target.value)}
                         onPressEnter={addSkill}
                       />
-                      <Button 
-                        type="primary" 
-                        icon={<PlusOutlined />} 
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
                         onClick={addSkill}
                         style={{
                           background: 'var(--primary-gradient)',
@@ -534,9 +613,9 @@ export default function StudentDashboard() {
                         onChange={(e) => setNewInterest(e.target.value)}
                         onPressEnter={addInterest}
                       />
-                      <Button 
-                        type="primary" 
-                        icon={<PlusOutlined />} 
+                      <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
                         onClick={addInterest}
                         style={{
                           background: 'var(--primary-gradient)',
@@ -615,23 +694,24 @@ export default function StudentDashboard() {
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                   <Avatar
                     size={120}
+                    src={avatarFile ? URL.createObjectURL(avatarFile) : currentStudent?.avatar_url}
                     icon={<UserOutlined />}
                     style={{
-                      background: 'var(--primary-gradient)',
+                      background: (avatarFile || currentStudent?.avatar_url) ? 'transparent' : 'var(--primary-gradient)',
                       marginBottom: '24px',
                       boxShadow: 'var(--shadow-medium)',
                       border: '4px solid rgba(255, 255, 255, 0.8)'
                     }}
                   />
-                  <Title level={2} style={{ 
-                    margin: '0 0 8px 0', 
+                  <Title level={2} style={{
+                    margin: '0 0 8px 0',
                     color: 'var(--text-primary)',
                     fontSize: '32px',
                     fontWeight: '700'
                   }}>
                     {currentStudent.user?.first_name} {currentStudent.user?.last_name}
                   </Title>
-                  <Text style={{ 
+                  <Text style={{
                     fontSize: '18px',
                     color: 'var(--text-secondary)',
                     fontWeight: '500'
@@ -640,223 +720,223 @@ export default function StudentDashboard() {
                   </Text>
                 </div>
 
-            <Row gutter={[32, 32]}>
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                    <MailOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
-                    Email:
-                  </Text>
-                  <br />
-                  <Text style={{ 
-                    fontSize: '16px', 
-                    marginTop: '8px', 
-                    display: 'block',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {currentStudent.user?.email || 'Не указан'}
-                  </Text>
-                </div>
-              </Col>
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                    <PhoneOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
-                    Телефон:
-                  </Text>
-                  <br />
-                  <Text style={{ 
-                    fontSize: '16px', 
-                    marginTop: '8px', 
-                    display: 'block',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {currentStudent.phone || 'Не указан'}
-                  </Text>
-                </div>
-              </Col>
-            </Row>
+                <Row gutter={[32, 32]}>
+                  <Col xs={24} lg={12}>
+                    <div style={{ marginBottom: '24px' }}>
+                      <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                        <MailOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
+                        Email:
+                      </Text>
+                      <br />
+                      <Text style={{
+                        fontSize: '16px',
+                        marginTop: '8px',
+                        display: 'block',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {currentStudent.user?.email || 'Не указан'}
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <div style={{ marginBottom: '24px' }}>
+                      <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                        <PhoneOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
+                        Телефон:
+                      </Text>
+                      <br />
+                      <Text style={{
+                        fontSize: '16px',
+                        marginTop: '8px',
+                        display: 'block',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {currentStudent.phone || 'Не указан'}
+                      </Text>
+                    </div>
+                  </Col>
+                </Row>
 
-            <Row gutter={[32, 32]}>
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                    <BookOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
-                    Учебное заведение:
-                  </Text>
-                  <br />
-                  <Text style={{ 
-                    fontSize: '16px', 
-                    marginTop: '8px', 
-                    display: 'block',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {currentStudent.university_name || 'Не указан'}
-                  </Text>
-                </div>
-              </Col>
-              <Col xs={24} lg={12}>
-                <div style={{ marginBottom: '24px' }}>
-                  <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                    Курс:
-                  </Text>
-                  <br />
-                  <Text style={{ 
-                    fontSize: '16px', 
-                    marginTop: '8px', 
-                    display: 'block',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    {currentStudent.course ? `${currentStudent.course} курс` : 'Не указан'}
-                  </Text>
-                </div>
-              </Col>
-            </Row>
+                <Row gutter={[32, 32]}>
+                  <Col xs={24} lg={12}>
+                    <div style={{ marginBottom: '24px' }}>
+                      <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                        <BookOutlined style={{ marginRight: '12px', color: 'var(--text-secondary)' }} />
+                        Учебное заведение:
+                      </Text>
+                      <br />
+                      <Text style={{
+                        fontSize: '16px',
+                        marginTop: '8px',
+                        display: 'block',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {currentStudent.university_name || 'Не указан'}
+                      </Text>
+                    </div>
+                  </Col>
+                  <Col xs={24} lg={12}>
+                    <div style={{ marginBottom: '24px' }}>
+                      <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                        Курс:
+                      </Text>
+                      <br />
+                      <Text style={{
+                        fontSize: '16px',
+                        marginTop: '8px',
+                        display: 'block',
+                        color: 'var(--text-secondary)'
+                      }}>
+                        {currentStudent.course ? `${currentStudent.course} курс` : 'Не указан'}
+                      </Text>
+                    </div>
+                  </Col>
+                </Row>
 
-            {currentStudent.specialization && (
-              <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                  Специализация:
-                </Text>
-                <br />
-                <Text style={{ 
-                  fontSize: '16px', 
-                  marginTop: '8px', 
-                  display: 'block',
-                  color: 'var(--text-secondary)'
-                }}>
-                  {currentStudent.specialization}
-                </Text>
-              </div>
-            )}
+                {currentStudent.specialization && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                      Специализация:
+                    </Text>
+                    <br />
+                    <Text style={{
+                      fontSize: '16px',
+                      marginTop: '8px',
+                      display: 'block',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      {currentStudent.specialization}
+                    </Text>
+                  </div>
+                )}
 
-            {currentStudent.bio && (
-              <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                  О себе:
-                </Text>
-                <br />
-                <Paragraph style={{ 
-                  marginTop: '8px', 
-                  fontSize: '16px', 
-                  lineHeight: '1.6',
-                  color: 'var(--text-secondary)'
-                }}>
-                  {currentStudent.bio}
-                </Paragraph>
-              </div>
-            )}
+                {currentStudent.bio && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                      О себе:
+                    </Text>
+                    <br />
+                    <Paragraph style={{
+                      marginTop: '8px',
+                      fontSize: '16px',
+                      lineHeight: '1.6',
+                      color: 'var(--text-secondary)'
+                    }}>
+                      {currentStudent.bio}
+                    </Paragraph>
+                  </div>
+                )}
 
-            {/* Резюме */}
-            {currentStudent.resume && (
-              <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                  Резюме:
-                </Text>
-                <br />
-                <div style={{ marginTop: '8px' }}>
-                  <Button 
-                    type="primary" 
-                    icon={<FileOutlined />}
-                    onClick={() => {
-                      const link = document.createElement('a');
-                      link.href = currentStudent.resume;
-                      link.download = 'resume.pdf';
-                      link.target = '_blank';
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    }}
-                    style={{ 
+                {/* Резюме */}
+                {currentStudent.resume && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                      Резюме:
+                    </Text>
+                    <br />
+                    <div style={{ marginTop: '8px' }}>
+                      <Button
+                        type="primary"
+                        icon={<FileOutlined />}
+                        onClick={() => {
+                          const link = document.createElement('a');
+                          link.href = currentStudent.resume;
+                          link.download = 'resume.pdf';
+                          link.target = '_blank';
+                          document.body.appendChild(link);
+                          link.click();
+                          document.body.removeChild(link);
+                        }}
+                        style={{
+                          background: 'var(--primary-gradient)',
+                          border: 'none',
+                          borderRadius: 'var(--border-radius)',
+                          height: '40px',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                          transition: 'var(--transition)'
+                        }}
+                      >
+                        Скачать резюме
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                {currentStudent.skills && currentStudent.skills.length > 0 && (
+                  <div style={{ marginBottom: '24px' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                      Навыки:
+                    </Text>
+                    <br />
+                    <div style={{ marginTop: '8px' }}>
+                      {currentStudent.skills.map((skill, index) => (
+                        <Tag key={index} style={{
+                          marginBottom: '8px',
+                          padding: '4px 12px',
+                          fontSize: '14px',
+                          borderRadius: 'var(--border-radius)',
+                          backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                          color: '#2563eb',
+                          border: '1px solid rgba(37, 99, 235, 0.15)',
+                          fontWeight: '500'
+                        }}>
+                          {skill}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {currentStudent.interests && currentStudent.interests.length > 0 && (
+                  <div style={{ marginBottom: '32px' }}>
+                    <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
+                      Интересы:
+                    </Text>
+                    <br />
+                    <div style={{ marginTop: '8px' }}>
+                      {currentStudent.interests.map((interest, index) => (
+                        <Tag key={index} style={{
+                          marginBottom: '8px',
+                          padding: '4px 12px',
+                          fontSize: '14px',
+                          borderRadius: 'var(--border-radius)',
+                          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+                          color: '#10b981',
+                          border: '1px solid rgba(16, 185, 129, 0.15)',
+                          fontWeight: '500'
+                        }}>
+                          {interest}
+                        </Tag>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <Divider style={{ margin: '32px 0' }} />
+
+                <div style={{ textAlign: 'center' }}>
+                  <Button
+                    type="primary"
+                    icon={<EditOutlined />}
+                    onClick={handleEdit}
+                    size="large"
+                    style={{
+                      borderRadius: 'var(--border-radius)',
+                      height: '52px',
+                      paddingLeft: '32px',
+                      paddingRight: '32px',
+                      fontWeight: '600',
                       background: 'var(--primary-gradient)',
                       border: 'none',
-                      borderRadius: 'var(--border-radius)',
-                      height: '40px',
-                      fontSize: '14px',
-                      fontWeight: '500',
+                      boxShadow: 'var(--shadow-soft)',
+                      fontSize: '16px',
                       transition: 'var(--transition)'
                     }}
                   >
-                    Скачать резюме
+                    Редактировать профиль
                   </Button>
                 </div>
-              </div>
-            )}
-
-            {currentStudent.skills && currentStudent.skills.length > 0 && (
-              <div style={{ marginBottom: '24px' }}>
-                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                  Навыки:
-                </Text>
-                <br />
-                <div style={{ marginTop: '8px' }}>
-                  {currentStudent.skills.map((skill, index) => (
-                    <Tag key={index} style={{ 
-                      marginBottom: '8px', 
-                      padding: '4px 12px',
-                      fontSize: '14px',
-                      borderRadius: 'var(--border-radius)',
-                      backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                      color: '#2563eb',
-                      border: '1px solid rgba(37, 99, 235, 0.15)',
-                      fontWeight: '500'
-                    }}>
-                      {skill}
-                    </Tag>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {currentStudent.interests && currentStudent.interests.length > 0 && (
-              <div style={{ marginBottom: '32px' }}>
-                <Text strong style={{ color: 'var(--text-primary)', fontSize: '16px' }}>
-                  Интересы:
-                </Text>
-                <br />
-                <div style={{ marginTop: '8px' }}>
-                  {currentStudent.interests.map((interest, index) => (
-                    <Tag key={index} style={{ 
-                      marginBottom: '8px', 
-                      padding: '4px 12px',
-                      fontSize: '14px',
-                      borderRadius: 'var(--border-radius)',
-                      backgroundColor: 'rgba(16, 185, 129, 0.08)',
-                      color: '#10b981',
-                      border: '1px solid rgba(16, 185, 129, 0.15)',
-                      fontWeight: '500'
-                    }}>
-                      {interest}
-                    </Tag>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <Divider style={{ margin: '32px 0' }} />
-
-            <div style={{ textAlign: 'center' }}>
-              <Button
-                type="primary"
-                icon={<EditOutlined />}
-                onClick={handleEdit}
-                size="large"
-                style={{
-                  borderRadius: 'var(--border-radius)',
-                  height: '52px',
-                  paddingLeft: '32px',
-                  paddingRight: '32px',
-                  fontWeight: '600',
-                  background: 'var(--primary-gradient)',
-                  border: 'none',
-                  boxShadow: 'var(--shadow-soft)',
-                  fontSize: '16px',
-                  transition: 'var(--transition)'
-                }}
-              >
-                Редактировать профиль
-              </Button>
-            </div>
               </>
             )}
           </Card>

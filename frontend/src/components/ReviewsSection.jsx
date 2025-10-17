@@ -165,8 +165,11 @@ export default function ReviewsSection({ companyId, companyName }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <Avatar
                     size={40}
+                    src={review.student_avatar_url}
                     icon={<UserOutlined />}
-                    style={{ backgroundColor: '#667eea' }}
+                    style={{
+                      backgroundColor: review.student_avatar_url ? 'transparent' : '#667eea'
+                    }}
                   />
                   <div>
                     <Text strong style={{ fontSize: '16px', color: '#2c3e50' }}>

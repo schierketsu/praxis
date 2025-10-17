@@ -194,6 +194,15 @@ class StudentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
     university_name = serializers.CharField(source='university.name', read_only=True)
     resume = serializers.FileField(required=False, allow_null=True)
+    avatar_url = serializers.SerializerMethodField()
+    
+    def get_avatar_url(self, obj):
+        if obj.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.avatar.url)
+            return obj.avatar.url
+        return None
     
     def to_representation(self, instance):
         data = super().to_representation(instance)
@@ -203,6 +212,12 @@ class StudentSerializer(serializers.ModelSerializer):
                 data['resume'] = request.build_absolute_uri(instance.resume.url)
             else:
                 data['resume'] = instance.resume.url
+        if instance.avatar:
+            request = self.context.get('request')
+            if request:
+                data['avatar'] = request.build_absolute_uri(instance.avatar.url)
+            else:
+                data['avatar'] = instance.avatar.url
         return data
     
     def validate(self, attrs):
@@ -212,7 +227,7 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = [
             'id', 'user', 'university', 'university_name', 'course', 
-            'specialization', 'phone', 'bio', 'resume', 'skills', 'interests', 
+            'specialization', 'phone', 'bio', 'avatar', 'avatar_url', 'resume', 'skills', 'interests', 
             'is_active', 'created_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
@@ -305,6 +320,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     student_skills = serializers.JSONField(source='student.skills', read_only=True)
     student_interests = serializers.JSONField(source='student.interests', read_only=True)
     student_resume_url = serializers.SerializerMethodField()
+    student_avatar_url = serializers.SerializerMethodField()
     company_name = serializers.CharField(source='internship.company.name', read_only=True)
     position_name = serializers.CharField(source='internship.position', read_only=True)
     applied_date = serializers.DateTimeField(source='created_at', read_only=True)
@@ -317,6 +333,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
             if request:
                 return request.build_absolute_uri(obj.student.resume.url)
             return obj.student.resume.url
+        return None
+    
+    def get_student_avatar_url(self, obj):
+        """Получить URL аватара студента"""
+        if obj.student.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.student.avatar.url)
+            return obj.student.avatar.url
         return None
     
     def to_representation(self, instance):
@@ -369,7 +394,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'student', 'internship', 'status', 'comment', 
             'student_name', 'student_university', 'student_course', 'student_specialization',
-            'student_bio', 'student_skills', 'student_interests', 'student_resume_url',
+            'student_bio', 'student_skills', 'student_interests', 'student_resume_url', 'student_avatar_url',
             'company_name', 'position_name', 'applied_date', 'cover_letter', 
             'created_at', 'updated_at'
         ]
@@ -405,14 +430,24 @@ class ApplicationCreateSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
     student_user_id = serializers.IntegerField(source='student.user.id', read_only=True)
+    student_avatar_url = serializers.SerializerMethodField()
     company_name = serializers.CharField(source='company.name', read_only=True)
     created_date = serializers.DateTimeField(source='created_at', read_only=True)
+    
+    def get_student_avatar_url(self, obj):
+        """Получить URL аватара студента"""
+        if obj.student.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.student.avatar.url)
+            return obj.student.avatar.url
+        return None
     
     class Meta:
         model = Review
         fields = [
             'id', 'student', 'student_user_id', 'company', 'rating', 'comment', 'is_anonymous', 
-            'is_verified', 'student_name', 'company_name', 'created_date', 'created_at'
+            'is_verified', 'student_name', 'student_avatar_url', 'company_name', 'created_date', 'created_at'
         ]
         read_only_fields = ['created_at', 'updated_at']
 

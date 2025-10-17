@@ -1102,12 +1102,24 @@ export default function CompanyDashboard() {
                                 {/* Основная информация */}
                                 <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
                                     <Col span={12}>
-                                        <div>
-                                            <Text strong>Студент:</Text>
-                                            <br />
-                                            <Text>{selectedApplication.student_name}</Text>
-                                            <br />
-                                            <Text type="secondary">{selectedApplication.student_university}</Text>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                            <Avatar
+                                                size={60}
+                                                src={selectedApplication.student_avatar_url}
+                                                icon={<UserOutlined />}
+                                                style={{
+                                                    background: selectedApplication.student_avatar_url ? 'transparent' : 'var(--primary-gradient)',
+                                                    boxShadow: 'var(--shadow-small)',
+                                                    border: '2px solid rgba(255, 255, 255, 0.8)'
+                                                }}
+                                            />
+                                            <div>
+                                                <Text strong>Студент:</Text>
+                                                <br />
+                                                <Text>{selectedApplication.student_name}</Text>
+                                                <br />
+                                                <Text type="secondary">{selectedApplication.student_university}</Text>
+                                            </div>
                                         </div>
                                     </Col>
                                     <Col span={12}>
