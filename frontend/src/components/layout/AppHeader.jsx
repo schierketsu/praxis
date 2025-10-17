@@ -66,9 +66,18 @@ export default function AppHeader() {
   // Обработчик события для открытия модального окна
   useEffect(() => {
     const handleOpenAuthModal = (event) => {
-      const { mode } = event.detail;
+      const { mode, userType } = event.detail;
       setAuthModalMode(mode);
       setAuthModalVisible(true);
+
+      // Если передан userType, передаем его в AuthModal
+      if (userType) {
+        // Создаем дополнительное событие для передачи userType в AuthModal
+        const userTypeEvent = new CustomEvent('setUserType', {
+          detail: { userType }
+        });
+        window.dispatchEvent(userTypeEvent);
+      }
     };
 
     window.addEventListener('openAuthModal', handleOpenAuthModal);

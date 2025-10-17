@@ -29,6 +29,25 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
     }
   }, [mode]);
 
+  // Обработчик события для установки userType
+  React.useEffect(() => {
+    const handleSetUserType = (event) => {
+      const { userType } = event.detail;
+      setUserType(userType);
+      if (userType === 'company') {
+        setMode('company-register');
+      } else if (userType === 'student') {
+        setMode('register');
+      }
+    };
+
+    window.addEventListener('setUserType', handleSetUserType);
+
+    return () => {
+      window.removeEventListener('setUserType', handleSetUserType);
+    };
+  }, []);
+
   const handleSuccess = (response) => {
     if (mode === 'login') {
       message.success('Вход выполнен успешно!');

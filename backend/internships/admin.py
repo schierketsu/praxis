@@ -97,12 +97,12 @@ class UniversityAdmin(admin.ModelAdmin):
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ['name', 'website', 'is_verified', 'is_active', 'has_blue_checkmark', 'created_at']
     list_filter = ['is_verified', 'is_active', 'has_blue_checkmark', 'created_at']
-    search_fields = ['name', 'description', 'email']
+    search_fields = ['name', 'short_description', 'description', 'email']
     ordering = ['name']
     
     fieldsets = (
         ('Основная информация', {
-            'fields': ('name', 'description', 'website', 'email', 'logo')
+            'fields': ('name', 'short_description', 'description', 'website', 'email', 'logo')
         }),
         ('Адрес', {
             'fields': ('address', 'latitude', 'longitude'),

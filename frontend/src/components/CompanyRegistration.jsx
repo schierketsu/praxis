@@ -190,6 +190,22 @@ export default function CompanyRegistration({ onSuccess, onSwitchToLogin }) {
                     />
                 </Form.Item>
 
+                <Form.Item
+                    name="short_description"
+                    label="Краткое описание компании"
+                    rules={[
+                        { max: 300, message: 'Краткое описание не должно превышать 300 символов' }
+                    ]}
+                >
+                    <Input.TextArea
+                        placeholder="Краткое описание компании (до 300 символов)"
+                        rows={3}
+                        style={{ borderRadius: '12px' }}
+                        showCount
+                        maxLength={300}
+                    />
+                </Form.Item>
+
 
                 <Form.Item style={{ marginBottom: '24px', textAlign: 'center' }}>
                     <Space size="middle">

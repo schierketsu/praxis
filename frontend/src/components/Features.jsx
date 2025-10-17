@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row, Col, Typography, Space } from 'antd';
-import { 
-  SearchOutlined, 
-  SafetyOutlined, 
-  TeamOutlined, 
+import {
+  SearchOutlined,
+  SafetyOutlined,
+  TeamOutlined,
   RocketOutlined,
   StarOutlined,
   GlobalOutlined
@@ -46,15 +46,15 @@ const Features = () => {
   ];
 
   return (
-    <div style={{ 
-      padding: '60px 0',
+    <div style={{
+      padding: '30px 0',
       position: 'relative'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-        <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '80px' }}>
-          <Title 
-            level={2} 
-            style={{ 
+        <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <Title
+            level={2}
+            style={{
               fontSize: '2.5rem',
               fontWeight: '700',
               background: 'var(--primary-gradient)',
@@ -65,9 +65,9 @@ const Features = () => {
           >
             Почему выбирают нас
           </Title>
-          <Paragraph 
-            style={{ 
-              fontSize: '1.125rem', 
+          <Paragraph
+            style={{
+              fontSize: '1.125rem',
               color: 'var(--text-secondary)',
               maxWidth: '600px',
               margin: '0 auto'
@@ -80,7 +80,7 @@ const Features = () => {
         <Row gutter={[32, 32]}>
           {features.map((feature, index) => (
             <Col xs={24} sm={12} lg={8} key={index}>
-              <div 
+              <div
                 className="fade-in-up"
                 style={{
                   background: 'var(--glass-bg)',
@@ -103,7 +103,7 @@ const Features = () => {
                 }}
               >
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>
-                  <div style={{ 
+                  <div style={{
                     textAlign: 'center',
                     width: '60px',
                     height: '60px',
@@ -116,18 +116,18 @@ const Features = () => {
                   }}>
                     {feature.icon}
                   </div>
-                  
+
                   <div style={{ textAlign: 'center' }}>
-                    <Title level={4} style={{ 
-                      margin: '0 0 16px 0', 
+                    <Title level={4} style={{
+                      margin: '0 0 16px 0',
                       color: 'var(--text-primary)',
                       fontWeight: '600'
                     }}>
                       {feature.title}
                     </Title>
-                    
-                    <Paragraph style={{ 
-                      margin: 0, 
+
+                    <Paragraph style={{
+                      margin: 0,
                       color: 'var(--text-secondary)',
                       lineHeight: '1.6'
                     }}>

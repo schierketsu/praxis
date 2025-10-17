@@ -457,7 +457,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                     overflow: 'hidden',
                     margin: 0
                   }}>
-                    {company.description || 'Описание компании не указано'}
+                    {company.short_description || company.description || 'Описание компании не указано'}
                   </Text>
                 </div>
 

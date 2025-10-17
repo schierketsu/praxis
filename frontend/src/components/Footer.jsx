@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout, Typography, Row, Col, Space, Button } from 'antd';
-import { 
-  MailOutlined, 
-  PhoneOutlined, 
+import {
+  MailOutlined,
+  PhoneOutlined,
   EnvironmentOutlined,
   GithubOutlined,
   SendOutlined,
@@ -32,7 +32,7 @@ const Footer = () => {
         borderRadius: '50%',
         filter: 'blur(50px)'
       }} />
-      
+
       <div style={{
         position: 'absolute',
         bottom: '-25%',
@@ -52,7 +52,7 @@ const Footer = () => {
                 практикастудентам.рф
               </Title>
               <Paragraph style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px', lineHeight: '1.6' }}>
-                Современная платформа для поиска практик и стажировок в IT-компаниях. 
+                Современная платформа для поиска практик в IT-компаниях.
                 Соединяем талантливых студентов с ведущими технологическими компаниями.
               </Paragraph>
               <Space size="large" style={{ marginTop: '24px' }}>
@@ -61,7 +61,7 @@ const Footer = () => {
                   icon={<GithubOutlined />}
                   style={{ color: 'white', fontSize: '20px' }}
                 />
-   
+
               </Space>
             </div>
           </Col>
@@ -73,10 +73,10 @@ const Footer = () => {
               </Title>
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  ссылка1
+                  Рейтинг компаний
                 </Link>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
-                  ссылка2
+                  Часто задаваемые вопросы
                 </Link>
                 {/* <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
                   *
@@ -109,7 +109,7 @@ const Footer = () => {
                 <Space>
                   <EnvironmentOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
                   <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  Московский просп., 15, Чебоксары
+                    Московский просп., 15, Чебоксары
                   </span>
                 </Space>
               </Space>
@@ -117,9 +117,9 @@ const Footer = () => {
           </Col>
         </Row>
 
-        <div style={{ 
-          borderTop: '1px solid rgba(255, 255, 255, 0.2)', 
-          marginTop: '60px', 
+        <div style={{
+          borderTop: '1px solid rgba(255, 255, 255, 0.2)',
+          marginTop: '60px',
           paddingTop: '40px',
           textAlign: 'center'
         }}>

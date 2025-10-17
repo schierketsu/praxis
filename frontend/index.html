@@ -1,26 +1,27 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/assets/icon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Платформа для поиска практик и стажировок в IT-компаниях" />
-    <meta name="keywords" content="практики, стажировки, IT, программирование, разработка" />
-    <title>Праксис - Платформа поиска практик</title>
-    
-    <!-- Critical CSS -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-     integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-     crossorigin=""/>
-     
-    <!-- Performance hints -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="theme-color" content="#667eea" />
-  </head>
-  <body>
-    <div id="root">
-      <!-- Loading fallback -->
-      <div style="
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Платформа для поиска практик и стажировок в IT-компаниях" />
+  <meta name="keywords" content="практики, стажировки, IT, программирование, разработка" />
+  <title>практикастудентам.рф</title>
+
+  <!-- Critical CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Performance hints -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="theme-color" content="#4c63d2" />
+</head>
+
+<body>
+  <div id="root">
+    <!-- Loading fallback -->
+    <div style="
         display: flex; 
         justify-content: center; 
         align-items: center; 
@@ -28,8 +29,8 @@
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       ">
-        <div style="text-align: center;">
-          <div style="
+      <div style="text-align: center;">
+        <div style="
             width: 40px; 
             height: 40px; 
             border: 4px solid #f3f3f3; 
@@ -38,18 +39,24 @@
             animation: spin 1s linear infinite;
             margin: 0 auto 20px;
           "></div>
-          <p style="color: #667eea; font-weight: 600;">Загрузка...</p>
-        </div>
+        <p style="color: #667eea; font-weight: 600;">Загрузка...</p>
       </div>
     </div>
-    
-    <style>
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+  </div>
+
+  <style>
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
-    </style>
-    
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

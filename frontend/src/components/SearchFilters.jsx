@@ -82,7 +82,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
     const { label, value, closable, onClose } = props;
     return (
       <Tag
-        color="blue"
+        size="small"
         closable={closable}
         onClose={onClose}
         style={{
@@ -90,9 +90,9 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
           fontSize: '12px',
           padding: '4px 8px',
           borderRadius: '6px',
-          backgroundColor: '#f0f4ff',
-          color: '#4c63d2',
-          border: '1px solid #e0e7ff',
+          backgroundColor: '#4c63d2',
+          color: 'white',
+          border: 'none',
           fontWeight: '500'
         }}
       >

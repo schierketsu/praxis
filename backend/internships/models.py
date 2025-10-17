@@ -33,6 +33,12 @@ class University(models.Model):
 class Company(models.Model):
     """Модель компании"""
     name = models.CharField(max_length=200, verbose_name='Название компании')
+    short_description = models.CharField(
+        max_length=300, 
+        blank=True, 
+        verbose_name='Краткое описание',
+        help_text='Краткое описание компании (до 300 символов)'
+    )
     description = models.TextField(blank=True, verbose_name='Описание')
     website = models.URLField(blank=True, verbose_name='Веб-сайт')
     address = models.CharField(max_length=500, blank=True, verbose_name='Адрес')

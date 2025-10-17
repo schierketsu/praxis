@@ -17,7 +17,7 @@ class CompanySerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Company
-        fields = ['id', 'name', 'description', 'website', 'address', 'latitude', 'longitude', 'email', 'logo_url', 'average_rating', 'total_reviews', 'has_blue_checkmark']
+        fields = ['id', 'name', 'short_description', 'description', 'website', 'address', 'latitude', 'longitude', 'email', 'logo_url', 'average_rating', 'total_reviews', 'has_blue_checkmark']
     
     def get_logo_url(self, obj):
         if obj.logo:
@@ -49,7 +49,7 @@ class CompanyRegistrationSerializer(serializers.ModelSerializer):
         model = Company
         fields = [
             'username', 'email', 'first_name', 'last_name', 'password', 
-            'password_confirm', 'name', 'description', 'website', 'address',
+            'password_confirm', 'name', 'short_description', 'description', 'website', 'address',
             'latitude', 'longitude'
         ]
     

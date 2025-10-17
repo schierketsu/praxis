@@ -212,8 +212,8 @@ export default function ReviewsSection({ companyId, companyName }) {
                 {review.comment}
               </Paragraph>
 
-              {/* Кнопка "Ответить" для компаний */}
-              {company && (
+              {/* Кнопка "Ответить" для компаний только на их собственных страницах */}
+              {company && company.id === parseInt(companyId) && (
                 <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #f0f0f0' }}>
                   <Button
                     type="text"

@@ -90,7 +90,32 @@ export default function AppContent() {
 
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
 
-        <div style={{ marginBottom: '24px' }}>
+        <div style={{ marginTop: '10px', marginBottom: '40px' }}>
+          <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <Title
+              level={2}
+              style={{
+                fontSize: '2.5rem',
+                fontWeight: '700',
+                background: 'var(--primary-gradient)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                marginBottom: '24px'
+              }}
+            >
+              Начни поиск прямо сейчас
+            </Title>
+            <Paragraph
+              style={{
+                fontSize: '1.125rem',
+                color: 'var(--text-secondary)',
+                maxWidth: '600px',
+                margin: '0 auto'
+              }}
+            >
+              Найди подходящую практику с помощью фильтров
+            </Paragraph>
+          </div>
           <SearchFilters
             onSearch={handleSearch}
             onReset={handleReset}

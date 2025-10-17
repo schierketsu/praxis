@@ -80,9 +80,9 @@ const Hero = () => {
       primaryButton: 'Разместить вакансию',
       secondaryButton: 'Узнать больше',
       onPrimaryClick: () => {
-        // Открываем модальное окно регистрации через событие
+        // Открываем модальное окно регистрации компании через событие
         const event = new CustomEvent('openAuthModal', {
-          detail: { mode: 'register' }
+          detail: { mode: 'register', userType: 'company' }
         });
         window.dispatchEvent(event);
       },
