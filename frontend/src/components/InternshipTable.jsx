@@ -11,7 +11,7 @@ const { Text, Link } = Typography;
 // Оптимизированный компонент карточки компании
 const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => {
   const techs = getCompanyTechs(record.internships || []);
-  
+
   return (
     <div style={{ width: '100%', height: '100%' }}>
       <Card
@@ -108,10 +108,10 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
             {techs.length > 0 ? (
               <>
                 {techs.slice(0, 5).map(tech => (
-                  <Tag 
-                    key={tech} 
-                    size="small" 
-                    style={{ 
+                  <Tag
+                    key={tech}
+                    size="small"
+                    style={{
                       borderRadius: '8px',
                       backgroundColor: 'rgba(102, 126, 234, 0.1)',
                       color: '#667eea',
@@ -123,7 +123,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
                   </Tag>
                 ))}
                 {techs.length > 5 && (
-                  <Tag size="small" style={{ 
+                  <Tag size="small" style={{
                     borderRadius: '8px',
                     backgroundColor: 'rgba(102, 126, 234, 0.1)',
                     color: '#667eea',
@@ -167,7 +167,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
 
 export default function InternshipTable({ data, loading, pagination, onTableChange, selectedTechs = [] }) {
   const navigate = useNavigate();
-  const { user, student } = useAuth();
+  const { user, student, company } = useAuth();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const cardsPerView = 4;
@@ -175,7 +175,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   const handleCompanyClick = useCallback((record) => {
     if (record.id) {
       // Проверяем авторизацию пользователя
-      if (!user || !student) {
+      if (!user || (!student && !company)) {
         // Если пользователь не авторизован, показываем модальное окно авторизации
         setAuthModalVisible(true);
         return;
@@ -183,7 +183,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
       // Если пользователь авторизован, переходим на страницу компании
       navigate(`/company/${record.id}`);
     }
-  }, [user, student, navigate]);
+  }, [user, student, company, navigate]);
 
   const handleAuthModalClose = useCallback(() => {
     setAuthModalVisible(false);
@@ -202,17 +202,18 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   // Мемоизируем отфильтрованные данные
   const filteredData = useMemo(() => {
     if (!data || !Array.isArray(data)) return [];
-    
+
     return data.filter(record => {
+      // Для всех пользователей показываем только компании с практиками
       if (!record.internships || record.internships.length === 0) return false;
-      
+
       // Фильтрация по технологиям
       if (selectedTechs.length > 0) {
         const companyTechs = getCompanyTechs(record.internships);
         const hasMatchingTech = selectedTechs.some(tech => companyTechs.includes(tech));
         if (!hasMatchingTech) return false;
       }
-      
+
       return true;
     });
   }, [data, selectedTechs, getCompanyTechs]);
@@ -233,10 +234,10 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   // Создаем циклический массив карточек
   const getVisibleCards = () => {
     if (data.length === 0) return [];
-    
+
     const cards = [];
     const actualCardsPerView = Math.min(cardsPerView, data.length);
-    
+
     for (let i = 0; i < actualCardsPerView; i++) {
       const index = (currentIndex + i) % data.length;
       cards.push(data[index]);
@@ -335,8 +336,8 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                 }}
               >
                 {/* Логотип компании */}
-                <div style={{ 
-                  textAlign: 'center', 
+                <div style={{
+                  textAlign: 'center',
                   marginBottom: '24px',
                   position: 'relative'
                 }}>
@@ -344,10 +345,10 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                     position: 'relative',
                     display: 'inline-block'
                   }}>
-                    <Avatar 
-                      src={company.logo_url} 
+                    <Avatar
+                      src={company.logo_url}
                       size={90}
-                      style={{ 
+                      style={{
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         border: '4px solid rgba(255, 255, 255, 0.8)',
                         boxShadow: 'var(--shadow-medium)',
@@ -379,8 +380,8 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                     {company.name}
                   </Text>
                   <div style={{ marginTop: '8px' }}>
-                    <RatingDisplay 
-                      rating={company.average_rating || 0} 
+                    <RatingDisplay
+                      rating={company.average_rating || 0}
                       showText={false}
                       size="small"
                       showCount={true}
@@ -390,14 +391,14 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   </div>
                 </div>
 
-                <div style={{ 
-                  marginBottom: '16px', 
+                <div style={{
+                  marginBottom: '16px',
                   height: '100px',
                   display: 'flex',
                   alignItems: 'flex-start'
                 }}>
-                  <Text style={{ 
-                    fontSize: '14px', 
+                  <Text style={{
+                    fontSize: '14px',
                     color: '#5a6c7d',
                     lineHeight: '1.5',
                     display: '-webkit-box',
@@ -410,8 +411,8 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   </Text>
                 </div>
 
-                <div style={{ 
-                  marginBottom: '20px', 
+                <div style={{
+                  marginBottom: '20px',
                   height: '80px',
                   display: 'flex',
                   flexDirection: 'column'
@@ -427,10 +428,10 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                         {techs.slice(0, 5).map(tech => {
                           const isSelected = selectedTechs.includes(tech);
                           return (
-                            <Tag 
-                              key={tech} 
-                              size="small" 
-                              style={{ 
+                            <Tag
+                              key={tech}
+                              size="small"
+                              style={{
                                 borderRadius: '6px',
                                 backgroundColor: isSelected ? '#4c63d2' : '#f0f4ff',
                                 color: isSelected ? 'white' : '#4c63d2',
@@ -445,7 +446,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                           );
                         })}
                         {techs.length > 5 && (
-                          <Tag size="small" style={{ 
+                          <Tag size="small" style={{
                             borderRadius: '6px',
                             backgroundColor: '#f0f4ff',
                             color: '#4c63d2',
@@ -491,7 +492,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
         })}
       </div>
 
-      
+
       {/* Модальное окно авторизации */}
       <AuthModal
         visible={authModalVisible}

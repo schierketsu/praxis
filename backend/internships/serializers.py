@@ -37,6 +37,102 @@ class CompanySerializer(serializers.ModelSerializer):
         return obj.reviews.count()
 
 
+class CompanyRegistrationSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, min_length=8)
+    password_confirm = serializers.CharField(write_only=True)
+    username = serializers.CharField()
+    email = serializers.EmailField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
+    
+    class Meta:
+        model = Company
+        fields = [
+            'username', 'email', 'first_name', 'last_name', 'password', 
+            'password_confirm', 'name', 'description', 'website', 'address',
+            'latitude', 'longitude'
+        ]
+    
+    def validate_username(self, value):
+        if User.objects.filter(username=value).exists():
+            raise serializers.ValidationError("Пользователь с таким именем уже существует")
+        return value
+    
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError("Пользователь с таким email уже существует")
+        return value
+    
+    def validate_name(self, value):
+        if Company.objects.filter(name=value).exists():
+            raise serializers.ValidationError("Компания с таким названием уже существует")
+        return value
+    
+    def validate(self, attrs):
+        if attrs['password'] != attrs['password_confirm']:
+            raise serializers.ValidationError("Пароли не совпадают")
+        return attrs
+    
+    def create(self, validated_data):
+        # Создаем пользователя
+        user_data = {
+            'username': validated_data['username'],
+            'email': validated_data['email'],
+            'first_name': validated_data['first_name'],
+            'last_name': validated_data['last_name'],
+            'password': validated_data['password']
+        }
+        
+        user = User.objects.create_user(
+            username=user_data['username'],
+            email=user_data['email'],
+            first_name=user_data['first_name'],
+            last_name=user_data['last_name'],
+            password=user_data['password']
+        )
+        
+        # Создаем профиль компании
+        company_data = {
+            'user': user,
+            'name': validated_data.get('name'),
+            'description': validated_data.get('description', ''),
+            'website': validated_data.get('website', ''),
+            'address': validated_data.get('address', ''),
+            'latitude': validated_data.get('latitude'),
+            'longitude': validated_data.get('longitude'),
+            'email': validated_data.get('email'),
+            'is_verified': False,  # Требует модерации
+            'is_active': True
+        }
+        
+        company = Company.objects.create(**company_data)
+        return company
+
+
+class CompanyProfileSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = Company
+        fields = [
+            'id', 'user', 'name', 'description', 'website', 'address',
+            'latitude', 'longitude', 'email', 'logo', 'is_verified', 
+            'is_active', 'created_at', 'updated_at'
+        ]
+        read_only_fields = ['created_at', 'updated_at', 'is_verified', 'user']
+    
+    def get_user(self, obj):
+        if obj.user:
+            return {
+                'id': obj.user.id,
+                'username': obj.user.username,
+                'first_name': obj.user.first_name,
+                'last_name': obj.user.last_name,
+                'email': obj.user.email
+            }
+        return None
+
+
 class InternshipSerializer(serializers.ModelSerializer):
     company = CompanySerializer(read_only=True)
     universities = UniversitySerializer(many=True, read_only=True)
@@ -56,6 +152,36 @@ class InternshipSerializer(serializers.ModelSerializer):
             'is_active', 'created_at', 'company_id', 'university_ids'
         ]
         read_only_fields = ['created_at', 'updated_at']
+    
+    def create(self, validated_data):
+        # Извлекаем university_ids из validated_data
+        university_ids = validated_data.pop('university_ids', [])
+        
+        # Создаем практику
+        internship = Internship.objects.create(**validated_data)
+        
+        # Добавляем связи с университетами
+        if university_ids:
+            universities = University.objects.filter(id__in=university_ids)
+            internship.universities.set(universities)
+        
+        return internship
+    
+    def update(self, instance, validated_data):
+        # Извлекаем university_ids из validated_data
+        university_ids = validated_data.pop('university_ids', None)
+        
+        # Обновляем практику
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        
+        # Обновляем связи с университетами, если они переданы
+        if university_ids is not None:
+            universities = University.objects.filter(id__in=university_ids)
+            instance.universities.set(universities)
+        
+        return instance
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -172,9 +298,26 @@ class LoginSerializer(serializers.Serializer):
 
 class ApplicationSerializer(serializers.ModelSerializer):
     student_name = serializers.CharField(source='student.user.get_full_name', read_only=True)
+    student_university = serializers.CharField(source='student.university.name', read_only=True)
+    student_course = serializers.IntegerField(source='student.course', read_only=True)
+    student_specialization = serializers.CharField(source='student.specialization', read_only=True)
+    student_bio = serializers.CharField(source='student.bio', read_only=True)
+    student_skills = serializers.JSONField(source='student.skills', read_only=True)
+    student_interests = serializers.JSONField(source='student.interests', read_only=True)
+    student_resume_url = serializers.SerializerMethodField()
     company_name = serializers.CharField(source='internship.company.name', read_only=True)
     position_name = serializers.CharField(source='internship.position', read_only=True)
     applied_date = serializers.DateTimeField(source='created_at', read_only=True)
+    cover_letter = serializers.CharField(source='comment', read_only=True)
+    
+    def get_student_resume_url(self, obj):
+        """Получить URL резюме студента"""
+        if obj.student.resume:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.student.resume.url)
+            return obj.student.resume.url
+        return None
     
     def to_representation(self, instance):
         """Переопределяем для правильной обработки дат"""
@@ -182,6 +325,37 @@ class ApplicationSerializer(serializers.ModelSerializer):
         # Убеждаемся, что applied_date всегда есть
         if not data.get('applied_date') and data.get('created_at'):
             data['applied_date'] = data['created_at']
+        
+        # Добавляем полную информацию о практике
+        if instance.internship:
+            data['internship'] = {
+                'id': instance.internship.id,
+                'position': instance.internship.position,
+                'company_name': instance.internship.company.name,
+                'description': instance.internship.description,
+                'location': instance.internship.location,
+                'requirements': instance.internship.requirements,
+                'tech_stack': instance.internship.tech_stack,
+                'available_positions': instance.internship.available_positions,
+                'start_date': instance.internship.start_date,
+                'end_date': instance.internship.end_date
+            }
+        
+        # Добавляем полную информацию о студенте
+        if instance.student:
+            data['student'] = {
+                'id': instance.student.id,
+                'name': instance.student.user.get_full_name(),
+                'email': instance.student.user.email,
+                'university': instance.student.university.name if instance.student.university else None,
+                'course': instance.student.course,
+                'specialization': instance.student.specialization,
+                'bio': instance.student.bio,
+                'skills': instance.student.skills,
+                'interests': instance.student.interests,
+                'resume_url': data.get('student_resume_url'),
+                'phone': instance.student.phone
+            }
         
         # Отладочная информация (закомментировано для продакшена)
         # print(f"ApplicationSerializer - instance: {instance}")
@@ -194,7 +368,9 @@ class ApplicationSerializer(serializers.ModelSerializer):
         model = Application
         fields = [
             'id', 'student', 'internship', 'status', 'comment', 
-            'student_name', 'company_name', 'position_name', 'applied_date',
+            'student_name', 'student_university', 'student_course', 'student_specialization',
+            'student_bio', 'student_skills', 'student_interests', 'student_resume_url',
+            'company_name', 'position_name', 'applied_date', 'cover_letter', 
             'created_at', 'updated_at'
         ]
         read_only_fields = ['created_at', 'updated_at']

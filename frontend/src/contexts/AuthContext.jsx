@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, companyAPI } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -14,6 +14,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [student, setStudent] = useState(null);
+  const [company, setCompany] = useState(null);
   const [loading, setLoading] = useState(true);
 
   // Проверяем статус авторизации при загрузке приложения
@@ -23,18 +24,33 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuthStatus = useCallback(async () => {
     try {
-      const response = await authAPI.checkAuthStatus();
-      if (response.authenticated && response.student) {
-        setUser(response.student.user);
-        setStudent(response.student);
-      } else {
-        setUser(null);
-        setStudent(null);
+      // Проверяем авторизацию студента
+      const studentResponse = await authAPI.checkAuthStatus();
+      if (studentResponse.authenticated && studentResponse.student) {
+        setUser(studentResponse.student.user);
+        setStudent(studentResponse.student);
+        setCompany(null);
+        return;
       }
+
+      // Проверяем авторизацию компании
+      const companyResponse = await companyAPI.checkAuthStatus();
+      if (companyResponse.authenticated && companyResponse.company) {
+        setUser(companyResponse.company.user);
+        setCompany(companyResponse.company);
+        setStudent(null);
+        return;
+      }
+
+      // Если ни студент, ни компания не авторизованы
+      setUser(null);
+      setStudent(null);
+      setCompany(null);
     } catch (error) {
       console.error('Ошибка проверки авторизации:', error);
       setUser(null);
       setStudent(null);
+      setCompany(null);
     } finally {
       setLoading(false);
     }
@@ -42,21 +58,41 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback(async (credentials) => {
     try {
-      const response = await authAPI.login(credentials);
-      setUser(response.student.user);
-      setStudent(response.student);
-      return response;
+      // Пытаемся войти как студент
+      try {
+        const response = await authAPI.login(credentials);
+        setUser(response.student.user);
+        setStudent(response.student);
+        setCompany(null);
+        return response;
+      } catch (studentError) {
+        // Если не получилось как студент, пробуем как компания
+        const response = await companyAPI.login(credentials);
+        setUser(response.company.user);
+        setCompany(response.company);
+        setStudent(null);
+        return response;
+      }
     } catch (error) {
       throw error;
     }
   }, []);
 
-  const register = useCallback(async (studentData) => {
+  const register = useCallback(async (userData) => {
     try {
-      const response = await authAPI.register(studentData);
-      // После регистрации автоматически входим
-      await checkAuthStatus();
-      return response;
+      // Пытаемся зарегистрироваться как студент
+      try {
+        const response = await authAPI.register(userData);
+        // После регистрации автоматически входим
+        await checkAuthStatus();
+        return response;
+      } catch (studentError) {
+        // Если не получилось как студент, пробуем как компания
+        const response = await companyAPI.register(userData);
+        // После регистрации автоматически входим
+        await checkAuthStatus();
+        return response;
+      }
     } catch (error) {
       throw error;
     }
@@ -64,31 +100,53 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      await authAPI.logout();
+      // Пытаемся выйти как студент
+      try {
+        await authAPI.logout();
+      } catch (e) {
+        // Игнорируем ошибку, если студент не авторизован
+      }
+
+      // Пытаемся выйти как компания
+      try {
+        await companyAPI.logout();
+      } catch (e) {
+        // Игнорируем ошибку, если компания не авторизована
+      }
+
       setUser(null);
       setStudent(null);
+      setCompany(null);
     } catch (error) {
       console.error('Ошибка выхода:', error);
       // Даже если произошла ошибка, очищаем состояние
       setUser(null);
       setStudent(null);
+      setCompany(null);
     }
   }, []);
 
   const updateProfile = useCallback(async (profileData) => {
     try {
-      const response = await authAPI.updateProfile(profileData);
-      setStudent(response.student);
-      return response;
+      if (student) {
+        const response = await authAPI.updateProfile(profileData);
+        setStudent(response.student);
+        return response;
+      } else if (company) {
+        const response = await companyAPI.updateProfile(profileData);
+        setCompany(response.company);
+        return response;
+      }
     } catch (error) {
       throw error;
     }
-  }, []);
+  }, [student, company]);
 
   // Мемоизируем значение контекста для предотвращения лишних ререндеров
   const value = useMemo(() => ({
     user,
     student,
+    company,
     loading,
     isAuthenticated: !!user,
     login,
@@ -96,7 +154,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateProfile,
     checkAuthStatus
-  }), [user, student, loading, login, register, logout, updateProfile, checkAuthStatus]);
+  }), [user, student, company, loading, login, register, logout, updateProfile, checkAuthStatus]);
 
   return (
     <AuthContext.Provider value={value}>

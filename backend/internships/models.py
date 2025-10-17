@@ -61,7 +61,27 @@ class Company(models.Model):
         verbose_name='Email компании',
         help_text='Email для получения уведомлений о заявках'
     )
+    # Новые поля для системы аутентификации компаний
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        verbose_name='Пользователь компании',
+        help_text='Связанный аккаунт пользователя для входа в систему'
+    )
+    is_verified = models.BooleanField(
+        default=False,
+        verbose_name='Подтверждена',
+        help_text='Компания прошла модерацию и может публиковать практики'
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name='Активна',
+        help_text='Компания активна в системе'
+    )
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         verbose_name = 'Компания'

@@ -9,7 +9,7 @@ import ReviewForm from './ReviewForm';
 const { Title, Text, Paragraph } = Typography;
 
 export default function ReviewsSection({ companyId, companyName }) {
-  const { user } = useAuth();
+  const { user, student, company } = useAuth();
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [averageRating, setAverageRating] = useState(0);
@@ -27,13 +27,13 @@ export default function ReviewsSection({ companyId, companyName }) {
     try {
       const response = await reviewsAPI.getCompanyReviews(companyId);
       setReviews(response.results || []);
-      
+
       // Находим отзыв текущего пользователя
       if (user && response.results) {
         const currentUserReview = response.results.find(review => review.student_user_id === user.id);
         setUserReview(currentUserReview || null);
       }
-      
+
       // Вычисляем средний рейтинг
       if (response.results && response.results.length > 0) {
         const total = response.results.reduce((sum, review) => sum + review.rating, 0);
@@ -100,8 +100,8 @@ export default function ReviewsSection({ companyId, companyName }) {
     >
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <Title level={2} style={{ 
-            margin: 0, 
+          <Title level={2} style={{
+            margin: 0,
             background: 'var(--primary-gradient)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -112,8 +112,8 @@ export default function ReviewsSection({ companyId, companyName }) {
           }}>
             Отзывы студентов
           </Title>
-          
-          {user && (
+
+          {user && student && (
             <Button
               type="primary"
               icon={userReview ? <EditOutlined /> : <PlusOutlined />}
@@ -136,7 +136,7 @@ export default function ReviewsSection({ companyId, companyName }) {
             </Button>
           )}
         </div>
-        
+
         {totalReviews === 0 && (
           <Text style={{ fontSize: '16px', color: '#666' }}>
             Пока нет отзывов о компании
@@ -163,8 +163,8 @@ export default function ReviewsSection({ companyId, companyName }) {
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Avatar 
-                    size={40} 
+                  <Avatar
+                    size={40}
                     icon={<UserOutlined />}
                     style={{ backgroundColor: '#667eea' }}
                   />
@@ -179,9 +179,9 @@ export default function ReviewsSection({ companyId, companyName }) {
                   </div>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Rate 
-                    disabled 
-                    value={review.rating} 
+                  <Rate
+                    disabled
+                    value={review.rating}
                     style={{ color: '#faad14' }}
                   />
                   {user && review.student_user_id === user.id && (
@@ -200,17 +200,39 @@ export default function ReviewsSection({ companyId, companyName }) {
                   )}
                 </div>
               </div>
-              
-              <Paragraph 
-                style={{ 
-                  margin: 0, 
-                  fontSize: '14px', 
+
+              <Paragraph
+                style={{
+                  margin: 0,
+                  fontSize: '14px',
                   lineHeight: '1.6',
                   color: '#5a6c7d'
                 }}
               >
                 {review.comment}
               </Paragraph>
+
+              {/* Кнопка "Ответить" для компаний */}
+              {company && (
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid #f0f0f0' }}>
+                  <Button
+                    type="text"
+                    size="small"
+                    onClick={() => {
+                      // TODO: Реализовать ответ на отзыв
+                      message.info('Функция ответа на отзыв будет добавлена в следующей версии');
+                    }}
+                    style={{
+                      color: '#667eea',
+                      fontSize: '12px',
+                      padding: '4px 8px',
+                      height: 'auto'
+                    }}
+                  >
+                    Ответить на отзыв
+                  </Button>
+                </div>
+              )}
             </Card>
           ))}
         </div>

@@ -32,7 +32,7 @@ const titleStyle = {
 };
 
 export default function AppHeader() {
-  const { user, student, isAuthenticated, logout } = useAuth();
+  const { user, student, company, isAuthenticated, logout } = useAuth();
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' или 'register'
   const navigate = useNavigate();
@@ -58,6 +58,16 @@ export default function AppHeader() {
     setAuthModalVisible(true);
   };
 
+  const handleCompanyLoginClick = () => {
+    setAuthModalMode('company-login');
+    setAuthModalVisible(true);
+  };
+
+  const handleCompanyRegisterClick = () => {
+    setAuthModalMode('company-register');
+    setAuthModalVisible(true);
+  };
+
   const handleLogout = async () => {
     await logout();
   };
@@ -78,7 +88,11 @@ export default function AppHeader() {
   }, []);
 
   const handleProfileClick = () => {
-    navigate('/dashboard');
+    if (student) {
+      navigate('/dashboard');
+    } else if (company) {
+      navigate('/company-dashboard');
+    }
   };
 
   const handleApplicationsClick = () => {
@@ -89,15 +103,15 @@ export default function AppHeader() {
     {
       key: 'profile',
       icon: <UserOutlined />,
-      label: 'Профиль',
+      label: student ? 'Профиль' : 'Панель управления',
       onClick: handleProfileClick
     },
-    {
+    ...(student ? [{
       key: 'settings',
       icon: <SettingOutlined />,
       label: 'Заявки',
       onClick: handleApplicationsClick
-    },
+    }] : []),
     {
       type: 'divider'
     },
@@ -157,7 +171,7 @@ export default function AppHeader() {
                     icon={<UserOutlined />}
                     style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}
                   />
-                  {user?.first_name || user?.username}
+                  {student ? (user?.first_name || user?.username) : (company?.name || user?.username)}
                 </Space>
               </Button>
             </Dropdown>
@@ -199,6 +213,24 @@ export default function AppHeader() {
                 }}
               >
                 Регистрация
+              </Button>
+              <Button
+                icon={<UserOutlined />}
+                size="large"
+                onClick={handleCompanyLoginClick}
+                style={{
+                  borderRadius: '12px',
+                  height: '44px',
+                  padding: '0 24px',
+                  fontWeight: '600',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  color: 'white',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  transition: 'all 0.3s ease'
+                }}
+              >
+                Для компаний
               </Button>
             </Space>
           )}

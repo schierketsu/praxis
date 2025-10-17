@@ -60,7 +60,7 @@ export const companiesAPI = {
     const response = await api.get('/companies/', { params });
     return response.data;
   },
-  
+
   // Получить компании с их практиками
   getCompaniesWithInternships: async (params = {}) => {
     const response = await api.get('/companies/with_internships/', { params });
@@ -176,6 +176,110 @@ export const reviewsAPI = {
   // Удалить отзыв
   deleteReview: async (id) => {
     const response = await api.delete(`/reviews/${id}/`);
+    return response.data;
+  },
+};
+
+// API для авторизации компаний
+export const companyAPI = {
+  // Регистрация компании
+  register: async (companyData) => {
+    const response = await api.post('/company/register/', companyData);
+    return response.data;
+  },
+
+  // Вход компании
+  login: async (credentials) => {
+    const response = await api.post('/company/login/', credentials);
+    return response.data;
+  },
+
+  // Выход компании
+  logout: async () => {
+    const response = await api.post('/company/logout/');
+    return response.data;
+  },
+
+  // Получить профиль компании
+  getProfile: async () => {
+    const response = await api.get('/company/profile/');
+    return response.data;
+  },
+
+  // Обновить профиль компании
+  updateProfile: async (profileData) => {
+    const config = {
+      headers: {
+        'Content-Type': profileData instanceof FormData ? 'multipart/form-data' : 'application/json'
+      }
+    };
+    const response = await api.put('/company/profile/update/', profileData, config);
+    return response.data;
+  },
+
+  // Проверить статус авторизации
+  checkAuthStatus: async () => {
+    const response = await api.get('/company/status/');
+    return response.data;
+  },
+};
+
+// API для управления практиками компаний
+export const companyInternshipsAPI = {
+  // Получить практики компании
+  getInternships: async () => {
+    const response = await api.get('/company/internships/');
+    return response.data;
+  },
+
+  // Создать практику
+  createInternship: async (internshipData) => {
+    const response = await api.post('/company/internships/create/', internshipData);
+    return response.data;
+  },
+
+  // Обновить практику
+  updateInternship: async (id, internshipData) => {
+    const response = await api.patch(`/company/internships/${id}/`, internshipData);
+    return response.data;
+  },
+
+  // Удалить практику
+  deleteInternship: async (id) => {
+    const response = await api.delete(`/company/internships/${id}/delete/`);
+    return response.data;
+  },
+
+  // Получить все компании для просмотра
+  getAllCompanies: async () => {
+    const response = await api.get('/company/view-companies/');
+    return response.data;
+  },
+
+  // Получить заявки компании
+  getApplications: async () => {
+    const response = await api.get('/company/applications/');
+    return response.data;
+  },
+
+  // Получить детали заявки
+  getApplicationDetail: async (applicationId) => {
+    const response = await api.get(`/company/applications/${applicationId}/`);
+    return response.data;
+  },
+
+  // Изменить статус заявки
+  updateApplicationStatus: async (applicationId, status) => {
+    const response = await api.patch(`/company/applications/${applicationId}/status/`, { status });
+    return response.data;
+  },
+};
+
+// API для получения компании по ID
+export const companyDetailAPI = {
+  // Получить компанию по ID
+  getCompanyById: async (companyId) => {
+    const response = await api.get(`/company-detail/${companyId}/`);
     return response.data;
   },
 };

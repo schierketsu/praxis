@@ -4,7 +4,7 @@ import SearchFilters from '../SearchFilters';
 import InternshipTable from '../InternshipTable';
 import Hero from '../Hero';
 import Features from '../Features';
-import { companiesAPI } from '../../services/api';
+import { companiesAPI, companyInternshipsAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
 const { Title, Paragraph } = Typography;
@@ -18,7 +18,7 @@ const contentStyle = {
 };
 
 export default function AppContent() {
-  const { student } = useAuth();
+  const { student, company } = useAuth();
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchParams, setSearchParams] = useState({});
@@ -31,6 +31,7 @@ export default function AppContent() {
   const fetchCompanies = async (params = {}) => {
     setLoading(true);
     try {
+      // Для всех пользователей (студентов и компаний) используем одинаковый API
       const response = await companiesAPI.getCompaniesWithInternships(params);
       setCompanies(response || []);
     } catch (error) {
@@ -41,7 +42,7 @@ export default function AppContent() {
     }
   };
 
-  // Устанавливаем значение по умолчанию для учебного заведения из профиля пользователя
+  // Устанавливаем значение по умолчанию для учебного заведения из профиля пользователя (только для студентов)
   useEffect(() => {
     if (student && student.university && !selectedUniversity && !userInteractedWithUniversity) {
       setSelectedUniversity(student.university);
@@ -58,6 +59,7 @@ export default function AppContent() {
 
   // Обработчик поиска
   const handleSearch = (params) => {
+    // Для всех пользователей фильтрация происходит на backend
     setSearchParams(params);
   };
 
@@ -79,15 +81,15 @@ export default function AppContent() {
 
   return (
     <Layout.Content style={contentStyle}>
-      {!student && (
+      {!student && !company && (
         <>
           <Hero />
           <Features />
         </>
       )}
-      
+
       <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
-        
+
         <SearchFilters
           onSearch={handleSearch}
           onReset={handleReset}
@@ -99,7 +101,7 @@ export default function AppContent() {
           onUniversityChange={handleUniversityChange}
           onTechChange={setSelectedTechs}
         />
-        
+
         <Spin spinning={loading}>
           <InternshipTable
             data={companies}

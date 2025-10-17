@@ -12,7 +12,8 @@ from .models import University, Company, Internship, Student, Application, Revie
 from .serializers import (
     UniversitySerializer, CompanySerializer, InternshipSerializer,
     StudentSerializer, StudentRegistrationSerializer, LoginSerializer,
-    ApplicationSerializer, ApplicationCreateSerializer, ReviewSerializer, ReviewCreateSerializer
+    ApplicationSerializer, ApplicationCreateSerializer, ReviewSerializer, ReviewCreateSerializer,
+    CompanyRegistrationSerializer, CompanyProfileSerializer
 )
 from .utils import send_application_notification_email
 
@@ -78,7 +79,7 @@ class UniversityViewSet(viewsets.ReadOnlyModelViewSet):
 
 class CompanyViewSet(viewsets.ReadOnlyModelViewSet):
     """API для компаний"""
-    queryset = Company.objects.all()
+    queryset = Company.objects.filter(is_verified=True, is_active=True)
     serializer_class = CompanySerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
     search_fields = ['name', 'description']
@@ -426,3 +427,356 @@ class ReviewViewSet(viewsets.ModelViewSet):
                 {'error': str(e)}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+# API endpoints для авторизации компаний
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def company_register(request):
+    """Регистрация компании"""
+    serializer = CompanyRegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        try:
+            company = serializer.save()
+            return Response({
+                'message': 'Регистрация компании успешна. Ожидайте модерации.',
+                'company_id': company.id,
+                'username': company.user.username
+            }, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            # Более детальная обработка ошибок
+            error_message = str(e)
+            if 'UNIQUE constraint failed: auth_user.username' in error_message:
+                return Response({
+                    'error': 'Пользователь с таким именем уже существует'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            elif 'UNIQUE constraint failed: auth_user.email' in error_message:
+                return Response({
+                    'error': 'Пользователь с таким email уже существует'
+                }, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                return Response({
+                    'error': f'Ошибка при создании аккаунта компании: {error_message}'
+                }, status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def company_login(request):
+    """Вход компании"""
+    serializer = LoginSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.validated_data['user']
+        login(request, user)
+        
+        try:
+            company = Company.objects.get(user=user)
+            company_data = CompanyProfileSerializer(company).data
+            return Response({
+                'message': 'Вход выполнен успешно',
+                'company': company_data
+            }, status=status.HTTP_200_OK)
+        except Company.DoesNotExist:
+            return Response({
+                'error': 'Профиль компании не найден'
+            }, status=status.HTTP_404_NOT_FOUND)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def company_logout(request):
+    """Выход компании"""
+    logout(request)
+    return Response({
+        'message': 'Выход выполнен успешно'
+    }, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def company_profile(request):
+    """Получить профиль компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        serializer = CompanyProfileSerializer(company, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def company_update_profile(request):
+    """Обновить профиль компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        
+        # Создаем новый словарь с правильными данными
+        data = {}
+        
+        # Копируем все поля
+        for key, value in request.data.items():
+            if key not in ['logo']:
+                if isinstance(value, list) and len(value) == 1:
+                    data[key] = value[0]
+                else:
+                    data[key] = value
+        
+        # Добавляем файлы из request.FILES
+        if 'logo' in request.FILES:
+            data['logo'] = request.FILES['logo']
+        elif 'logo' in request.data and request.data['logo'] == '':
+            # Если пользователь удалил логотип, устанавливаем None
+            data['logo'] = None
+        
+        serializer = CompanyProfileSerializer(company, data=data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Профиль компании обновлен успешно',
+                'company': serializer.data
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def check_company_auth_status(request):
+    """Проверить статус авторизации компании"""
+    if request.user.is_authenticated:
+        try:
+            company = Company.objects.get(user=request.user)
+            return Response({
+                'authenticated': True,
+                'company': CompanyProfileSerializer(company).data
+            })
+        except Company.DoesNotExist:
+            return Response({
+                'authenticated': True,
+                'company': None
+            })
+    return Response({
+        'authenticated': False,
+        'company': None
+    })
+
+
+# API для управления практиками компаний
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def company_internships(request):
+    """Получить практики компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        internships = Internship.objects.filter(company=company).select_related('company').prefetch_related('universities')
+        serializer = InternshipSerializer(internships, many=True, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def company_view_all_companies(request):
+    """Получить все компании для просмотра (включая неверифицированные)"""
+    try:
+        # Проверяем, что это компания
+        Company.objects.get(user=request.user)
+        
+        # Получаем все компании (включая неверифицированные)
+        companies = Company.objects.filter(is_active=True).select_related('user')
+        serializer = CompanySerializer(companies, many=True, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+def get_company_by_id(request, company_id):
+    """Получить компанию по ID (для всех пользователей)"""
+    try:
+        company = Company.objects.get(id=company_id, is_active=True)
+        serializer = CompanySerializer(company, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Компания не найдена'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def company_applications(request):
+    """Получить заявки для компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        
+        # Получаем все практики компании
+        company_internships = Internship.objects.filter(company=company)
+        internship_ids = company_internships.values_list('id', flat=True)
+        
+        # Получаем заявки на практики компании
+        applications = Application.objects.filter(
+            internship__in=internship_ids
+        ).select_related('student', 'internship').order_by('-created_at')
+        
+        serializer = ApplicationSerializer(applications, many=True, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def company_application_detail(request, application_id):
+    """Получить детали заявки для компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        
+        # Получаем заявку и проверяем, что она на практику этой компании
+        application = Application.objects.select_related('student', 'internship').get(id=application_id)
+        
+        # Проверяем, что заявка на практику этой компании
+        if application.internship.company != company:
+            return Response({
+                'error': 'Заявка не найдена'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = ApplicationSerializer(application, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Application.DoesNotExist:
+        return Response({
+            'error': 'Заявка не найдена'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['PATCH'])
+@permission_classes([IsAuthenticated])
+def company_application_status(request, application_id):
+    """Изменить статус заявки"""
+    try:
+        company = Company.objects.get(user=request.user)
+        
+        # Получаем заявку и проверяем, что она на практику этой компании
+        application = Application.objects.get(id=application_id)
+        
+        # Проверяем, что заявка на практику этой компании
+        if application.internship.company != company:
+            return Response({
+                'error': 'Заявка не найдена'
+            }, status=status.HTTP_404_NOT_FOUND)
+        
+        new_status = request.data.get('status')
+        if new_status not in ['accepted', 'rejected']:
+            return Response({
+                'error': 'Некорректный статус'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        application.status = new_status
+        application.save()
+        
+        serializer = ApplicationSerializer(application, context={'request': request})
+        return Response(serializer.data)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Application.DoesNotExist:
+        return Response({
+            'error': 'Заявка не найдена'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def company_create_internship(request):
+    """Создать практику для компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        
+        # Добавляем компанию в данные
+        data = request.data.copy()
+        data['company_id'] = company.id
+        
+        # Логируем данные для отладки
+        print(f"Creating internship with data: {data}")
+        
+        serializer = InternshipSerializer(data=data, context={'request': request})
+        if serializer.is_valid():
+            internship = serializer.save()
+            return Response(InternshipSerializer(internship, context={'request': request}).data, status=status.HTTP_201_CREATED)
+        else:
+            print(f"Serializer errors: {serializer.errors}")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Exception as e:
+        print(f"Unexpected error: {str(e)}")
+        return Response({
+            'error': f'Неожиданная ошибка: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['PUT', 'PATCH'])
+@permission_classes([IsAuthenticated])
+def company_update_internship(request, internship_id):
+    """Обновить практику компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        internship = Internship.objects.get(id=internship_id, company=company)
+        
+        serializer = InternshipSerializer(internship, data=request.data, partial=True, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Internship.DoesNotExist:
+        return Response({
+            'error': 'Практика не найдена'
+        }, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def company_delete_internship(request, internship_id):
+    """Удалить практику компании"""
+    try:
+        company = Company.objects.get(user=request.user)
+        internship = Internship.objects.get(id=internship_id, company=company)
+        internship.delete()
+        return Response({
+            'message': 'Практика удалена успешно'
+        }, status=status.HTTP_200_OK)
+    except Company.DoesNotExist:
+        return Response({
+            'error': 'Профиль компании не найден'
+        }, status=status.HTTP_404_NOT_FOUND)
+    except Internship.DoesNotExist:
+        return Response({
+            'error': 'Практика не найдена'
+        }, status=status.HTTP_404_NOT_FOUND)
