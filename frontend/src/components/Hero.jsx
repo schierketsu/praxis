@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Carousel, Button, Statistic } from 'antd';
-import { ArrowRightOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, BulbFilled, CrownFilled, RiseOutlined, StarFilled, ThunderboltFilled, AimOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 const Hero = () => {
@@ -62,14 +62,13 @@ const Hero = () => {
       onPrimaryClick: handleStartSearch,
       onSecondaryClick: handleLearnMore,
       stats: [
-        { title: 'IT-компаний', value: 47, suffix: '+' },
-        { title: 'Практик', value: 120, suffix: '+' },
-        { title: 'Студентов', value: 500, suffix: '+' }
+        { title: 'IT-компаний', value: 17, suffix: '+' },
+        { title: 'Практик', value: 41, suffix: '+' }
       ],
       features: [
-        { icon: '🔍', title: 'Умный поиск', description: 'Найдите стажировку по вашим навыкам' },
-        { icon: '🏢', title: 'Топ компании', description: 'Стажировки в ведущих IT-компаниях' },
-        { icon: '📈', title: 'Карьерный рост', description: 'От стажировки до работы мечты' }
+        { icon: <BulbFilled style={{ fontSize: '40px', color: '#F4A460' }} />, title: 'Умный поиск', description: 'Найдите стажировку по вашим навыкам' },
+        { icon: <CrownFilled style={{ fontSize: '40px', color: '#1890ff' }} />, title: 'Топ компании', description: 'Стажировки в ведущих IT-компаниях' },
+        { icon: <RiseOutlined style={{ fontSize: '40px', color: '#A52A2A' }} />, title: 'Карьерный рост', description: 'От стажировки до работы мечты' }
       ]
     },
     {
@@ -88,14 +87,14 @@ const Hero = () => {
       },
       onSecondaryClick: handleLearnMore,
       stats: [
-        { title: 'Студентов', value: 500, suffix: '+' },
-        { title: 'Заявок', value: 120, suffix: '+' },
-        { title: 'Компаний', value: 47, suffix: '+' }
+        { title: 'Среднее число заявок', value: 35, suffix: '+' },
+        { title: 'Активных пользователей', value: 120, suffix: '+' },
+        // { title: 'Компаний', value: 47, suffix: '+' }
       ],
       features: [
-        { icon: '⭐', title: 'Лучшие таланты', description: 'Найдите мотивированных студентов' },
-        { icon: '⚡', title: 'Быстрое размещение', description: 'Разместите вакансию за 5 минут' },
-        { icon: '🎯', title: 'Точный подбор', description: 'Найдите идеального стажера' }
+        { icon: <StarFilled style={{ fontSize: '40px', color: '#faad14' }} />, title: 'Лучшие таланты', description: 'Найдите мотивированных студентов' },
+        { icon: <ThunderboltFilled style={{ fontSize: '40px', color: '#9400D3' }} />, title: 'Быстрое размещение', description: 'Разместите вакансию за 5 минут' },
+        { icon: <AimOutlined style={{ fontSize: '40px', color: '#008000' }} />, title: 'Точный подбор', description: 'Найдите идеального стажера' }
       ]
     }
   ];
@@ -262,7 +261,7 @@ const Hero = () => {
     <div className="hero-section" style={{
       padding: '60px 0 40px 0',
       position: 'relative',
-      background: 'var(--background-gradient)',
+      background: 'rgb(255, 255, 255)',
       borderRadius: '0',
       margin: '0 -24px 0 -24px',
       width: 'calc(100% + 48px)',
@@ -312,16 +311,17 @@ const Hero = () => {
                   }}>
                     {slide.title}
                     <br />
-                    <span style={{ color: '#2563eb' }}>
+                    <span style={{ color: '#2563eb', fontStyle: 'italic' }}>
                       {slide.titleHighlight}
                     </span>
                   </div>
 
                   <div style={{
-                    fontSize: isMobile ? '16px' : '20px',
-                    color: '#64748b',
-                    lineHeight: '1.6',
-                    textAlign: isMobile ? 'center' : 'left'
+                    fontSize: isMobile ? '1.1rem' : '1.25rem',
+                    color: 'black',
+                    lineHeight: '1.5',
+                    textAlign: isMobile ? 'center' : 'left',
+                    fontWeight: '400'
                   }}>
                     {slide.description}
                   </div>
@@ -375,7 +375,8 @@ const Hero = () => {
                     display: 'flex',
                     gap: isMobile ? '16px' : '24px',
                     flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: isMobile ? 'center' : 'flex-start'
+                    alignItems: isMobile ? 'center' : 'flex-start',
+                    marginTop: '20px'
                   }}>
                     {slide.stats.map((stat, statIndex) => (
                       <StatisticItem
@@ -405,10 +406,11 @@ const Hero = () => {
                     flexDirection: 'column',
                     gap: '20px',
                     padding: '24px',
-                    background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #f8fafc 100%)',
+                    background: 'transparent',
                     borderRadius: '12px',
-                    color: 'white',
-                    minHeight: '400px'
+                    color: 'black',
+                    minHeight: '400px',
+                    marginLeft: '-50px'
                   }}>
                     <div style={{
                       display: 'flex',
@@ -423,33 +425,32 @@ const Hero = () => {
                           alignItems: 'center',
                           gap: '16px',
                           padding: '20px',
-                          background: 'rgba(255, 255, 255, 0.1)',
+                          background: 'transparent',
                           borderRadius: '16px',
-                          border: '1px solid rgba(255, 255, 255, 0.2)',
+                          border: 'none',
                           transition: 'all 0.3s ease',
-                          cursor: 'pointer',
-                          backdropFilter: 'blur(10px)'
+                          cursor: 'pointer'
                         }}
                           onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                            e.currentTarget.style.background = 'rgba(0, 0, 0, 0.05)';
                             e.currentTarget.style.transform = 'translateY(-3px)';
                             e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
                           }}
                           onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                            e.currentTarget.style.background = 'transparent';
                             e.currentTarget.style.transform = 'translateY(0)';
                             e.currentTarget.style.boxShadow = 'none';
                           }}
                         >
                           <div style={{
-                            width: '48px',
-                            height: '48px',
+                            width: '80px',
+                            height: '80px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            background: 'rgba(255, 255, 255, 0.2)',
+                            background: 'rgba(0, 0, 0, 0.03)',
                             borderRadius: '12px',
-                            fontSize: '24px',
+                            fontSize: '48px',
                             flexShrink: 0
                           }}>
                             {feature.icon}
@@ -458,17 +459,19 @@ const Hero = () => {
                             <div style={{
                               fontSize: '18px',
                               fontWeight: '700',
-                              color: 'white',
+                              color: 'black',
                               marginBottom: '6px',
-                              lineHeight: '1.3'
+                              lineHeight: '1.3',
+                              fontStyle: 'italic'
                             }}>
                               {feature.title}
                             </div>
                             <div style={{
                               fontSize: '15px',
-                              color: 'rgba(255, 255, 255, 0.85)',
+                              color: 'black',
                               lineHeight: '1.5',
-                              fontWeight: '500'
+                              fontWeight: '400',
+                              fontStyle: 'italic'
                             }}>
                               {feature.description}
                             </div>

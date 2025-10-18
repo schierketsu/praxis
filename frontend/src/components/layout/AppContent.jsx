@@ -4,6 +4,7 @@ import SearchFilters from '../SearchFilters';
 import InternshipTable from '../InternshipTable';
 import Hero from '../Hero';
 import Features from '../Features';
+import HowItWorksSection from '../HowItWorksSection';
 import WelcomeBanner from '../WelcomeBanner';
 import { companiesAPI, companyInternshipsAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
@@ -12,8 +13,8 @@ const { Title, Paragraph } = Typography;
 
 const contentStyle = {
   minHeight: 'calc(100vh - 80px)',
-  background: 'var(--background-gradient)',
-  padding: '60px 24px',
+  background: 'rgb(255, 255, 255)',
+  padding: '60px 24px 0 24px',
   position: 'relative',
   overflow: 'hidden'
 };
@@ -87,58 +88,61 @@ export default function AppContent() {
           <WelcomeBanner />
           <Hero />
           <Features />
+          <HowItWorksSection />
         </>
       )}
 
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
+      {(student || company) && (
+        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px' }}>
 
-        <div style={{ marginTop: '10px', marginBottom: '40px' }}>
-          <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <Title
-              level={2}
-              style={{
-                fontSize: '2.5rem',
-                fontWeight: '700',
-                background: 'var(--primary-gradient)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                marginBottom: '24px'
-              }}
-            >
-              Начни поиск прямо сейчас
-            </Title>
-            <Paragraph
-              style={{
-                fontSize: '1.125rem',
-                color: 'var(--text-secondary)',
-                maxWidth: '600px',
-                margin: '0 auto'
-              }}
-            >
-              Найди подходящую практику с помощью фильтров
-            </Paragraph>
+          <div style={{ marginTop: '10px', marginBottom: '40px' }}>
+            <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px' }}>
+              <Title
+                level={2}
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: '700',
+                  background: 'var(--primary-gradient)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  marginBottom: '24px'
+                }}
+              >
+                Начни поиск прямо сейчас
+              </Title>
+              <Paragraph
+                style={{
+                  fontSize: '1.125rem',
+                  color: 'var(--text-secondary)',
+                  maxWidth: '600px',
+                  margin: '0 auto'
+                }}
+              >
+                Найди подходящую практику с помощью фильтров
+              </Paragraph>
+            </div>
+            <SearchFilters
+              onSearch={handleSearch}
+              onReset={handleReset}
+              loading={loading}
+              selectedLocation={selectedLocation}
+              selectedUniversity={selectedUniversity}
+              selectedTechs={selectedTechs}
+              onLocationChange={setSelectedLocation}
+              onUniversityChange={handleUniversityChange}
+              onTechChange={setSelectedTechs}
+            />
           </div>
-          <SearchFilters
-            onSearch={handleSearch}
-            onReset={handleReset}
-            loading={loading}
-            selectedLocation={selectedLocation}
-            selectedUniversity={selectedUniversity}
-            selectedTechs={selectedTechs}
-            onLocationChange={setSelectedLocation}
-            onUniversityChange={handleUniversityChange}
-            onTechChange={setSelectedTechs}
-          />
-        </div>
 
-        <Spin spinning={loading}>
-          <InternshipTable
-            data={companies}
-            loading={loading}
-            selectedTechs={selectedTechs}
-          />
-        </Spin>
-      </div>
+          <Spin spinning={loading}>
+            <InternshipTable
+              data={companies}
+              loading={loading}
+              selectedTechs={selectedTechs}
+            />
+          </Spin>
+        </div>
+      )}
     </Layout.Content>
   );
 }

@@ -164,15 +164,15 @@ const WelcomeBanner = () => {
                     <div style={{
                         flex: '1',
                         display: 'flex',
-                        justifyContent: 'center',
+                        justifyContent: 'flex-end',
                         alignItems: 'center',
                         position: 'relative',
                         order: isMobile ? -1 : 0
                     }}>
                         <div style={{
                             width: '100%',
-                            maxWidth: isMobile ? '350px' : '500px',
-                            height: isMobile ? '250px' : '400px',
+                            maxWidth: isMobile ? '380px' : '550px',
+                            height: isMobile ? '270px' : '420px',
                             background: 'rgba(255, 255, 255, 0.1)',
                             borderRadius: '20px',
                             display: 'flex',
@@ -184,7 +184,7 @@ const WelcomeBanner = () => {
                             overflow: 'hidden'
                         }}>
                             <img
-                                src="/card/2.gif"
+                                src="/card/3.gif"
                                 alt="Welcome animation"
                                 style={{
                                     width: '100%',

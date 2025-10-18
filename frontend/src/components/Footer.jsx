@@ -52,8 +52,7 @@ const Footer = () => {
                 практикастудентам.рф
               </Title>
               <Paragraph style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px', lineHeight: '1.6' }}>
-                Современная платформа для поиска практик в IT-компаниях.
-                Соединяем талантливых студентов с ведущими технологическими компаниями.
+                Сделано с любовью к хорошим практикам 💙
               </Paragraph>
               <Space size="large" style={{ marginTop: '24px' }}>
                 <Button
@@ -69,15 +68,15 @@ const Footer = () => {
           <Col xs={24} md={8}>
             <div className="fade-in-up">
               <Title level={4} style={{ color: 'white', marginBottom: '24px' }}>
-                Для студентов
+                Блог
               </Title>
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
+                {/* <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
                   Рейтинг компаний
                 </Link>
                 <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
                   Часто задаваемые вопросы
-                </Link>
+                </Link> */}
                 {/* <Link href="#" style={{ color: 'rgba(255, 255, 255, 0.8)', display: 'block' }}>
                   *
                 </Link>
@@ -89,29 +88,15 @@ const Footer = () => {
           </Col>
 
           <Col xs={24} md={8}>
-            <div className="fade-in-up">
-              <Title level={4} style={{ color: 'white', marginBottom: '24px' }}>
-                Контакты
-              </Title>
+            <div className="fade-in-up" style={{ textAlign: 'right' }}>
+              <Space>
+                <MailOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
+                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                  info@studprakt.ru
+                </span>
+              </Space>
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-                <Space>
-                  <MailOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
-                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    info@studprakt.ru
-                  </span>
-                </Space>
-                {/* <Space>
-                  <PhoneOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
-                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    +7 912 505 62 03
-                  </span>
-                </Space> */}
-                <Space>
-                  <EnvironmentOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
-                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                    Московский просп., 15, Чебоксары
-                  </span>
-                </Space>
+
               </Space>
             </div>
           </Col>

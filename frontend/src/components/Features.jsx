@@ -47,19 +47,20 @@ const Features = () => {
 
   return (
     <div style={{
-      padding: '30px 0',
-      position: 'relative'
+      padding: '30px 0 80px 0',
+      position: 'relative',
+      background: 'rgb(255, 255, 255)',
+      margin: '0 -24px'
     }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-        <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px' }}>
+        <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px', marginTop: '20px' }}>
           <Title
             level={2}
             style={{
               fontSize: '2.5rem',
               fontWeight: '700',
-              background: 'var(--primary-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: '#1a202c',
+              lineHeight: '1.2',
               marginBottom: '24px'
             }}
           >
@@ -67,8 +68,10 @@ const Features = () => {
           </Title>
           <Paragraph
             style={{
-              fontSize: '1.125rem',
-              color: 'var(--text-secondary)',
+              fontSize: '1.25rem',
+              color: 'black',
+              lineHeight: '1.5',
+              fontWeight: '400',
               maxWidth: '600px',
               margin: '0 auto'
             }}
