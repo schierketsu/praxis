@@ -83,12 +83,10 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <Title level={2} style={{
           margin: '0 0 16px 0',
-          background: 'var(--primary-gradient)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          fontSize: '32px',
-          fontWeight: '800',
-          letterSpacing: '-0.02em'
+          fontSize: '2.5rem',
+          fontWeight: '700',
+          color: '#1a202c',
+          lineHeight: '1.2'
         }}>
           Регистрация студента
         </Title>

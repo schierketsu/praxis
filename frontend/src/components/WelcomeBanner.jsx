@@ -184,7 +184,7 @@ const WelcomeBanner = () => {
                             overflow: 'hidden'
                         }}>
                             <img
-                                src="/card/3.gif"
+                                src="/card/8.gif"
                                 alt="Welcome animation"
                                 style={{
                                     width: '100%',
