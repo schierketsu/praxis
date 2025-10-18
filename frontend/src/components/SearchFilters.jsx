@@ -6,10 +6,11 @@ import { companiesAPI, internshipsAPI, universitiesAPI } from '../services/api';
 const { Option } = Select;
 const { Text } = Typography;
 
-export default function SearchFilters({ onSearch, onReset, loading, selectedLocation, selectedUniversity, selectedTechs, onLocationChange, onUniversityChange, onTechChange }) {
+export default function SearchFilters({ onSearch, onReset, loading, selectedLocation, selectedUniversity, selectedTechs, onLocationChange, onUniversityChange, onTechChange, isInitialized }) {
   const [locations, setLocations] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [technologies, setTechnologies] = useState([]);
+  const [filtersLoaded, setFiltersLoaded] = useState(false);
 
   useEffect(() => {
     fetchFilterData();
@@ -34,6 +35,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
         }
       });
       setTechnologies([...allTechs].sort());
+      setFiltersLoaded(true);
     } catch (error) {
       console.error('Error fetching filter data:', error);
     }
@@ -193,6 +195,7 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
+              loading={!filtersLoaded || !isInitialized}
             >
               {universities.map(university => (
                 <Option key={university.id} value={university.id}>

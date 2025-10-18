@@ -267,6 +267,14 @@ export default function ApplicationsTable({ preselectedCompany }) {
                     type="primary"
                     size="large"
                     onClick={() => navigate('/')}
+                    style={{
+                      borderRadius: '12px',
+                      height: '48px',
+                      fontWeight: '600',
+                      background: 'var(--primary-gradient)',
+                      border: 'none',
+                      boxShadow: 'var(--shadow-soft)'
+                    }}
                   >
                     Найти практики
                   </Button>

@@ -33,14 +33,13 @@ export default function ApplicationsPage() {
             size="large"
             style={{
               marginBottom: '32px',
-              borderRadius: '12px',
+              borderRadius: 'var(--border-radius)',
               height: '48px',
               fontWeight: '600',
-              background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
-              border: '1px solid rgba(255, 255, 255, 0.3)',
-              color: '#667eea',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-              backdropFilter: 'blur(10px)'
+              background: 'rgba(255, 255, 255, 0.9)',
+              border: '1px solid rgba(37, 99, 235, 0.2)',
+              color: 'var(--text-primary)',
+              boxShadow: 'var(--shadow-soft)'
             }}
           >
             Назад к главной
