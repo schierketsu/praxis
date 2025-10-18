@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, message, Tabs, Button, Space } from 'antd';
 import { UserOutlined, TeamOutlined } from '@ant-design/icons';
 import UnifiedLogin from './UnifiedLogin';
@@ -8,6 +8,17 @@ import CompanyRegistration from './CompanyRegistration';
 export default function AuthModal({ visible, onClose, onSuccess, initialMode = 'login' }) {
   const [mode, setMode] = useState(initialMode); // 'login', 'register', 'company-login', 'company-register'
   const [userType, setUserType] = useState('student'); // 'student' или 'company'
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Обновляем режим при изменении initialMode
   React.useEffect(() => {
@@ -103,8 +114,11 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
       open={visible}
       onCancel={handleCancel}
       footer={null}
-      width={mode === 'register' || mode === 'company-register' ? 600 : 500}
+      width={isMobile ? '95%' : (mode === 'register' || mode === 'company-register' ? 600 : 500)}
       centered
+      style={{
+        top: isMobile ? 10 : undefined
+      }}
       styles={{
         body: {
           padding: '0',

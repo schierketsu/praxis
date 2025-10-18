@@ -27,6 +27,17 @@ export default function ApplicationsTable({ preselectedCompany }) {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const [createLoading, setCreateLoading] = useState(false);
   const [hasUsedPreselectedCompany, setHasUsedPreselectedCompany] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
 
 
@@ -244,6 +255,8 @@ export default function ApplicationsTable({ preselectedCompany }) {
             dataSource={applications}
             rowKey="id"
             pagination={false}
+            scroll={{ x: isMobile ? 800 : undefined }}
+            size={isMobile ? 'small' : 'middle'}
             locale={{
               emptyText: (
                 <Empty
@@ -274,9 +287,10 @@ export default function ApplicationsTable({ preselectedCompany }) {
         open={createModalVisible}
         closable={false}
         footer={null}
-        width={800}
+        width={isMobile ? '95%' : 800}
         style={{
-          borderRadius: '20px',
+          borderRadius: isMobile ? '12px' : '20px',
+          top: isMobile ? 10 : undefined,
           overflow: 'hidden',
           boxShadow: '0 20px 60px rgba(0, 0, 0, 0.2)'
         }}

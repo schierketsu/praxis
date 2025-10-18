@@ -303,10 +303,11 @@ const Hero = () => {
                   minHeight: '400px'
                 }}>
                   <div style={{
-                    fontSize: isMobile ? '32px' : '48px',
+                    fontSize: isMobile ? '24px' : '48px',
                     fontWeight: '700',
                     color: '#1a202c',
-                    lineHeight: '1.2',
+                    lineHeight: isMobile ? '1.3' : '1.2',
+                    marginBottom: isMobile ? '12px' : '16px',
                     textAlign: isMobile ? 'center' : 'left'
                   }}>
                     {slide.title}
@@ -317,10 +318,11 @@ const Hero = () => {
                   </div>
 
                   <div style={{
-                    fontSize: isMobile ? '1.1rem' : '1.25rem',
+                    fontSize: isMobile ? '1rem' : '1.25rem',
                     color: 'black',
-                    lineHeight: '1.5',
+                    lineHeight: isMobile ? '1.4' : '1.5',
                     textAlign: isMobile ? 'center' : 'left',
+                    marginBottom: isMobile ? '16px' : '24px',
                     fontWeight: '400'
                   }}>
                     {slide.description}
@@ -337,11 +339,11 @@ const Hero = () => {
                       size="large"
                       onClick={slide.onPrimaryClick}
                       style={{
-                        height: isMobile ? '48px' : '56px',
-                        padding: isMobile ? '0 24px' : '0 32px',
-                        fontSize: isMobile ? '1rem' : '1.1rem',
+                        height: isMobile ? '40px' : '56px',
+                        padding: isMobile ? '0 20px' : '0 32px',
+                        fontSize: isMobile ? '0.9rem' : '1.1rem',
                         fontWeight: '600',
-                        borderRadius: '12px',
+                        borderRadius: isMobile ? '8px' : '12px',
                         background: 'var(--primary-gradient)',
                         border: 'none',
                         boxShadow: 'var(--shadow-soft)',
@@ -357,11 +359,11 @@ const Hero = () => {
                       size="large"
                       onClick={slide.onSecondaryClick}
                       style={{
-                        height: isMobile ? '48px' : '56px',
-                        padding: isMobile ? '0 24px' : '0 32px',
-                        fontSize: isMobile ? '1rem' : '1.1rem',
+                        height: isMobile ? '40px' : '56px',
+                        padding: isMobile ? '0 20px' : '0 32px',
+                        fontSize: isMobile ? '0.9rem' : '1.1rem',
                         fontWeight: '600',
-                        borderRadius: '12px',
+                        borderRadius: isMobile ? '8px' : '12px',
                         border: '2px solid #e2e8f0',
                         color: '#4a5568',
                         width: isMobile ? '100%' : 'auto'
@@ -386,12 +388,12 @@ const Hero = () => {
                         suffix={stat.suffix}
                         valueStyle={{
                           color: '#2563eb',
-                          fontSize: isMobile ? '1.5rem' : '2rem',
+                          fontSize: isMobile ? '1.2rem' : '2rem',
                           fontWeight: '700'
                         }}
                         titleStyle={{
                           color: '#718096',
-                          fontSize: isMobile ? '0.9rem' : '1rem'
+                          fontSize: isMobile ? '0.8rem' : '1rem'
                         }}
                       />
                     ))}

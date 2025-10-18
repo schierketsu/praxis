@@ -7,10 +7,10 @@ import AuthModal from '../AuthModal';
 
 const { Title } = Typography;
 
-const headerStyle = {
+const getHeaderStyle = (isMobile) => ({
   width: "100%",
-  height: 80,
-  padding: "0 40px",
+  height: isMobile ? 60 : 80,
+  padding: isMobile ? "0 16px" : "0 40px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -20,22 +20,34 @@ const headerStyle = {
   borderBottom: '1px solid var(--glass-border)',
   position: 'relative',
   zIndex: 1000
-};
+});
 
-const titleStyle = {
+const getTitleStyle = (isMobile) => ({
   color: 'black',
   margin: 0,
-  fontSize: '28px',
+  fontSize: isMobile ? '22px' : '32px',
   fontWeight: '700',
   textShadow: 'none',
   letterSpacing: '-0.3px'
-};
+});
 
 export default function AppHeader() {
   const { user, student, company, isAuthenticated, logout } = useAuth();
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' или 'register'
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
+
+  // Определяем мобильные устройства
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Добавляем CSS стили для переопределения Ant Design
   useEffect(() => {
@@ -155,26 +167,24 @@ export default function AppHeader() {
 
   return (
     <>
-      <Layout.Header style={headerStyle}>
-        {/* Левая часть - пустая для баланса */}
-        <div style={{ flex: 1 }}></div>
-
-        {/* Центральная часть - название */}
+      <Layout.Header style={getHeaderStyle(isMobile)}>
+        {/* Левая часть - название */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'flex-start',
-          flex: 1,
-          marginLeft: '-16%'
+          flex: 1
         }}>
           <Title level={3} style={{
-            ...titleStyle,
-            fontSize: 'clamp(18px, 4vw, 28px)',
+            ...getTitleStyle(isMobile),
+            fontSize: isMobile ? 'clamp(16px, 4vw, 22px)' : 'clamp(18px, 4vw, 32px)',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis'
+            textOverflow: 'ellipsis',
+            textAlign: 'left',
+            margin: 0
           }}>
-            практикастудентам.рф
+            {isMobile ? 'практикастудентам.рф' : 'практикастудентам.рф'}
           </Title>
         </div>
 
@@ -183,7 +193,7 @@ export default function AppHeader() {
           display: 'flex',
           justifyContent: 'flex-end',
           flex: 1,
-          gap: '12px'
+          gap: isMobile ? '8px' : '12px'
         }}>
           {isAuthenticated ? (
             <Dropdown
@@ -194,11 +204,11 @@ export default function AppHeader() {
               <Button
                 type="default"
                 icon={<UserOutlined />}
-                size="large"
+                size={isMobile ? 'middle' : 'large'}
                 style={{
-                  borderRadius: '12px',
-                  height: '44px',
-                  width: '44px',
+                  borderRadius: isMobile ? '8px' : '12px',
+                  height: isMobile ? '36px' : '44px',
+                  width: isMobile ? '36px' : '44px',
                   padding: '0',
                   fontWeight: '600',
                   background: 'black',
@@ -213,36 +223,38 @@ export default function AppHeader() {
               />
             </Dropdown>
           ) : (
-            <Space size="middle">
+            <Space size={isMobile ? 'small' : 'middle'}>
+              {!isMobile && (
+                <Button
+                  type="default"
+                  icon={<LoginOutlined />}
+                  size="large"
+                  onClick={handleRegisterClick}
+                  style={{
+                    borderRadius: '12px',
+                    height: '44px',
+                    padding: '0 24px',
+                    fontWeight: '600',
+                    background: 'white',
+                    color: 'black',
+                    border: 'none',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Регистрация
+                </Button>
+              )}
               <Button
                 type="default"
-                icon={<LoginOutlined />}
-                size="large"
-                onClick={handleRegisterClick}
-                style={{
-                  borderRadius: '12px',
-                  height: '44px',
-                  padding: '0 24px',
-                  fontWeight: '600',
-                  background: 'white',
-                  color: 'black',
-                  border: 'none',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                  transition: 'all 0.3s ease'
-                }}
-              >
-                Регистрация
-              </Button>
-              <Button
-                type="default"
-                icon={<UserOutlined />}
-                size="large"
-                onClick={handleLoginClick}
+                icon={isMobile ? <UserOutlined /> : <UserOutlined />}
+                size={isMobile ? 'middle' : 'large'}
+                onClick={isMobile ? handleRegisterClick : handleLoginClick}
                 className="custom-login-btn"
                 style={{
-                  borderRadius: '12px',
-                  height: '44px',
-                  padding: '0 24px',
+                  borderRadius: isMobile ? '8px' : '12px',
+                  height: isMobile ? '36px' : '44px',
+                  padding: isMobile ? '0 16px' : '0 24px',
                   fontWeight: '600',
                   background: 'black',
                   color: 'white',
@@ -251,7 +263,7 @@ export default function AppHeader() {
                   transition: 'all 0.3s ease'
                 }}
               >
-                Войти
+                {isMobile ? 'Войти' : 'Войти'}
               </Button>
             </Space>
           )}

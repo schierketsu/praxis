@@ -74,13 +74,13 @@ const WelcomeBanner = () => {
     return (
         <div style={{
             background: '#d1e3f7',
-            padding: '80px 0',
+            padding: isMobile ? '40px 0' : '80px 0',
             position: 'relative',
             width: '100%',
             zIndex: 5,
             overflow: 'hidden',
-            margin: '-60px -24px 0 -24px',
-            width: 'calc(100% + 48px)',
+            margin: isMobile ? '-30px -16px 0 -16px' : '-60px -24px 0 -24px',
+            width: isMobile ? 'calc(100% + 32px)' : 'calc(100% + 48px)',
             border: 'none',
             outline: 'none',
             boxShadow: 'none'
@@ -88,13 +88,13 @@ const WelcomeBanner = () => {
             <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
-                padding: '0 24px'
+                padding: isMobile ? '0 16px' : '0 24px'
             }}>
                 <div style={{
                     display: 'flex',
                     alignItems: 'center',
-                    gap: isMobile ? '40px' : '60px',
-                    minHeight: isMobile ? '300px' : '400px',
+                    gap: isMobile ? '24px' : '60px',
+                    minHeight: isMobile ? '200px' : '400px',
                     flexDirection: isMobile ? 'column' : 'row'
                 }}>
                     {/* Левая часть - текст и кнопка */}
@@ -102,46 +102,48 @@ const WelcomeBanner = () => {
                         flex: '1',
                         display: 'flex',
                         flexDirection: 'column',
-                        gap: '24px',
-                        textAlign: isMobile ? 'center' : 'left'
+                        gap: isMobile ? '16px' : '24px',
+                        textAlign: isMobile ? 'center' : 'left',
+                        order: isMobile ? 2 : 1
                     }}>
                         <h1 style={{
                             color: 'black',
-                            fontSize: isMobile ? '2.5rem' : '3.5rem',
+                            fontSize: isMobile ? '1.8rem' : '3.5rem',
                             fontWeight: '700',
-                            lineHeight: '1.1',
+                            lineHeight: isMobile ? '1.2' : '1.1',
                             margin: '0',
                             textShadow: 'none'
                         }}>
-                            Привет, это<br />практикастудентам.рф&nbsp;—<br />платформа для поиска практик
+                            {isMobile ? 'Привет, это практикастудентам.рф — платформа для поиска практик' : 'Привет, это\nпрактикастудентам.рф —\nплатформа для поиска практик'}
                         </h1>
 
                         <span style={{
                             color: 'black',
-                            fontSize: isMobile ? '1.1rem' : '1.25rem',
+                            fontSize: isMobile ? '1rem' : '1.25rem',
                             fontWeight: '400',
                             lineHeight: '1.5',
                             maxWidth: isMobile ? '100%' : '500px'
                         }}>
-                            Найди подходящую практику в ведущих IT-компаниях, получи ценный опыт и начни карьеру в технологиях. Это бесплатно и доступно каждому студенту
+                            {isMobile ? 'Найди подходящую практику в ведущих IT-компаниях, получи ценный опыт и начни карьеру в технологиях.' : 'Найди подходящую практику в ведущих IT-компаниях, получи ценный опыт и начни карьеру в технологиях. Это бесплатно и доступно каждому студенту'}
                         </span>
 
                         <Button
                             type="primary"
-                            size="large"
+                            size={isMobile ? 'middle' : 'large'}
                             onClick={handleGetStarted}
                             style={{
-                                height: '56px',
-                                padding: '0 32px',
-                                fontSize: '1.1rem',
+                                height: isMobile ? '44px' : '56px',
+                                padding: isMobile ? '0 24px' : '0 32px',
+                                fontSize: isMobile ? '1rem' : '1.1rem',
                                 fontWeight: '600',
-                                borderRadius: '12px',
+                                borderRadius: isMobile ? '8px' : '12px',
                                 background: '#2054DE',
                                 border: '2px solid #2054DE',
                                 color: 'white',
                                 boxShadow: '0 8px 32px rgba(32, 84, 222, 0.3)',
                                 transition: 'all 0.3s ease',
-                                alignSelf: isMobile ? 'center' : 'flex-start'
+                                alignSelf: isMobile ? 'center' : 'flex-start',
+                                width: isMobile ? '100%' : 'auto'
                             }}
                             onMouseEnter={(e) => {
                                 e.currentTarget.style.background = '#1a47c7';
@@ -165,17 +167,18 @@ const WelcomeBanner = () => {
                     <div style={{
                         flex: '1',
                         display: 'flex',
-                        justifyContent: 'flex-end',
+                        justifyContent: 'center',
                         alignItems: 'center',
                         position: 'relative',
-                        order: isMobile ? -1 : 0
+                        order: isMobile ? 1 : 0,
+                        width: isMobile ? '100%' : 'auto'
                     }}>
                         <div style={{
                             width: '100%',
-                            maxWidth: isMobile ? '380px' : '550px',
-                            height: isMobile ? '270px' : '420px',
+                            maxWidth: isMobile ? '300px' : '550px',
+                            height: isMobile ? '200px' : '420px',
                             background: 'rgba(255, 255, 255, 0.1)',
-                            borderRadius: '20px',
+                            borderRadius: isMobile ? '12px' : '20px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',

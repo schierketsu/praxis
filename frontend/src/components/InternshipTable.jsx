@@ -198,6 +198,17 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   const navigate = useNavigate();
   const { user, student, company } = useAuth();
   const [authModalVisible, setAuthModalVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
 
   const handleCompanyClick = useCallback((record) => {
@@ -251,7 +262,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
   return (
     <div id="companies-catalog" style={{ width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
       {/* Сетка карточек компаний */}
-      <Row gutter={[24, 24]} justify="start">
+      <Row gutter={[isMobile ? 16 : 24, isMobile ? 16 : 24]} justify="start">
         {filteredData.map((company, index) => {
           const techs = getCompanyTechs(company.internships || []);
 
@@ -268,8 +279,8 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                 hoverable
                 loading={loading}
                 style={{
-                  height: '580px',
-                  borderRadius: '20px',
+                  height: isMobile ? 'auto' : '580px',
+                  borderRadius: isMobile ? '16px' : '20px',
                   overflow: 'hidden',
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                   backdropFilter: 'blur(10px)',
@@ -279,7 +290,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                 }}
                 styles={{
                   body: {
-                    padding: '24px',
+                    padding: isMobile ? '16px' : '24px',
                     height: '100%',
                     display: 'flex',
                     flexDirection: 'column'
