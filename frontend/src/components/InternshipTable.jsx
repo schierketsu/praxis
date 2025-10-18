@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, Tag, Space, Typography, Button, Avatar, Row, Col, Divider, Tooltip } from 'antd';
-import { InfoCircleOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
@@ -197,9 +197,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
 export default function InternshipTable({ data, loading, pagination, onTableChange, selectedTechs = [] }) {
   const navigate = useNavigate();
   const { user, student, company } = useAuth();
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [authModalVisible, setAuthModalVisible] = useState(false);
-  const cardsPerView = 4;
 
 
   const handleCompanyClick = useCallback((record) => {
@@ -248,101 +246,23 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
     });
   }, [data, selectedTechs, getCompanyTechs]);
 
-  const handlePrev = () => {
-    setCurrentIndex(prev => prev === 0 ? data.length - 1 : prev - 1);
-  };
-
-  const handleNext = () => {
-    setCurrentIndex(prev => prev === data.length - 1 ? 0 : prev + 1);
-  };
-
-  // Сброс индекса при изменении данных (фильтрация)
-  useEffect(() => {
-    setCurrentIndex(0);
-  }, [data]);
-
-  // Создаем циклический массив карточек
-  const getVisibleCards = () => {
-    if (data.length === 0) return [];
-
-    const cards = [];
-    const actualCardsPerView = Math.min(cardsPerView, data.length);
-
-    for (let i = 0; i < actualCardsPerView; i++) {
-      const index = (currentIndex + i) % data.length;
-      cards.push(data[index]);
-    }
-    return cards;
-  };
-
-  const visibleCards = getVisibleCards();
-  const showNavigation = data.length > 4;
 
 
   return (
-    <div id="internship-carousel" style={{ position: 'relative', width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
-
-      {/* Кнопка "Назад" - показываем только если данных больше 4 */}
-      {showNavigation && (
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<LeftOutlined />}
-          onClick={handlePrev}
-          style={{
-            position: 'absolute',
-            left: '-20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 10,
-            width: '48px',
-            height: '48px',
-            background: 'var(--primary-gradient)',
-            border: 'none',
-            boxShadow: 'var(--shadow-soft)'
-          }}
-        />
-      )}
-
-      {/* Кнопка "Вперед" - показываем только если данных больше 4 */}
-      {showNavigation && (
-        <Button
-          type="primary"
-          shape="circle"
-          icon={<RightOutlined />}
-          onClick={handleNext}
-          style={{
-            position: 'absolute',
-            right: '-20px',
-            top: '50%',
-            transform: 'translateY(-50%)',
-            zIndex: 10,
-            width: '48px',
-            height: '48px',
-            background: 'var(--primary-gradient)',
-            border: 'none',
-            boxShadow: 'var(--shadow-soft)'
-          }}
-        />
-      )}
-
-      {/* Карусель */}
-      <div style={{
-        display: 'flex',
-        gap: '24px',
-        overflow: 'hidden',
-        padding: '0 20px'
-      }}>
-        {visibleCards.map((company, index) => {
+    <div id="companies-catalog" style={{ width: '100%', maxWidth: '1400px', margin: '0 auto' }}>
+      {/* Сетка карточек компаний */}
+      <Row gutter={[24, 24]} justify="start">
+        {filteredData.map((company, index) => {
           const techs = getCompanyTechs(company.internships || []);
 
           return (
-            <div
-              key={`${company.id}-${currentIndex}-${index}`}
-              style={{
-                flex: '0 0 calc(25% - 18px)',
-                minWidth: '280px'
-              }}
+            <Col
+              key={`${company.id}-${index}`}
+              xs={24}
+              sm={12}
+              md={8}
+              lg={6}
+              xl={6}
             >
               <Card
                 hoverable
@@ -537,10 +457,10 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                   </Button>
                 </div>
               </Card>
-            </div>
+            </Col>
           );
         })}
-      </div>
+      </Row>
 
 
       {/* Модальное окно авторизации */}

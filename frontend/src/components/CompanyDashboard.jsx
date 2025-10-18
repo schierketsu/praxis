@@ -36,6 +36,23 @@ export default function CompanyDashboard() {
         setCurrentCompany(company);
     }, [company]);
 
+
+    // Обработка нажатия Escape для закрытия модального окна
+    useEffect(() => {
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape' && applicationModalVisible) {
+                setApplicationModalVisible(false);
+                setSelectedApplication(null);
+                setApplicationsLoading(false);
+            }
+        };
+
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [applicationModalVisible]);
+
     // Загружаем список университетов
     useEffect(() => {
         const fetchUniversities = async () => {
@@ -244,11 +261,16 @@ export default function CompanyDashboard() {
     // Функции для работы с заявками
     const handleViewApplication = async (applicationId) => {
         try {
+            setApplicationsLoading(true);
+            setApplicationModalVisible(true); // Открываем модальное окно сразу
             const application = await companyInternshipsAPI.getApplicationDetail(applicationId);
             setSelectedApplication(application);
-            setApplicationModalVisible(true);
         } catch (error) {
+            console.error('Ошибка при загрузке заявки:', error);
             message.error('Ошибка при загрузке заявки');
+            setApplicationModalVisible(false); // Закрываем модальное окно при ошибке
+        } finally {
+            setApplicationsLoading(false);
         }
     };
 
@@ -278,7 +300,7 @@ export default function CompanyDashboard() {
 
     if (!currentCompany) {
         return (
-            <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
+            <Layout style={{ minHeight: '100vh', background: '#F5F5F5' }}>
                 <AppHeader />
                 <Content style={{
                     display: 'flex',
@@ -289,12 +311,16 @@ export default function CompanyDashboard() {
                     <Card style={{
                         textAlign: 'center',
                         maxWidth: '400px',
-                        background: 'var(--glass-bg)',
-                        backdropFilter: 'blur(20px)',
+                        background: 'rgb(255, 255, 255)',
                         borderRadius: 'var(--border-radius-lg)',
-                        border: '1px solid var(--glass-border)',
-                        boxShadow: 'var(--shadow-soft)'
-                    }}>
+                        border: '1px solid #e2e8f0',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                        transition: 'none !important',
+                        transform: 'none !important',
+                        animation: 'none !important',
+                        willChange: 'auto'
+                    }}
+                        hoverable={false}>
                         <Title level={3} style={{ color: 'var(--text-primary)' }}>Профиль не найден</Title>
                         <Text style={{ color: 'var(--text-secondary)' }}>Данные компании не загружены</Text>
                     </Card>
@@ -304,7 +330,7 @@ export default function CompanyDashboard() {
     }
 
     return (
-        <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
+        <Layout style={{ minHeight: '100vh', background: '#F5F5F5' }}>
             <AppHeader />
             <Content style={{ padding: '40px 24px' }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -332,11 +358,11 @@ export default function CompanyDashboard() {
                     <div style={{ textAlign: 'center', marginBottom: '48px' }}>
                         <Title level={1} style={{
                             margin: '0 0 16px 0',
-                            background: 'var(--primary-gradient)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
                             fontSize: '48px',
                             fontWeight: '800',
+                            color: 'black',
+                            lineHeight: '1.1',
+                            textShadow: 'none',
                             letterSpacing: '-0.02em'
                         }}>
                             Панель управления
@@ -355,12 +381,16 @@ export default function CompanyDashboard() {
                         style={{
                             marginBottom: '32px',
                             borderRadius: 'var(--border-radius-lg)',
-                            background: 'var(--glass-bg)',
-                            backdropFilter: 'blur(20px)',
-                            border: '1px solid var(--glass-border)',
-                            boxShadow: 'var(--shadow-soft)',
-                            overflow: 'hidden'
+                            background: 'rgb(255, 255, 255)',
+                            border: '1px solid #e2e8f0',
+                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                            overflow: 'hidden',
+                            transition: 'none !important',
+                            transform: 'none !important',
+                            animation: 'none !important',
+                            willChange: 'auto'
                         }}
+                        hoverable={false}
                         styles={{
                             body: {
                                 padding: '0'
@@ -1093,9 +1123,18 @@ export default function CompanyDashboard() {
                         onCancel={() => {
                             setApplicationModalVisible(false);
                             setSelectedApplication(null);
+                            setApplicationsLoading(false);
                         }}
                         footer={null}
                         width={800}
+                        maskClosable={true}
+                        destroyOnHidden={true}
+                        zIndex={1000}
+                        centered={true}
+                        forceRender={false}
+                        getContainer={false}
+                        mask={true}
+                        keyboard={true}
                     >
                         {selectedApplication && (
                             <div>

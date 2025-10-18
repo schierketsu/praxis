@@ -136,23 +136,24 @@ const WelcomeBanner = () => {
                                 fontSize: '1.1rem',
                                 fontWeight: '600',
                                 borderRadius: '12px',
-                                background: 'rgba(255, 255, 255, 0.2)',
-                                border: '2px solid rgba(255, 255, 255, 0.3)',
+                                background: '#2054DE',
+                                border: '2px solid #2054DE',
                                 color: 'white',
-                                backdropFilter: 'blur(10px)',
-                                boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
+                                boxShadow: '0 8px 32px rgba(32, 84, 222, 0.3)',
                                 transition: 'all 0.3s ease',
                                 alignSelf: isMobile ? 'center' : 'flex-start'
                             }}
                             onMouseEnter={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                                e.currentTarget.style.background = '#1a47c7';
+                                e.currentTarget.style.borderColor = '#1a47c7';
                                 e.currentTarget.style.transform = 'translateY(-2px)';
-                                e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.15)';
+                                e.currentTarget.style.boxShadow = '0 12px 40px rgba(32, 84, 222, 0.4)';
                             }}
                             onMouseLeave={(e) => {
-                                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                                e.currentTarget.style.background = '#2054DE';
+                                e.currentTarget.style.borderColor = '#2054DE';
                                 e.currentTarget.style.transform = 'translateY(0)';
-                                e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
+                                e.currentTarget.style.boxShadow = '0 8px 32px rgba(32, 84, 222, 0.3)';
                             }}
                         >
                             Приступить

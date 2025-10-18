@@ -34,6 +34,7 @@ export default function ApplicationsTable({ preselectedCompany }) {
     fetchApplications();
   }, []);
 
+
   // Автоматически открываем форму, если есть предзаполненная компания
   useEffect(() => {
     if (preselectedCompany && !hasUsedPreselectedCompany) {

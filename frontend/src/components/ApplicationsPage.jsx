@@ -9,7 +9,7 @@ const { Content } = Layout;
 
 const contentStyle = {
   minHeight: 'calc(100vh - 80px)',
-  background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+  background: '#F5F5F5',
   padding: '0',
   position: 'relative'
 };

@@ -22,6 +22,7 @@ export default function ReviewsSection({ companyId, companyName }) {
     fetchReviews();
   }, [companyId]);
 
+
   const fetchReviews = async () => {
     setLoading(true);
     try {
@@ -102,12 +103,11 @@ export default function ReviewsSection({ companyId, companyName }) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
           <Title level={2} style={{
             margin: 0,
-            background: 'var(--primary-gradient)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
             fontSize: '28px',
             fontWeight: '700',
+            color: 'black',
+            lineHeight: '1.1',
+            textShadow: 'none',
             letterSpacing: '-0.01em'
           }}>
             Отзывы студентов

@@ -151,7 +151,7 @@ export default function CompanyDetail() {
       <Layout>
         <Layout.Content style={{
           minHeight: 'calc(100vh - 80px)',
-          background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+          background: '#F5F5F5',
           padding: '40px 24px'
         }}>
           <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -198,7 +198,14 @@ export default function CompanyDetail() {
                     <Space direction="vertical" size="large" style={{ width: '100%' }}>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-                          <Title level={1} style={{ margin: 0, fontSize: '2.5rem' }}>{company.name}</Title>
+                          <Title level={1} style={{
+                            margin: 0,
+                            fontSize: '2.5rem',
+                            fontWeight: '700',
+                            color: 'black',
+                            lineHeight: '1.1',
+                            textShadow: 'none'
+                          }}>{company.name}</Title>
                           {company.has_blue_checkmark && (
                             <Tooltip
                               title="Компания официально подтверждена и использует наш сервис для ответа на ваши заявки"
@@ -333,12 +340,11 @@ export default function CompanyDetail() {
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                   <Title level={2} style={{
                     margin: '0 0 24px 0',
-                    background: 'var(--primary-gradient)',
-                    WebkitBackgroundClip: 'text',
-                    WebkitTextFillColor: 'transparent',
-                    backgroundClip: 'text',
                     fontSize: '28px',
                     fontWeight: '700',
+                    color: 'black',
+                    lineHeight: '1.1',
+                    textShadow: 'none',
                     letterSpacing: '-0.01em'
                   }}>
                     Вы сможете выбрать одно из направлений:

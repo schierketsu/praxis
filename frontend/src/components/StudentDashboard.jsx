@@ -12,7 +12,7 @@ const { Option } = Select;
 const { TextArea } = Input;
 
 export default function StudentDashboard() {
-  const { user, student, logout, updateProfile } = useAuth();
+  const { user, student, logout, updateProfile, checkAuthStatus } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -25,6 +25,9 @@ export default function StudentDashboard() {
   const [newInterest, setNewInterest] = useState('');
   const [resumeFile, setResumeFile] = useState(null);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarKey, setAvatarKey] = useState(0); // Для принудительного обновления аватара
+  const [avatarError, setAvatarError] = useState(false); // Для обработки ошибок загрузки аватара
+  const [avatarUrl, setAvatarUrl] = useState(null); // Локальное состояние для URL аватара
 
   // Обновляем данные студента при изменении
   useEffect(() => {
@@ -32,11 +35,63 @@ export default function StudentDashboard() {
     if (student) {
       setSkills(student.skills || []);
       setInterests(student.interests || []);
+      // Принудительно обновляем аватар при изменении данных
+      setAvatarKey(prev => prev + 1);
+      setAvatarError(false); // Сбрасываем ошибку при обновлении данных
+
+      // Принудительно обновляем URL аватара с timestamp для обхода кэша
+      if (student.avatar_url) {
+        const timestamp = new Date().getTime();
+        setAvatarUrl(`${student.avatar_url}?t=${timestamp}`);
+      } else {
+        setAvatarUrl(null);
+      }
     }
     // Очищаем предпросмотр файлов при обновлении данных
     setResumeFile(null);
     setAvatarFile(null);
   }, [student]);
+
+  // Принудительно обновляем данные студента при монтировании компонента
+  useEffect(() => {
+    const refreshStudentData = async () => {
+      try {
+        // Принудительно обновляем данные студента
+        await checkAuthStatus();
+      } catch (error) {
+        console.error('Ошибка обновления данных студента:', error);
+      }
+    };
+
+    refreshStudentData();
+  }, [checkAuthStatus]);
+
+  // Обновляем данные при фокусе окна (возврат на страницу)
+  useEffect(() => {
+    const handleFocus = async () => {
+      try {
+        await checkAuthStatus();
+      } catch (error) {
+        console.error('Ошибка обновления данных при фокусе:', error);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [checkAuthStatus]);
+
+  // Принудительно обновляем аватар при изменении данных студента
+  useEffect(() => {
+    if (student?.avatar_url) {
+      const timestamp = new Date().getTime();
+      setAvatarUrl(`${student.avatar_url}?t=${timestamp}`);
+    } else {
+      setAvatarUrl(null);
+    }
+  }, [student]);
+
 
   // Загружаем список университетов
   useEffect(() => {
@@ -116,6 +171,18 @@ export default function StudentDashboard() {
       // Очищаем предпросмотр после успешной загрузки
       setResumeFile(null);
       setAvatarFile(null);
+
+      // Принудительно обновляем аватар после успешного сохранения
+      setAvatarKey(prev => prev + 1);
+      setAvatarError(false);
+
+      // Обновляем URL аватара с новым timestamp
+      if (response.student?.avatar_url) {
+        const timestamp = new Date().getTime();
+        setAvatarUrl(`${response.student.avatar_url}?t=${timestamp}`);
+      } else {
+        setAvatarUrl(null);
+      }
 
       message.success('Профиль обновлен успешно!');
     } catch (error) {
@@ -231,8 +298,7 @@ export default function StudentDashboard() {
               background: 'rgba(255, 255, 255, 0.9)',
               border: '1px solid rgba(37, 99, 235, 0.2)',
               color: 'var(--text-primary)',
-              boxShadow: 'var(--shadow-soft)',
-              transition: 'var(--transition)'
+              boxShadow: 'var(--shadow-soft)'
             }}
           >
             Назад к главной
@@ -242,11 +308,11 @@ export default function StudentDashboard() {
           <div style={{ textAlign: 'center', marginBottom: '48px' }}>
             <Title level={1} style={{
               margin: '0 0 16px 0',
-              background: 'var(--primary-gradient)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
               fontSize: '48px',
               fontWeight: '800',
+              color: 'black',
+              lineHeight: '1.1',
+              textShadow: 'none',
               letterSpacing: '-0.02em'
             }}>
               Личный кабинет
@@ -265,16 +331,20 @@ export default function StudentDashboard() {
             style={{
               marginBottom: '32px',
               borderRadius: 'var(--border-radius-lg)',
-              background: 'var(--glass-bg)',
-              backdropFilter: 'blur(20px)',
-              border: '1px solid var(--glass-border)',
-              boxShadow: 'var(--shadow-soft)'
+              background: 'rgb(255, 255, 255)',
+              border: '1px solid #e2e8f0',
+              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+              transition: 'none !important',
+              transform: 'none !important',
+              animation: 'none !important',
+              willChange: 'auto'
             }}
             styles={{
               body: {
                 padding: '48px'
               }
             }}
+            hoverable={false}
           >
             {isEditing ? (
               <Form
@@ -329,11 +399,13 @@ export default function StudentDashboard() {
                 <Form.Item label="Аватар">
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     <Avatar
+                      key={avatarKey}
                       size={80}
-                      src={avatarFile ? URL.createObjectURL(avatarFile) : currentStudent?.avatar_url}
+                      src={avatarFile ? URL.createObjectURL(avatarFile) : (avatarError ? null : avatarUrl)}
                       icon={<UserOutlined />}
+                      onError={() => setAvatarError(true)}
                       style={{
-                        background: (avatarFile || currentStudent?.avatar_url) ? 'transparent' : 'var(--primary-gradient)',
+                        background: (avatarFile || (avatarUrl && !avatarError)) ? 'transparent' : 'var(--primary-gradient)',
                         boxShadow: 'var(--shadow-small)',
                         border: '2px solid rgba(255, 255, 255, 0.8)'
                       }}
@@ -581,7 +653,6 @@ export default function StudentDashboard() {
                           background: 'var(--primary-gradient)',
                           border: 'none',
                           borderRadius: 'var(--border-radius)',
-                          transition: 'var(--transition)'
                         }}
                       >
                         Добавить
@@ -621,7 +692,6 @@ export default function StudentDashboard() {
                           background: 'var(--primary-gradient)',
                           border: 'none',
                           borderRadius: 'var(--border-radius)',
-                          transition: 'var(--transition)'
                         }}
                       >
                         Добавить
@@ -663,7 +733,6 @@ export default function StudentDashboard() {
                         border: 'none',
                         boxShadow: 'var(--shadow-soft)',
                         fontSize: '16px',
-                        transition: 'var(--transition)'
                       }}
                     >
                       Сохранить изменения
@@ -681,7 +750,6 @@ export default function StudentDashboard() {
                         background: 'rgba(255, 255, 255, 0.9)',
                         border: '1px solid rgba(37, 99, 235, 0.2)',
                         color: 'var(--text-primary)',
-                        transition: 'var(--transition)'
                       }}
                     >
                       Отмена
@@ -693,11 +761,13 @@ export default function StudentDashboard() {
               <>
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                   <Avatar
+                    key={avatarKey}
                     size={120}
-                    src={avatarFile ? URL.createObjectURL(avatarFile) : currentStudent?.avatar_url}
+                    src={avatarFile ? URL.createObjectURL(avatarFile) : (avatarError ? null : avatarUrl)}
                     icon={<UserOutlined />}
+                    onError={() => setAvatarError(true)}
                     style={{
-                      background: (avatarFile || currentStudent?.avatar_url) ? 'transparent' : 'var(--primary-gradient)',
+                      background: (avatarFile || (avatarUrl && !avatarError)) ? 'transparent' : 'var(--primary-gradient)',
                       marginBottom: '24px',
                       boxShadow: 'var(--shadow-medium)',
                       border: '4px solid rgba(255, 255, 255, 0.8)'
@@ -854,7 +924,6 @@ export default function StudentDashboard() {
                           height: '40px',
                           fontSize: '14px',
                           fontWeight: '500',
-                          transition: 'var(--transition)'
                         }}
                       >
                         Скачать резюме
@@ -931,7 +1000,6 @@ export default function StudentDashboard() {
                       border: 'none',
                       boxShadow: 'var(--shadow-soft)',
                       fontSize: '16px',
-                      transition: 'var(--transition)'
                     }}
                   >
                     Редактировать профиль

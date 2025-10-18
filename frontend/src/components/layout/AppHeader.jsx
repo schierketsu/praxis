@@ -192,29 +192,25 @@ export default function AppHeader() {
               trigger={['click']}
             >
               <Button
-                type="text"
+                type="default"
+                icon={<UserOutlined />}
                 size="large"
                 style={{
                   borderRadius: '12px',
                   height: '44px',
-                  padding: '0 16px',
+                  width: '44px',
+                  padding: '0',
                   fontWeight: '600',
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  color: 'black',
-                  border: '1px solid rgba(255, 255, 255, 0.3)',
+                  background: 'black',
+                  color: 'white',
+                  border: 'none',
                   boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
                 }}
-              >
-                <Space>
-                  <Avatar
-                    size="small"
-                    icon={<UserOutlined />}
-                    style={{ backgroundColor: 'rgba(255, 255, 255, 0.3)' }}
-                  />
-                  {student ? (user?.first_name || user?.username) : (company?.name || user?.username)}
-                </Space>
-              </Button>
+              />
             </Dropdown>
           ) : (
             <Space size="middle">

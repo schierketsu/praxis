@@ -101,18 +101,21 @@ export const AuthProvider = ({ children }) => {
 
   const logout = useCallback(async () => {
     try {
-      // Пытаемся выйти как студент
-      try {
-        await authAPI.logout();
-      } catch (e) {
-        // Игнорируем ошибку, если студент не авторизован
-      }
-
-      // Пытаемся выйти как компания
-      try {
-        await companyAPI.logout();
-      } catch (e) {
-        // Игнорируем ошибку, если компания не авторизована
+      // Выходим в зависимости от типа авторизованного пользователя
+      if (student) {
+        // Если авторизован как студент, выходим как студент
+        try {
+          await authAPI.logout();
+        } catch (e) {
+          console.warn('Ошибка выхода студента:', e);
+        }
+      } else if (company) {
+        // Если авторизован как компания, выходим как компания
+        try {
+          await companyAPI.logout();
+        } catch (e) {
+          console.warn('Ошибка выхода компании:', e);
+        }
       }
 
       setUser(null);
@@ -125,7 +128,7 @@ export const AuthProvider = ({ children }) => {
       setStudent(null);
       setCompany(null);
     }
-  }, []);
+  }, [student, company]);
 
   const updateProfile = useCallback(async (profileData) => {
     try {

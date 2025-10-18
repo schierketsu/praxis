@@ -100,12 +100,13 @@ export default function ReviewForm({
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <Title level={2} style={{
-            margin: '0 0 16px 0',
-            background: 'var(--primary-gradient)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            margin: '0 0 24px 0',
             fontSize: '28px',
-            fontWeight: '700'
+            fontWeight: '700',
+            color: 'black',
+            lineHeight: '1.1',
+            textShadow: 'none',
+            letterSpacing: '-0.01em'
           }}>
             {isEditing ? `Редактировать отзыв о ${companyName}` : `Оставить отзыв о ${companyName}`}
           </Title>

@@ -3,7 +3,7 @@
   --primary-gradient: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   --secondary-gradient: linear-gradient(135deg, #059669 0%, #047857 100%);
   --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
-  --background-gradient: rgb(255, 255, 255);
+  --background-gradient: #F5F5F5;
   --glass-bg: rgba(255, 255, 255, 0.8);
   --glass-border: rgba(255, 255, 255, 0.3);
   --text-primary: #1e293b;
@@ -37,7 +37,7 @@ body {
   font-size: 16px;
   line-height: 1.6;
   color: var(--text-primary);
-  background: rgb(255, 255, 255) !important;
+  background: #F5F5F5 !important;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -261,25 +261,10 @@ button:active {
   font-variant: normal !important;
 }
 
-.ant-btn-primary {
-  background: var(--primary-gradient) !important;
-  border: none !important;
-}
 
-.ant-btn-primary:hover {
-  background: var(--secondary-gradient) !important;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-medium);
-}
 
-/* Убираем тень при наведении на карточки карусели */
-.ant-card:hover {
-  box-shadow: none !important;
-}
 
-.ant-card-hoverable:hover {
-  box-shadow: none !important;
-}
+
 
 /* Адаптивность */
 @media (max-width: 768px) {
