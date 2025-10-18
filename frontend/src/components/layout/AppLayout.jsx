@@ -3,14 +3,14 @@ import AppHeader from './AppHeader'
 import AppContent from './AppContent'
 import Footer from '../Footer'
 
-export default function AppLayout(){
+export default function AppLayout() {
     return (
         <Layout>
-            <AppHeader/>
+            <AppHeader />
             <Layout>
-                <AppContent/>
+                <AppContent />
             </Layout>
-            <Footer/>
+            <Footer />
         </Layout>
     )
 }

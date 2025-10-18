@@ -17,7 +17,7 @@ const contentStyle = {
 export default function ApplicationsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Получаем предзаполненную компанию из состояния навигации
   const preselectedCompany = location.state?.preselectedCompany;
 
@@ -45,7 +45,7 @@ export default function ApplicationsPage() {
           >
             Назад к главной
           </Button>
-          
+
           <ApplicationsTable preselectedCompany={preselectedCompany} />
         </div>
       </Content>

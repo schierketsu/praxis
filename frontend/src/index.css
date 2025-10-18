@@ -15,7 +15,7 @@
   --border-radius: 12px;
   --border-radius-lg: 20px;
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   /* Z-index система */
   --z-index-modal: 1000;
   --z-index-dropdown: 100;
@@ -44,7 +44,12 @@ body {
 }
 
 /* Убираем small-caps для более современного вида */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-weight: 700;
   line-height: 1.2;
   color: var(--text-primary);
@@ -67,7 +72,11 @@ h3 {
   font-weight: 600;
 }
 
-p, span, div, a, button {
+p,
+span,
+div,
+a,
+button {
   font-weight: 400;
 }
 
@@ -112,6 +121,7 @@ button:active {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -122,6 +132,7 @@ button:active {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -202,11 +213,25 @@ button:active {
 }
 
 /* Z-index utility классы */
-.z-modal { z-index: var(--z-index-modal); }
-.z-dropdown { z-index: var(--z-index-dropdown); }
-.z-header { z-index: var(--z-index-header); }
-.z-content { z-index: var(--z-index-content); }
-.z-navigation { z-index: var(--z-index-navigation); }
+.z-modal {
+  z-index: var(--z-index-modal);
+}
+
+.z-dropdown {
+  z-index: var(--z-index-dropdown);
+}
+
+.z-header {
+  z-index: var(--z-index-header);
+}
+
+.z-content {
+  z-index: var(--z-index-content);
+}
+
+.z-navigation {
+  z-index: var(--z-index-navigation);
+}
 
 /* Оптимизация конфликтов с библиотеками */
 /* Ant Design оптимизация */
@@ -261,11 +286,11 @@ button:active {
   h1 {
     font-size: 2.5rem;
   }
-  
+
   h2 {
     font-size: 2rem;
   }
-  
+
   h3 {
     font-size: 1.5rem;
   }

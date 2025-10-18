@@ -117,9 +117,46 @@ const Hero = () => {
     style.textContent = `
       .hero-carousel {
         border-radius: 16px !important;
-        box-shadow: 0 8px 32px rgba(102, 126, 234, 0.2) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
         padding: 12px !important;
         height: 550px !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
+        margin: 0 !important;
+        border: none !important;
+        outline: none !important;
+      }
+      
+      /* Убираем любые возможные границы между header и hero */
+      .ant-layout-header + .ant-layout-content {
+        border-top: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+      
+      .ant-layout-content {
+        border-top: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+      }
+      
+      /* Принудительно перекрываем фон main элемента */
+      main.ant-layout-content {
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+      
+      /* Убираем любые границы у всех элементов между header и hero */
+      .ant-layout-header,
+      .ant-layout-content,
+      .ant-layout-content > div {
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
       }
       
       .hero-carousel .slick-slider {
@@ -139,12 +176,18 @@ const Hero = () => {
       }
       
       .hero-carousel .slick-dots {
-        bottom: -40px !important;
+        bottom: 20px !important;
         height: 24px !important;
         display: flex !important;
         justify-content: center !important;
         align-items: center !important;
         gap: 12px !important;
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 20px !important;
+        padding: 8px 16px !important;
+        margin: 0 auto !important;
+        width: fit-content !important;
       }
       
       .hero-carousel .slick-dots li {
@@ -158,7 +201,7 @@ const Hero = () => {
         width: 32px !important;
         height: 12px !important;
         border-radius: 6px !important;
-        background: rgba(102, 126, 234, 0.3) !important;
+        background: rgba(37, 99, 235, 0.3) !important;
         border: none !important;
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
         cursor: pointer !important;
@@ -172,18 +215,38 @@ const Hero = () => {
       .hero-carousel .slick-dots li.slick-active button {
         background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
         opacity: 1 !important;
-        transform: scale(1.4) !important;
+        transform: scale(1.2) !important;
       }
       
       .hero-carousel .slick-dots li:hover button {
         background: rgba(37, 99, 235, 0.6) !important;
-        transform: scale(1.2) !important;
+        transform: scale(1.1) !important;
         opacity: 0.8 !important;
       }
       
       .hero-carousel .slick-dots li.slick-active:hover button {
         background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
-        transform: scale(1.5) !important;
+        transform: scale(1.3) !important;
+      }
+      
+      /* Адаптивность для мобильных устройств */
+      @media (max-width: 768px) {
+        .hero-carousel {
+          height: 600px !important;
+        }
+        
+        .hero-carousel .slick-slider {
+          height: 600px !important;
+        }
+        
+        .hero-carousel .slick-list {
+          height: 600px !important;
+        }
+        
+        .hero-carousel .slick-dots {
+          bottom: 15px !important;
+          padding: 6px 12px !important;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -196,11 +259,21 @@ const Hero = () => {
   }, []);
 
   return (
-    <div style={{
-      padding: '0px 0 40px 0',
-      position: 'relative'
+    <div className="hero-section" style={{
+      padding: '60px 0 40px 0',
+      position: 'relative',
+      background: 'var(--background-gradient)',
+      borderRadius: '0',
+      margin: '0 -24px 0 -24px',
+      width: 'calc(100% + 48px)',
+      zIndex: 10,
+      border: 'none',
+      outline: 'none',
+      boxShadow: 'none',
+      top: '0',
+      left: '0'
     }}>
-      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 16px', width: '100%' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '20px 16px 0 16px', width: '100%' }}>
         <Carousel
           className="hero-carousel"
           arrows={false}

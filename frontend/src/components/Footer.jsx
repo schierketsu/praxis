@@ -15,7 +15,7 @@ const { Footer: AntFooter } = Layout;
 const Footer = () => {
   return (
     <AntFooter style={{
-      background: 'var(--primary-gradient)',
+      background: '#1a1a1a',
       color: 'white',
       padding: '60px 0 30px 0',
       position: 'relative',

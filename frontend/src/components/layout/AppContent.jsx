@@ -4,6 +4,7 @@ import SearchFilters from '../SearchFilters';
 import InternshipTable from '../InternshipTable';
 import Hero from '../Hero';
 import Features from '../Features';
+import WelcomeBanner from '../WelcomeBanner';
 import { companiesAPI, companyInternshipsAPI } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -83,6 +84,7 @@ export default function AppContent() {
     <Layout.Content style={contentStyle}>
       {!student && !company && (
         <>
+          <WelcomeBanner />
           <Hero />
           <Features />
         </>

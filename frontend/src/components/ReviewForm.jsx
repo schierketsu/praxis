@@ -5,11 +5,11 @@ import { reviewsAPI } from '../services/api';
 const { TextArea } = Input;
 const { Title } = Typography;
 
-export default function ReviewForm({ 
-  visible, 
-  onClose, 
-  companyId, 
-  companyName, 
+export default function ReviewForm({
+  visible,
+  onClose,
+  companyId,
+  companyName,
   onSuccess,
   existingReview = null,
   isEditing = false
@@ -50,7 +50,7 @@ export default function ReviewForm({
         });
         message.success('Отзыв успешно добавлен!');
       }
-      
+
       form.resetFields();
       onSuccess?.();
       onClose();
@@ -90,7 +90,7 @@ export default function ReviewForm({
         }
       }}
     >
-      <div style={{ 
+      <div style={{
         padding: '40px',
         background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.8) 100%)',
         backdropFilter: 'blur(20px)',
@@ -99,7 +99,7 @@ export default function ReviewForm({
         boxShadow: '0 20px 60px rgba(0, 0, 0, 0.15)'
       }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <Title level={2} style={{ 
+          <Title level={2} style={{
             margin: '0 0 16px 0',
             background: 'var(--primary-gradient)',
             WebkitBackgroundClip: 'text',
@@ -122,7 +122,7 @@ export default function ReviewForm({
             label="Оценка"
             rules={[{ required: true, message: 'Пожалуйста, поставьте оценку' }]}
           >
-            <Rate 
+            <Rate
               style={{ fontSize: '24px', color: '#faad14' }}
             />
           </Form.Item>
@@ -161,8 +161,8 @@ export default function ReviewForm({
               >
                 {isEditing ? 'Обновить отзыв' : 'Отправить отзыв'}
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={handleCancel}
                 size="large"
                 block
