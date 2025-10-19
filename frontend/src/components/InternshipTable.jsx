@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, memo } from 'react';
 import { Card, Tag, Space, Typography, Button, Avatar, Row, Col, Divider, Tooltip } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -44,6 +44,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
           <Avatar
             size={80}
             src={record.logo}
+            loading="lazy"
             style={{
               marginBottom: '16px',
               border: '3px solid rgba(102, 126, 234, 0.2)'
@@ -194,7 +195,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
   );
 });
 
-export default function InternshipTable({ data, loading, pagination, onTableChange, selectedTechs = [] }) {
+const InternshipTable = memo(function InternshipTable({ data, loading, pagination, onTableChange, selectedTechs = [] }) {
   const navigate = useNavigate();
   const { user, student, company } = useAuth();
   const [authModalVisible, setAuthModalVisible] = useState(false);
@@ -310,6 +311,7 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
                     <Avatar
                       src={company.logo_url}
                       size={90}
+                      loading="lazy"
                       style={{
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         border: '4px solid rgba(255, 255, 255, 0.8)',
@@ -482,4 +484,6 @@ export default function InternshipTable({ data, loading, pagination, onTableChan
       />
     </div>
   );
-}
+});
+
+export default InternshipTable;

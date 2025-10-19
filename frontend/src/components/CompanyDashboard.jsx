@@ -13,7 +13,7 @@ const { TextArea } = Input;
 const { TabPane } = Tabs;
 
 export default function CompanyDashboard() {
-    const { user, company, logout, updateProfile } = useAuth();
+    const { user, company, logout, updateProfile, checkAuthStatus } = useAuth();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -30,12 +30,65 @@ export default function CompanyDashboard() {
     const [applicationsLoading, setApplicationsLoading] = useState(false);
     const [applicationModalVisible, setApplicationModalVisible] = useState(false);
     const [selectedApplication, setSelectedApplication] = useState(null);
+    const [logoUrl, setLogoUrl] = useState(null); // Локальное состояние для URL логотипа
+    const [logoKey, setLogoKey] = useState(0); // Ключ для принудительного обновления
 
     // Обновляем данные компании при изменении
     useEffect(() => {
         setCurrentCompany(company);
+        if (company) {
+            // Принудительно обновляем логотип при изменении данных
+            setLogoKey(prev => prev + 1);
+            
+            // Принудительно обновляем URL логотипа с timestamp для обхода кэша
+            if (company.logo) {
+                const timestamp = new Date().getTime();
+                setLogoUrl(`${company.logo}?t=${timestamp}`);
+            } else {
+                setLogoUrl(null);
+            }
+        }
     }, [company]);
 
+    // Принудительно обновляем данные компании при монтировании компонента
+    useEffect(() => {
+        const refreshCompanyData = async () => {
+            try {
+                // Принудительно обновляем данные компании
+                await checkAuthStatus();
+            } catch (error) {
+                console.error('Ошибка обновления данных компании:', error);
+            }
+        };
+
+        refreshCompanyData();
+    }, [checkAuthStatus]);
+
+    // Обновляем данные при фокусе окна (возврат на страницу)
+    useEffect(() => {
+        const handleFocus = async () => {
+            try {
+                await checkAuthStatus();
+            } catch (error) {
+                console.error('Ошибка обновления данных при фокусе:', error);
+            }
+        };
+
+        window.addEventListener('focus', handleFocus);
+        return () => {
+            window.removeEventListener('focus', handleFocus);
+        };
+    }, [checkAuthStatus]);
+
+    // Принудительно обновляем логотип при изменении данных компании
+    useEffect(() => {
+        if (company?.logo) {
+            const timestamp = new Date().getTime();
+            setLogoUrl(`${company.logo}?t=${timestamp}`);
+        } else {
+            setLogoUrl(null);
+        }
+    }, [company]);
 
     // Обработка нажатия Escape для закрытия модального окна
     useEffect(() => {
@@ -146,6 +199,15 @@ export default function CompanyDashboard() {
 
             // Очищаем предпросмотр после успешной загрузки
             setLogoFile(null);
+            
+            // Принудительно обновляем логотип после успешного сохранения
+            setLogoKey(prev => prev + 1);
+            if (response.company.logo) {
+                const timestamp = new Date().getTime();
+                setLogoUrl(`${response.company.logo}?t=${timestamp}`);
+            } else {
+                setLogoUrl(null);
+            }
 
             message.success('Профиль компании обновлен успешно!');
         } catch (error) {
@@ -175,6 +237,14 @@ export default function CompanyDashboard() {
         setIsEditing(false);
         // Очищаем предпросмотр
         setLogoFile(null);
+        
+        // Сбрасываем состояние логотипа к исходному
+        if (currentCompany && currentCompany.logo) {
+            const timestamp = new Date().getTime();
+            setLogoUrl(`${currentCompany.logo}?t=${timestamp}`);
+        } else {
+            setLogoUrl(null);
+        }
 
         // Сбрасываем форму к исходным значениям
         if (currentCompany) {
@@ -536,7 +606,7 @@ export default function CompanyDashboard() {
                                                                                 icon={<FileOutlined />}
                                                                                 onClick={() => {
                                                                                     const link = document.createElement('a');
-                                                                                    link.href = currentCompany.logo;
+                                                                                    link.href = logoUrl || currentCompany.logo;
                                                                                     link.download = 'logo.png';
                                                                                     link.target = '_blank';
                                                                                     document.body.appendChild(link);
@@ -668,11 +738,13 @@ export default function CompanyDashboard() {
                                                 <>
                                                     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                                                         <Avatar
+                                                            key={logoKey}
                                                             size={120}
-                                                            src={currentCompany.logo}
+                                                            src={logoFile ? URL.createObjectURL(logoFile) : logoUrl}
                                                             icon={<UserOutlined />}
+                                                            loading="lazy"
                                                             style={{
-                                                                background: 'var(--primary-gradient)',
+                                                                background: (logoFile || logoUrl) ? 'transparent' : 'var(--primary-gradient)',
                                                                 marginBottom: '24px',
                                                                 boxShadow: 'var(--shadow-medium)',
                                                                 border: '4px solid rgba(255, 255, 255, 0.8)'

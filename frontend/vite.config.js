@@ -13,17 +13,35 @@ export default defineConfig({
     // Разделение на чанки для лучшего кэширования
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks: (id) => {
           // React и React DOM в отдельный чанк
-          'react-vendor': ['react', 'react-dom'],
+          if (id.includes('react') || id.includes('react-dom')) {
+            return 'react-vendor';
+          }
           // React Router в отдельный чанк
-          'router': ['react-router-dom'],
+          if (id.includes('react-router')) {
+            return 'router';
+          }
           // Ant Design в отдельный чанк
-          'antd': ['antd'],
+          if (id.includes('antd')) {
+            return 'antd';
+          }
           // Axios в отдельный чанк
-          'axios': ['axios'],
+          if (id.includes('axios')) {
+            return 'axios';
+          }
           // Leaflet карты в отдельный чанк
-          'leaflet': ['leaflet', 'react-leaflet']
+          if (id.includes('leaflet')) {
+            return 'leaflet';
+          }
+          // Компоненты в отдельный чанк
+          if (id.includes('components/')) {
+            return 'components';
+          }
+          // Сервисы в отдельный чанк
+          if (id.includes('services/')) {
+            return 'services';
+          }
         }
       }
     },
@@ -35,7 +53,11 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true, // Удаляем console.log в продакшене
-        drop_debugger: true
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug']
+      },
+      mangle: {
+        safari10: true
       }
     }
   },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Card, Select, Button, Space, Row, Col, Tag, Typography } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI, universitiesAPI } from '../services/api';
@@ -41,13 +41,27 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
     }
   };
 
-  const handleSearch = () => {
+  // Дебаунсинг для поиска
+  const debouncedSearch = useCallback(
+    (() => {
+      let timeoutId;
+      return (params) => {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+          onSearch(params);
+        }, 300); // 300ms задержка
+      };
+    })(),
+    [onSearch]
+  );
+
+  const handleSearch = useCallback(() => {
     const params = {};
     if (selectedLocation) params.location = selectedLocation;
     if (selectedUniversity) params.university = selectedUniversity;
     if (selectedTechs.length > 0) params.tech_stack = selectedTechs.join(',');
-    onSearch(params);
-  };
+    debouncedSearch(params);
+  }, [selectedLocation, selectedUniversity, selectedTechs, debouncedSearch]);
 
   const handleReset = () => {
     onLocationChange('');

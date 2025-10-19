@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { apiCache } from './cache';
 
 const API_BASE_URL = 'http://localhost:8000/api';
 
@@ -77,7 +78,12 @@ export const companiesAPI = {
 // API для университетов
 export const universitiesAPI = {
   getUniversities: async (params = {}) => {
+    const cacheKey = `universities_${JSON.stringify(params)}`;
+    const cached = apiCache.get(cacheKey);
+    if (cached) return cached;
+    
     const response = await api.get('/universities/', { params });
+    apiCache.set(cacheKey, response.data, 10 * 60 * 1000); // 10 минут кэш
     return response.data;
   },
 };

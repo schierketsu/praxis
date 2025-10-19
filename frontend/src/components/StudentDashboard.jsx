@@ -765,6 +765,7 @@ export default function StudentDashboard() {
                     size={120}
                     src={avatarFile ? URL.createObjectURL(avatarFile) : (avatarError ? null : avatarUrl)}
                     icon={<UserOutlined />}
+                    loading="lazy"
                     onError={() => setAvatarError(true)}
                     style={{
                       background: (avatarFile || (avatarUrl && !avatarError)) ? 'transparent' : 'var(--primary-gradient)',
