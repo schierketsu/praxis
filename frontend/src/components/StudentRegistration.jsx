@@ -81,20 +81,24 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
   return (
     <div
       style={{
-        padding: '48px',
-        background: 'var(--glass-bg)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '24px',
-        border: '1px solid var(--glass-border)',
-        boxShadow: 'var(--shadow-soft)',
+        padding: isMobile ? '0' : '48px',
+        background: isMobile ? '#ffffff' : 'var(--glass-bg)',
+        backdropFilter: isMobile ? 'none' : 'blur(20px)',
+        borderRadius: isMobile ? '0' : '24px',
+        border: isMobile ? 'none' : '1px solid var(--glass-border)',
+        boxShadow: isMobile ? 'none' : 'var(--shadow-soft)',
         position: 'relative',
         overflow: 'hidden'
       }}
     >
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: isMobile ? '24px' : '40px',
+        padding: isMobile ? '0 16px' : '0'
+      }}>
         <Title level={2} style={{
           margin: '0 0 16px 0',
-          fontSize: '2.5rem',
+          fontSize: isMobile ? '1.6rem' : '2.5rem',
           fontWeight: '700',
           color: '#1a202c',
           lineHeight: '1.2'
@@ -102,7 +106,7 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
           Регистрация студента
         </Title>
         <Text style={{
-          fontSize: '16px',
+          fontSize: isMobile ? '14px' : '16px',
           color: 'var(--text-secondary)',
           fontWeight: '500',
           lineHeight: '1.6'
@@ -116,15 +120,29 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
         layout="vertical"
         onFinish={handleSubmit}
         size="large"
+        style={{
+          padding: isMobile ? '0 16px' : '0'
+        }}
       >
-        <Row gutter={[16, 0]}>
+        <Row gutter={isMobile ? [0, 8] : [16, 0]}>
           <Col xs={24} sm={12}>
             <Form.Item
               name="first_name"
               label="Имя"
               rules={[{ required: true, message: 'Введите имя' }]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input prefix={<UserOutlined />} placeholder="Имя" />
+              <Input 
+                prefix={<UserOutlined />} 
+                placeholder="Имя"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
@@ -132,13 +150,23 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
               name="last_name"
               label="Фамилия"
               rules={[{ required: true, message: 'Введите фамилию' }]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input placeholder="Фамилия" />
+              <Input 
+                placeholder="Фамилия"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
 
-        <Row gutter={[16, 0]}>
+        <Row gutter={isMobile ? [0, 8] : [16, 0]}>
           <Col xs={24} sm={12}>
             <Form.Item
               name="username"
@@ -147,8 +175,19 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
                 { required: true, message: 'Введите имя пользователя' },
                 { min: 3, message: 'Минимум 3 символа' }
               ]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input prefix={<UserOutlined />} placeholder="username" />
+              <Input 
+                prefix={<UserOutlined />} 
+                placeholder="username"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
@@ -159,13 +198,24 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
                 { required: true, message: 'Введите email' },
                 { type: 'email', message: 'Некорректный email' }
               ]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input prefix={<MailOutlined />} placeholder="email@example.com" />
+              <Input 
+                prefix={<MailOutlined />} 
+                placeholder="email@example.com"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
 
-        <Row gutter={[16, 0]}>
+        <Row gutter={isMobile ? [0, 8] : [16, 0]}>
           <Col xs={24} sm={12}>
             <Form.Item
               name="password"
@@ -174,8 +224,19 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
                 { required: true, message: 'Введите пароль' },
                 { min: 8, message: 'Минимум 8 символов' }
               ]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input.Password prefix={<LockOutlined />} placeholder="Пароль" />
+              <Input.Password 
+                prefix={<LockOutlined />} 
+                placeholder="Пароль"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
           <Col xs={24} sm={12}>
@@ -194,32 +255,59 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
                   },
                 }),
               ]}
+              style={{
+                marginBottom: isMobile ? '8px' : '24px'
+              }}
             >
-              <Input.Password placeholder="Подтвердите пароль" />
+              <Input.Password 
+                placeholder="Подтвердите пароль"
+                style={{
+                  height: isMobile ? '48px' : '40px',
+                  borderRadius: isMobile ? '12px' : '8px',
+                  fontSize: isMobile ? '16px' : '14px'
+                }}
+              />
             </Form.Item>
           </Col>
         </Row>
 
 
-        <Form.Item style={{ marginBottom: '24px', textAlign: 'center' }}>
+        <Form.Item style={{ 
+          marginBottom: isMobile ? '20px' : '24px', 
+          textAlign: 'center',
+          padding: isMobile ? '0 16px' : '0'
+        }}>
           <Space size="middle">
             <Button
               type="primary"
               htmlType="submit"
               loading={loading}
               size="large"
+              block={isMobile}
               style={{
-                borderRadius: '16px',
-                height: '52px',
-                paddingLeft: '32px',
-                paddingRight: '32px',
+                borderRadius: isMobile ? '8px' : '16px',
+                height: isMobile ? '44px' : '52px',
+                padding: isMobile ? '0 24px' : '0 32px',
+                fontSize: isMobile ? '1rem' : '16px',
                 fontWeight: '600',
-                background: 'var(--primary-gradient)',
-                border: 'none',
-                boxShadow: 'var(--shadow-soft)',
-                fontSize: '16px',
-                transition: 'var(--transition)'
+                background: isMobile ? '#2054DE' : 'var(--primary-gradient)',
+                border: isMobile ? '2px solid #2054DE' : 'none',
+                color: 'white',
+                boxShadow: isMobile ? '0 8px 32px rgba(32, 84, 222, 0.3)' : 'var(--shadow-soft)',
+                transition: 'all 0.3s ease'
               }}
+              onMouseEnter={isMobile ? (e) => {
+                e.currentTarget.style.background = '#1a47c7';
+                e.currentTarget.style.borderColor = '#1a47c7';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(32, 84, 222, 0.4)';
+              } : undefined}
+              onMouseLeave={isMobile ? (e) => {
+                e.currentTarget.style.background = '#2054DE';
+                e.currentTarget.style.borderColor = '#2054DE';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(32, 84, 222, 0.3)';
+              } : undefined}
             >
               Зарегистрироваться
             </Button>
@@ -227,11 +315,14 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
         </Form.Item>
       </Form>
 
-      <div style={{ textAlign: 'center' }}>
-        <Space>
+      <div style={{ 
+        textAlign: 'center',
+        padding: isMobile ? '0 16px' : '0'
+      }}>
+        <Space direction={isMobile ? 'vertical' : 'horizontal'} size={isMobile ? 'small' : 'middle'}>
           <Text style={{
             color: 'var(--text-secondary)',
-            fontSize: '14px'
+            fontSize: isMobile ? '14px' : '14px'
           }}>
             Уже зарегистрированы?
           </Text>
@@ -243,7 +334,8 @@ export default function StudentRegistration({ onSuccess, onCancel, onSwitchToLog
               fontWeight: '600',
               padding: '0',
               height: 'auto',
-              fontSize: '14px'
+              fontSize: isMobile ? '14px' : '14px',
+              minHeight: isMobile ? '44px' : 'auto'
             }}
           >
             Войти

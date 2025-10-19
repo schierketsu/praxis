@@ -20,6 +20,18 @@ const contentStyle = {
   overflow: 'hidden'
 };
 
+const mobileContentStyle = {
+  minHeight: 'calc(100vh - 80px)',
+  background: 'rgb(255, 255, 255)',
+  padding: '0',
+  margin: '0',
+  position: 'relative',
+  overflow: 'hidden',
+  border: 'none',
+  outline: 'none',
+  boxShadow: 'none'
+};
+
 export default function AppContent() {
   const { student, company, loading: authLoading } = useAuth();
   const [companies, setCompanies] = useState([]);
@@ -31,6 +43,18 @@ export default function AppContent() {
   const [userInteractedWithUniversity, setUserInteractedWithUniversity] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Определяем мобильные устройства
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   // Загрузка данных
   const fetchCompanies = async (params = {}) => {
@@ -131,12 +155,19 @@ export default function AppContent() {
   }
 
   return (
-    <Layout.Content style={contentStyle}>
+    <Layout.Content style={isMobile ? mobileContentStyle : contentStyle}>
       {!student && !company && (
         <>
           <WelcomeBanner />
-          <Hero />
+          {!isMobile && <Hero />}
           <Features />
+          {isMobile && (
+            <div style={{ 
+              height: '60px', 
+              background: 'white',
+              margin: '0 -24px'
+            }} />
+          )}
           <HowItWorksSection />
         </>
       )}

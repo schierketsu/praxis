@@ -9,7 +9,7 @@ import RatingDisplay from './RatingDisplay';
 const { Text, Link } = Typography;
 
 // Оптимизированный компонент карточки компании
-const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => {
+const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs, isMobile }) => {
   const techs = getCompanyTechs(record.internships || []);
 
   // Отладочная информация
@@ -28,8 +28,9 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
       <Card
         hoverable
         style={{
-          height: '580px',
-          borderRadius: '16px',
+          height: isMobile ? 'auto' : '580px',
+          minHeight: isMobile ? '400px' : '580px',
+          borderRadius: isMobile ? '12px' : '16px',
           border: 'none',
           background: 'rgba(255, 255, 255, 0.95)',
           backdropFilter: 'blur(10px)',
@@ -37,16 +38,23 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
           display: 'flex',
           flexDirection: 'column'
         }}
-        styles={{ body: { padding: '24px', height: '100%', display: 'flex', flexDirection: 'column' } }}
+        styles={{ 
+          body: { 
+            padding: isMobile ? '16px' : '24px', 
+            height: '100%', 
+            display: 'flex', 
+            flexDirection: 'column' 
+          } 
+        }}
       >
         {/* Логотип и название */}
-        <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+        <div style={{ textAlign: 'center', marginBottom: isMobile ? '16px' : '20px' }}>
           <Avatar
-            size={80}
+            size={isMobile ? 60 : 80}
             src={record.logo}
             loading="lazy"
             style={{
-              marginBottom: '16px',
+              marginBottom: isMobile ? '12px' : '16px',
               border: '3px solid rgba(102, 126, 234, 0.2)'
             }}
           />
@@ -54,7 +62,7 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
             <Text
               strong
               style={{
-                fontSize: '18px',
+                fontSize: isMobile ? '16px' : '18px',
                 color: '#2c3e50',
                 display: 'block'
               }}
@@ -70,8 +78,8 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
                   src="/checkblue.png"
                   alt="Verified"
                   style={{
-                    width: '24px',
-                    height: '24px',
+                    width: isMobile ? '20px' : '24px',
+                    height: isMobile ? '20px' : '24px',
                     cursor: 'help',
                     display: 'block'
                   }}
@@ -175,16 +183,17 @@ const CompanyCard = React.memo(({ record, onCompanyClick, getCompanyTechs }) => 
           <Button
             type="primary"
             icon={<InfoCircleOutlined />}
-            size="large"
+            size={isMobile ? 'middle' : 'large'}
             block
             onClick={() => onCompanyClick(record)}
             style={{
-              borderRadius: '12px',
-              height: '44px',
+              borderRadius: isMobile ? '8px' : '12px',
+              height: isMobile ? '40px' : '44px',
               fontWeight: '600',
               background: 'var(--primary-gradient)',
               border: 'none',
-              boxShadow: 'var(--shadow-soft)'
+              boxShadow: 'var(--shadow-soft)',
+              fontSize: isMobile ? '14px' : '16px'
             }}
           >
             Подробнее
@@ -281,7 +290,8 @@ const InternshipTable = memo(function InternshipTable({ data, loading, paginatio
                 loading={loading}
                 style={{
                   height: isMobile ? 'auto' : '580px',
-                  borderRadius: isMobile ? '16px' : '20px',
+                  minHeight: isMobile ? '400px' : '580px',
+                  borderRadius: isMobile ? '12px' : '20px',
                   overflow: 'hidden',
                   background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
                   backdropFilter: 'blur(10px)',
@@ -310,13 +320,13 @@ const InternshipTable = memo(function InternshipTable({ data, loading, paginatio
                   }}>
                     <Avatar
                       src={company.logo_url}
-                      size={90}
+                      size={isMobile ? 70 : 90}
                       loading="lazy"
                       style={{
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         border: '4px solid rgba(255, 255, 255, 0.8)',
                         boxShadow: 'var(--shadow-medium)',
-                        borderRadius: '20px',
+                        borderRadius: isMobile ? '16px' : '20px',
                         objectFit: 'contain',
                         transition: 'var(--transition)'
                       }}

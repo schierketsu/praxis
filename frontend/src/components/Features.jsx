@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Row, Col, Typography, Space } from 'antd';
 import {
   SearchOutlined,
@@ -12,6 +12,18 @@ import {
 const { Title, Paragraph } = Typography;
 
 const Features = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const features = [
     {
       icon: <SearchOutlined style={{ fontSize: '28px', color: 'white' }} />,
@@ -46,12 +58,16 @@ const Features = () => {
   ];
 
   return (
-    <div style={{
-      padding: '30px 0 80px 0',
-      position: 'relative',
-      background: 'rgb(255, 255, 255)',
-      margin: '0 -24px'
-    }}>
+    <div 
+      className="features-section"
+      style={{
+        padding: isMobile ? '40px 0 80px 0' : '30px 0 80px 0',
+        position: 'relative',
+        background: 'rgb(255, 255, 255)',
+        margin: isMobile ? '0' : '0 -24px',
+        marginTop: isMobile ? '0' : 'auto',
+        zIndex: isMobile ? 1 : 'auto'
+      }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
         <div className="fade-in-up" style={{ textAlign: 'center', marginBottom: '40px', marginTop: '20px' }}>
           <Title
@@ -97,12 +113,16 @@ const Features = () => {
                   cursor: 'pointer'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-medium)';
+                  if (!isMobile) {
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-medium)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-soft)';
+                  if (!isMobile) {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'var(--shadow-soft)';
+                  }
                 }}
               >
                 <Space direction="vertical" size="large" style={{ width: '100%' }}>

@@ -5,6 +5,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import AppLayout from './components/layout/AppLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import StudentOnlyRoute from './components/StudentOnlyRoute';
+import SmartPreloader from './components/SmartPreloader';
 
 // Ленивая загрузка компонентов
 const CompanyDetail = lazy(() => import('./components/CompanyDetail'));
@@ -27,6 +28,7 @@ const LoadingSpinner = () => (
 export default function App() {
   return (
     <AuthProvider>
+      <SmartPreloader />
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>

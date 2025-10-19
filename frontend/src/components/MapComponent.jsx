@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Spin, Typography } from 'antd';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { loadLeafletCSS } from '../utils/resourceLoader';
 
 const { Text } = Typography;
 
@@ -17,6 +17,8 @@ export default function MapComponent({ address, companyName, latitude, longitude
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          // Загружаем CSS только когда карта становится видимой
+          loadLeafletCSS().catch(console.error);
           observer.disconnect();
         }
       },

@@ -148,10 +148,10 @@ export default function ApplicationsTable({ preselectedCompany }) {
       width: 250,
       render: (text, record) => (
         <Space direction="vertical" size={0}>
-          <Text strong style={{ fontSize: '16px' }}>
+          <Text strong style={{ fontSize: isMobile ? '14px' : '16px' }}>
             {text}
           </Text>
-          <Text type="secondary" style={{ fontSize: '14px' }}>
+          <Text type="secondary" style={{ fontSize: isMobile ? '12px' : '14px' }}>
             {record.position}
           </Text>
         </Space>
@@ -177,7 +177,9 @@ export default function ApplicationsTable({ preselectedCompany }) {
       dataIndex: 'appliedDate',
       key: 'appliedDate',
       render: (date) => (
-        <Text>{new Date(date).toLocaleDateString('ru-RU')}</Text>
+        <Text style={{ fontSize: isMobile ? '12px' : '14px' }}>
+          {new Date(date).toLocaleDateString('ru-RU')}
+        </Text>
       ),
       sorter: (a, b) => new Date(a.appliedDate) - new Date(b.appliedDate),
     },
@@ -187,7 +189,13 @@ export default function ApplicationsTable({ preselectedCompany }) {
       key: 'description',
       width: 300,
       render: (text) => (
-        <Text style={{ whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+        <Text 
+          style={{ 
+            whiteSpace: 'pre-wrap', 
+            wordBreak: 'break-word',
+            fontSize: isMobile ? '12px' : '14px'
+          }}
+        >
           {text}
         </Text>
       ),
@@ -200,8 +208,10 @@ export default function ApplicationsTable({ preselectedCompany }) {
           <Button
             type="text"
             danger
+            size={isMobile ? 'small' : 'middle'}
             icon={<DeleteOutlined />}
             onClick={() => handleCancelApplication(record)}
+            style={{ fontSize: isMobile ? '12px' : '14px' }}
           >
             Отменить
           </Button>
@@ -214,38 +224,50 @@ export default function ApplicationsTable({ preselectedCompany }) {
     <div>
       <Card
         style={{
-          borderRadius: '20px',
+          borderRadius: isMobile ? '16px' : '20px',
           background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
           backdropFilter: 'blur(10px)',
           border: '1px solid rgba(255, 255, 255, 0.3)',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-          marginBottom: '24px'
+          marginBottom: isMobile ? '16px' : '24px'
         }}
       >
-        <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ 
+          marginBottom: isMobile ? '20px' : '24px', 
+          display: 'flex', 
+          justifyContent: 'space-between', 
+          alignItems: isMobile ? 'flex-start' : 'flex-start',
+          flexDirection: isMobile ? 'column' : 'row',
+          gap: isMobile ? '16px' : '0'
+        }}>
           <div>
-            <Title level={2} style={{ margin: 0, color: '#2d3748' }}>
+            <Title level={2} style={{ 
+              margin: 0, 
+              color: '#2d3748',
+              fontSize: isMobile ? '20px' : '24px'
+            }}>
               Мои заявки на практики
             </Title>
-            <Text type="secondary" style={{ fontSize: '16px' }}>
-              Здесь отображаются все ваши отправленные заявки на практики
+            <Text type="secondary" style={{ fontSize: isMobile ? '14px' : '16px' }}>
+              {isMobile ? 'Ваши заявки' : 'Здесь отображаются все ваши отправленные заявки на практики'}
             </Text>
           </div>
           <Button
             type="primary"
             icon={<PlusOutlined />}
             onClick={handleCreateApplication}
-            size="large"
+            size={isMobile ? 'middle' : 'large'}
             style={{
-              borderRadius: '12px',
-              height: '48px',
+              borderRadius: isMobile ? '8px' : '12px',
+              height: isMobile ? '40px' : '48px',
               fontWeight: '600',
               background: 'var(--primary-gradient)',
               border: 'none',
-              boxShadow: 'var(--shadow-soft)'
+              boxShadow: 'var(--shadow-soft)',
+              fontSize: isMobile ? '14px' : '16px'
             }}
           >
-            Новая заявка
+            {isMobile ? 'Новая заявка' : 'Новая заявка'}
           </Button>
         </div>
 

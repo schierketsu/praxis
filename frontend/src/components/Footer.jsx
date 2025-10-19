@@ -20,7 +20,7 @@ const Footer = () => {
       padding: '60px 0 30px 0',
       position: 'relative',
       overflow: 'hidden'
-    }}>
+    }} className="footer-component">
       {/* Декоративные элементы */}
       <div style={{
         position: 'absolute',
@@ -54,14 +54,6 @@ const Footer = () => {
               <Paragraph style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px', lineHeight: '1.6' }}>
                 Сделано с любовью к хорошим практикам 💙
               </Paragraph>
-              <Space size="large" style={{ marginTop: '24px' }}>
-                <Button
-                  type="text"
-                  icon={<GithubOutlined />}
-                  style={{ color: 'white', fontSize: '20px' }}
-                />
-
-              </Space>
             </div>
           </Col>
 
@@ -89,14 +81,19 @@ const Footer = () => {
 
           <Col xs={24} md={8}>
             <div className="fade-in-up" style={{ textAlign: 'right' }}>
-              <Space>
-                <MailOutlined style={{ color: 'rgba(255, 255, 255, 0.8)' }} />
-                <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-                  info@studprakt.ru
-                </span>
-              </Space>
               <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <MailOutlined style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px' }} />
+                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    info@studprakt.ru
+                  </span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <GithubOutlined style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '16px' }} />
+                  <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                    
+                  </span>
+                </div>
               </Space>
             </div>
           </Col>

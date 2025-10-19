@@ -49,11 +49,13 @@ const HowItWorksSection = () => {
     };
 
     return (
-        <div style={{
-            background: 'rgb(255, 255, 255)',
-            margin: isMobile ? '0 -16px' : '0 -24px',
-            padding: '0'
-        }}>
+        <div 
+            className="how-it-works-section"
+            style={{
+                background: 'rgb(255, 255, 255)',
+                margin: isMobile ? '60px -16px 0 -16px' : '0 -24px',
+                padding: '0'
+            }}>
             <div style={{
                 background: 'rgb(234, 255, 217)',
                 padding: isMobile ? '40px 0 60px 0' : '60px 0 80px 0',
@@ -93,20 +95,20 @@ const HowItWorksSection = () => {
                                     justifyContent: 'center'
                                 }}>
                                     <div style={{ textAlign: 'center', color: '#1890ff', fontSize: isMobile ? '32px' : '48px' }}>
-                                        📝
+                                        👤
                                     </div>
                                 </div>
                                 <div>
                                     <Paragraph style={stepTitleStyle}>ШАГ 1</Paragraph>
-                                    <Title level={3} style={mainHeadingStyle}>Текст1</Title>
+                                    <Title level={3} style={mainHeadingStyle}>Регистрация</Title>
                                     <Paragraph style={descriptionStyle}>
-                                        Описание
+                                        Создайте аккаунт студента или компании за несколько минут
                                     </Paragraph>
                                 </div>
                             </Card>
                         </Col>
 
-                        {/* Карточка 2: Поделись с друзьями */}
+                        {/* Карточка 2: Найдите практику */}
                         <Col xs={24} md={8}>
                             <Card style={cardStyle}>
                                 <div style={{
@@ -120,20 +122,20 @@ const HowItWorksSection = () => {
                                     justifyContent: 'center'
                                 }}>
                                     <div style={{ textAlign: 'center', color: '#1890ff', fontSize: isMobile ? '32px' : '48px' }}>
-                                        📝
+                                        🔍
                                     </div>
                                 </div>
                                 <div>
                                     <Paragraph style={stepTitleStyle}>ШАГ 2</Paragraph>
-                                    <Title level={3} style={mainHeadingStyle}>Текст2</Title>
+                                    <Title level={3} style={mainHeadingStyle}>Поиск</Title>
                                     <Paragraph style={descriptionStyle}>
-                                        Описание
+                                        Используйте фильтры для поиска подходящих IT-практик
                                     </Paragraph>
                                 </div>
                             </Card>
                         </Col>
 
-                        {/* Карточка 3: Готово! Наслаждайся! */}
+                        {/* Карточка 3: Подайте заявку */}
                         <Col xs={24} md={8}>
                             <Card style={cardStyle}>
                                 <div style={{
@@ -147,14 +149,14 @@ const HowItWorksSection = () => {
                                     justifyContent: 'center'
                                 }}>
                                     <div style={{ textAlign: 'center', color: '#1890ff', fontSize: isMobile ? '32px' : '48px' }}>
-                                        📝
+                                        📋
                                     </div>
                                 </div>
                                 <div>
                                     <Paragraph style={stepTitleStyle}>ШАГ 3</Paragraph>
-                                    <Title level={3} style={mainHeadingStyle}>Текст3</Title>
+                                    <Title level={3} style={mainHeadingStyle}>Заявка</Title>
                                     <Paragraph style={descriptionStyle}>
-                                        Описание
+                                        Отправьте заявку напрямую в компанию и получите ответ
                                     </Paragraph>
                                 </div>
                             </Card>

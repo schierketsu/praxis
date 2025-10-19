@@ -51,6 +51,39 @@ const UnderHeader = () => {
         outline: none !important;
         box-shadow: none !important;
       }
+      
+      /* Мобильные стили для полной ширины */
+      @media (max-width: 768px) {
+        .ant-layout {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        .ant-layout-header {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 12px !important;
+        }
+        
+        .ant-layout-content {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow-x: hidden !important;
+        }
+        
+        #root {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      }
     `;
 
         document.head.appendChild(style);

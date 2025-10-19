@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Layout, Button, Space, Typography, Dropdown, Avatar, Modal } from 'antd';
-import { UserOutlined, LoginOutlined, LogoutOutlined, SettingOutlined } from '@ant-design/icons';
+import { Layout, Button, Space, Typography, Dropdown, Avatar, Modal, Drawer } from 'antd';
+import { UserOutlined, LoginOutlined, LogoutOutlined, SettingOutlined, MenuOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import AuthModal from '../AuthModal';
@@ -10,7 +10,7 @@ const { Title } = Typography;
 const getHeaderStyle = (isMobile) => ({
   width: "100%",
   height: isMobile ? 60 : 80,
-  padding: isMobile ? "0 16px" : "0 40px",
+  padding: isMobile ? "0 12px" : "0 40px",
   display: "flex",
   justifyContent: "space-between",
   alignItems: "center",
@@ -19,7 +19,8 @@ const getHeaderStyle = (isMobile) => ({
   backdropFilter: 'blur(20px)',
   borderBottom: '1px solid var(--glass-border)',
   position: 'relative',
-  zIndex: 1000
+  zIndex: 1000,
+  minHeight: isMobile ? '60px' : '80px'
 });
 
 const getTitleStyle = (isMobile) => ({
@@ -36,6 +37,7 @@ export default function AppHeader() {
   const [authModalVisible, setAuthModalVisible] = useState(false);
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' или 'register'
   const [isMobile, setIsMobile] = useState(false);
+  const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const navigate = useNavigate();
 
   // Определяем мобильные устройства
@@ -192,36 +194,62 @@ export default function AppHeader() {
         <div style={{
           display: 'flex',
           justifyContent: 'flex-end',
-          flex: 1,
+          alignItems: 'center',
           gap: isMobile ? '8px' : '12px'
         }}>
           {isAuthenticated ? (
-            <Dropdown
-              menu={{ items: userMenuItems }}
-              placement="bottomRight"
-              trigger={['click']}
-            >
-              <Button
-                type="default"
-                icon={<UserOutlined />}
-                size={isMobile ? 'middle' : 'large'}
-                style={{
-                  borderRadius: isMobile ? '8px' : '12px',
-                  height: isMobile ? '36px' : '44px',
-                  width: isMobile ? '36px' : '44px',
-                  padding: '0',
-                  fontWeight: '600',
-                  background: 'black',
-                  color: 'white',
-                  border: 'none',
-                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-                  transition: 'all 0.3s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center'
-                }}
-              />
-            </Dropdown>
+            <>
+              {isMobile ? (
+                <Button
+                  type="default"
+                  icon={<MenuOutlined />}
+                  size="middle"
+                  onClick={() => setMobileMenuVisible(true)}
+                  style={{
+                    borderRadius: '8px',
+                    height: '36px',
+                    width: '36px',
+                    padding: '0',
+                    fontWeight: '600',
+                    background: 'black',
+                    color: 'white',
+                    border: 'none',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                />
+              ) : (
+                <Dropdown
+                  menu={{ items: userMenuItems }}
+                  placement="bottomRight"
+                  trigger={['click']}
+                >
+                  <Button
+                    type="default"
+                    icon={<UserOutlined />}
+                    size="large"
+                    style={{
+                      borderRadius: '12px',
+                      height: '44px',
+                      width: '44px',
+                      padding: '0',
+                      fontWeight: '600',
+                      background: 'black',
+                      color: 'white',
+                      border: 'none',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                      transition: 'all 0.3s ease',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  />
+                </Dropdown>
+              )}
+            </>
           ) : (
             <Space size={isMobile ? 'small' : 'middle'}>
               {!isMobile && (
@@ -247,9 +275,9 @@ export default function AppHeader() {
               )}
               <Button
                 type="default"
-                icon={isMobile ? <UserOutlined /> : <UserOutlined />}
+                icon={<UserOutlined />}
                 size={isMobile ? 'middle' : 'large'}
-                onClick={isMobile ? handleRegisterClick : handleLoginClick}
+                onClick={handleLoginClick}
                 className="custom-login-btn"
                 style={{
                   borderRadius: isMobile ? '8px' : '12px',
@@ -276,6 +304,49 @@ export default function AppHeader() {
         onSuccess={handleAuthSuccess}
         initialMode={authModalMode}
       />
+
+      {/* Мобильное меню */}
+      <Drawer
+        title="Меню"
+        placement="right"
+        onClose={() => setMobileMenuVisible(false)}
+        open={mobileMenuVisible}
+        width={280}
+        styles={{ body: { padding: '24px' } }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {userMenuItems.map((item, index) => (
+            <div key={index}>
+              {item.type === 'divider' ? (
+                <div style={{ 
+                  height: '1px', 
+                  background: '#f0f0f0', 
+                  margin: '16px 0' 
+                }} />
+              ) : (
+                <Button
+                  type="text"
+                  icon={item.icon}
+                  onClick={() => {
+                    item.onClick();
+                    setMobileMenuVisible(false);
+                  }}
+                  style={{
+                    width: '100%',
+                    height: '48px',
+                    textAlign: 'left',
+                    justifyContent: 'flex-start',
+                    fontSize: '16px',
+                    fontWeight: '500'
+                  }}
+                >
+                  {item.label}
+                </Button>
+              )}
+            </div>
+          ))}
+        </div>
+      </Drawer>
     </>
   );
 }

@@ -283,32 +283,33 @@ export default function StudentDashboard() {
   return (
     <Layout style={{ minHeight: '100vh', background: 'var(--background-gradient)' }}>
       <AppHeader />
-      <Content style={{ padding: '40px 24px' }}>
+      <Content style={{ padding: isMobile ? '20px 16px' : '40px 24px' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
           {/* Кнопка назад */}
           <Button
             icon={<ArrowLeftOutlined />}
             onClick={() => navigate('/')}
-            size="large"
+            size={isMobile ? 'middle' : 'large'}
             style={{
-              marginBottom: '32px',
+              marginBottom: isMobile ? '24px' : '32px',
               borderRadius: 'var(--border-radius)',
-              height: '48px',
+              height: isMobile ? '40px' : '48px',
               fontWeight: '600',
               background: 'rgba(255, 255, 255, 0.9)',
               border: '1px solid rgba(37, 99, 235, 0.2)',
               color: 'var(--text-primary)',
-              boxShadow: 'var(--shadow-soft)'
+              boxShadow: 'var(--shadow-soft)',
+              fontSize: isMobile ? '14px' : '16px'
             }}
           >
-            Назад к главной
+            {isMobile ? 'Назад' : 'Назад к главной'}
           </Button>
 
           {/* Заголовок */}
-          <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <div style={{ textAlign: 'center', marginBottom: isMobile ? '32px' : '48px' }}>
             <Title level={1} style={{
               margin: '0 0 16px 0',
-              fontSize: '48px',
+              fontSize: isMobile ? '32px' : '48px',
               fontWeight: '800',
               color: 'black',
               lineHeight: '1.1',
@@ -318,11 +319,11 @@ export default function StudentDashboard() {
               Личный кабинет
             </Title>
             <Text style={{
-              fontSize: '18px',
+              fontSize: isMobile ? '16px' : '18px',
               color: 'var(--text-secondary)',
               fontWeight: '500'
             }}>
-              Управляйте своим профилем и настройками
+              {isMobile ? 'Ваш профиль' : 'Управляйте своим профилем и настройками'}
             </Text>
           </div>
 

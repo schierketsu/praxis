@@ -52,6 +52,72 @@ const WelcomeBanner = () => {
         outline: none !important;
         box-shadow: none !important;
       }
+      
+      /* Мобильные стили для полной ширины */
+      @media (max-width: 768px) {
+        .ant-layout {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        .ant-layout-header {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 12px !important;
+        }
+        
+        .ant-layout-content {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        body {
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow-x: hidden !important;
+        }
+        
+        #root {
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+        
+        /* Агрессивное устранение промежутков между секциями */
+        .welcome-banner {
+          margin-bottom: 0 !important;
+          padding-bottom: 0 !important;
+        }
+        
+        .features-section {
+          margin-top: 0 !important;
+          padding-top: 0 !important;
+        }
+        
+        /* Убираем промежутки между всеми элементами */
+        .ant-layout-content > * {
+          margin: 0 !important;
+          padding: 0 !important;
+          border: none !important;
+          outline: none !important;
+          box-shadow: none !important;
+        }
+        
+        /* Продолжение фона WelcomeBanner после кнопки */
+        .welcome-banner::after {
+          content: '' !important;
+          position: absolute !important;
+          bottom: 0 !important;
+          left: 0 !important;
+          right: 0 !important;
+          height: 20px !important;
+          background: #d1e3f7 !important;
+          z-index: 1 !important;
+        }
+        
+      }
     `;
 
         document.head.appendChild(style);
@@ -72,19 +138,20 @@ const WelcomeBanner = () => {
     };
 
     return (
-        <div style={{
-            background: '#d1e3f7',
-            padding: isMobile ? '40px 0' : '80px 0',
-            position: 'relative',
-            width: '100%',
-            zIndex: 5,
-            overflow: 'hidden',
-            margin: isMobile ? '-30px -16px 0 -16px' : '-60px -24px 0 -24px',
-            width: isMobile ? 'calc(100% + 32px)' : 'calc(100% + 48px)',
-            border: 'none',
-            outline: 'none',
-            boxShadow: 'none'
-        }}>
+        <div 
+            className="welcome-banner"
+            style={{
+                background: '#d1e3f7',
+                padding: isMobile ? '40px 0 60px 0' : '80px 0',
+                position: 'relative',
+                zIndex: 5,
+                overflow: 'visible',
+                margin: isMobile ? '0' : '-60px -24px 0 -24px',
+                width: isMobile ? '100%' : 'calc(100% + 48px)',
+                border: 'none',
+                outline: 'none',
+                boxShadow: 'none'
+            }}>
             <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto',

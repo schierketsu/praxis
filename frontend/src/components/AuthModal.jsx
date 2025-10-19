@@ -121,30 +121,30 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
       }}
       styles={{
         body: {
-          padding: '0',
-          // background: 'var(--background-gradient)',
-          // borderRadius: '24px',
-          // overflow: 'hidden',
-          // boxShadow: 'var(--shadow-strong)',
-          // border: '1px solid var(--glass-border)'
+          padding: isMobile ? '20px' : '0',
+          maxHeight: isMobile ? '85vh' : 'auto',
+          overflow: isMobile ? 'auto' : 'visible',
+          background: '#ffffff',
+          borderRadius: isMobile ? '20px' : '8px'
         },
         mask: {
           backdropFilter: 'blur(20px)',
-          backgroundColor: 'rgba(0, 0, 0, 0.4)'
+          backgroundColor: 'rgba(0, 0, 0, 0.5)'
         }
       }}
     >
       {/* Переключатель типа пользователя - только для регистрации */}
       {(mode === 'register' || mode === 'company-register') && (
         <div style={{
-          padding: '24px 24px 0 24px'
+          padding: isMobile ? '0 0 20px 0' : '24px 24px 0 24px'
         }}>
           <div style={{
             display: 'flex',
-            background: 'rgba(255, 255, 255, 0.1)',
-            borderRadius: '12px',
-            padding: '4px',
-            marginBottom: '20px'
+            background: isMobile ? '#f8f9fa' : 'rgba(255, 255, 255, 0.1)',
+            borderRadius: isMobile ? '16px' : '12px',
+            padding: isMobile ? '6px' : '4px',
+            marginBottom: isMobile ? '16px' : '20px',
+            border: isMobile ? '1px solid #e9ecef' : 'none'
           }}>
             <Button
               type={userType === 'student' ? 'primary' : 'text'}
@@ -152,13 +152,14 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               onClick={() => handleUserTypeChange('student')}
               style={{
                 flex: 1,
-                height: '40px',
-                borderRadius: '8px',
-                background: userType === 'student' ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.2)',
-                border: userType === 'student' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
-                color: userType === 'student' ? '#fff' : '#333',
+                height: isMobile ? '48px' : '40px',
+                borderRadius: isMobile ? '12px' : '8px',
+                background: userType === 'student' ? 'var(--primary-gradient)' : (isMobile ? 'transparent' : 'rgba(255, 255, 255, 0.2)'),
+                border: userType === 'student' ? 'none' : (isMobile ? '1px solid #e9ecef' : '1px solid rgba(255, 255, 255, 0.3)'),
+                color: userType === 'student' ? '#fff' : (isMobile ? '#495057' : '#333'),
                 fontWeight: '600',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                fontSize: isMobile ? '16px' : '14px'
               }}
             >
               Студент
@@ -169,13 +170,14 @@ export default function AuthModal({ visible, onClose, onSuccess, initialMode = '
               onClick={() => handleUserTypeChange('company')}
               style={{
                 flex: 1,
-                height: '40px',
-                borderRadius: '8px',
-                background: userType === 'company' ? 'var(--primary-gradient)' : 'rgba(255, 255, 255, 0.2)',
-                border: userType === 'company' ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
-                color: userType === 'company' ? '#fff' : '#333',
+                height: isMobile ? '48px' : '40px',
+                borderRadius: isMobile ? '12px' : '8px',
+                background: userType === 'company' ? 'var(--primary-gradient)' : (isMobile ? 'transparent' : 'rgba(255, 255, 255, 0.2)'),
+                border: userType === 'company' ? 'none' : (isMobile ? '1px solid #e9ecef' : '1px solid rgba(255, 255, 255, 0.3)'),
+                color: userType === 'company' ? '#fff' : (isMobile ? '#495057' : '#333'),
                 fontWeight: '600',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                fontSize: isMobile ? '16px' : '14px'
               }}
             >
               Компания
