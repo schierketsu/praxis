@@ -131,8 +131,8 @@ const UnderHeader = () => {
             width: '100%',
             zIndex: 5,
             overflow: 'hidden',
-            margin: '-60px -24px 0 -24px',
-            width: 'calc(100% + 48px)',
+            margin: isMobile ? '-60px -16px 0 -16px' : '-60px -24px 0 -24px',
+            width: isMobile ? 'calc(100% + 32px)' : 'calc(100% + 48px)',
             border: 'none',
             outline: 'none',
             boxShadow: 'none'
@@ -140,7 +140,7 @@ const UnderHeader = () => {
             <div style={{
                 maxWidth: '1400px',
                 margin: '0 auto',
-                padding: '0 24px'
+                padding: isMobile ? '0 16px' : '0 24px'
             }}>
                 <div style={{
                     display: 'flex',
@@ -158,23 +158,25 @@ const UnderHeader = () => {
                     }}>
                         <h1 style={{
                             color: 'black',
-                            fontSize: isMobile ? '2.5rem' : '3.5rem',
+                            fontSize: isMobile ? '2rem' : '3.5rem',
                             fontWeight: '700',
                             lineHeight: '1.1',
                             margin: '0',
-                            textShadow: 'none'
+                            textShadow: 'none',
+                            padding: isMobile ? '0 16px' : '0'
                         }}>
                             {welcomeText.title}
                         </h1>
 
                         <span style={{
                             color: 'black',
-                            fontSize: isMobile ? '1.1rem' : '1.25rem',
+                            fontSize: isMobile ? '1rem' : '1.25rem',
                             fontWeight: '400',
                             lineHeight: '1.5',
                             textAlign: 'center',
                             display: 'block',
-                            width: '100%'
+                            width: '100%',
+                            padding: isMobile ? '0 16px' : '0'
                         }}>
                             {welcomeText.subtitle}
                         </span>

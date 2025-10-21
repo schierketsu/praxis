@@ -19,14 +19,8 @@ const SmartPreloader = () => {
           await resourceLoader.load(font, 'style');
         }
         
-        // Предзагружаем иконки если они используются
-        const iconPreloads = [
-          '/checkblue.png'
-        ];
-        
-        for (const icon of iconPreloads) {
-          await resourceLoader.load(icon, 'image');
-        }
+        // Предзагружаем иконки только если они действительно нужны
+        // checkblue.png загружается динамически в компонентах где используется
         
       } catch (error) {
         console.warn('Ошибка предзагрузки ресурсов:', error);

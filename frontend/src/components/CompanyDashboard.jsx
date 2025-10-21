@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Layout, Card, Typography, Button, Space, Tag, Row, Col, Avatar, Divider, message, Form, Input, Select, Upload, Tabs, Table, Modal } from 'antd';
-import { UserOutlined, EditOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined, UploadOutlined, FileOutlined, DeleteOutlined, GlobalOutlined, EnvironmentOutlined } from '@ant-design/icons';
+import { UserOutlined, EditOutlined, MailOutlined, PhoneOutlined, BookOutlined, ArrowLeftOutlined, SaveOutlined, CloseOutlined, PlusOutlined, UploadOutlined, FileOutlined, DeleteOutlined, GlobalOutlined, EnvironmentOutlined, EyeOutlined, CheckOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { universitiesAPI, companyInternshipsAPI } from '../services/api';
@@ -32,6 +32,66 @@ export default function CompanyDashboard() {
     const [selectedApplication, setSelectedApplication] = useState(null);
     const [logoUrl, setLogoUrl] = useState(null); // Локальное состояние для URL логотипа
     const [logoKey, setLogoKey] = useState(0); // Ключ для принудительного обновления
+    const [isMobile, setIsMobile] = useState(false); // Состояние для определения мобильного устройства
+
+    // Определяем мобильные устройства
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
+        return () => {
+            window.removeEventListener('resize', checkMobile);
+        };
+    }, []);
+
+    // Принудительное обновление при изменении размера экрана
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            const tabPanes = document.querySelectorAll('.company-dashboard .ant-tabs-tabpane');
+            tabPanes.forEach((pane) => {
+                if (pane.classList.contains('ant-tabs-tabpane-active')) {
+                    pane.style.display = 'block';
+                    pane.style.visibility = 'visible';
+                    pane.style.opacity = '1';
+                } else {
+                    pane.style.display = 'none';
+                    pane.style.visibility = 'hidden';
+                    pane.style.opacity = '0';
+                }
+            });
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [isMobile]);
+
+    // Принудительное обновление при смене вкладки
+    useEffect(() => {
+        // Принудительно обновляем DOM для правильного отображения вкладок
+        const timer = setTimeout(() => {
+            const tabPanes = document.querySelectorAll('.company-dashboard .ant-tabs-tabpane');
+            tabPanes.forEach((pane, index) => {
+                if (pane.classList.contains('ant-tabs-tabpane-active')) {
+                    pane.style.display = 'block';
+                    pane.style.visibility = 'visible';
+                    pane.style.opacity = '1';
+                    pane.style.position = 'relative';
+                    pane.style.zIndex = '2';
+                } else {
+                    pane.style.display = 'none';
+                    pane.style.visibility = 'hidden';
+                    pane.style.opacity = '0';
+                    pane.style.position = 'absolute';
+                    pane.style.zIndex = '1';
+                }
+            });
+        }, 100);
+
+        return () => clearTimeout(timer);
+    }, [activeTab]);
 
     // Обновляем данные компании при изменении
     useEffect(() => {
@@ -400,35 +460,36 @@ export default function CompanyDashboard() {
     }
 
     return (
-        <Layout style={{ minHeight: '100vh', background: '#F5F5F5' }}>
+        <Layout className="company-dashboard" style={{ minHeight: '100vh', background: '#F5F5F5' }}>
             <AppHeader />
-            <Content style={{ padding: '40px 24px' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+            <Content style={{ padding: isMobile ? '20px 16px' : '40px 24px' }}>
+                <div style={{ maxWidth: isMobile ? '100%' : '1200px', margin: '0 auto' }}>
                     {/* Кнопка назад */}
                     <Button
                         icon={<ArrowLeftOutlined />}
                         onClick={() => navigate('/')}
-                        size="large"
+                        size={isMobile ? "middle" : "large"}
                         style={{
-                            marginBottom: '32px',
+                            marginBottom: isMobile ? '20px' : '32px',
                             borderRadius: 'var(--border-radius)',
-                            height: '48px',
+                            height: isMobile ? '40px' : '48px',
                             fontWeight: '600',
                             background: 'rgba(255, 255, 255, 0.9)',
                             border: '1px solid rgba(37, 99, 235, 0.2)',
                             color: 'var(--text-primary)',
                             boxShadow: 'var(--shadow-soft)',
-                            transition: 'var(--transition)'
+                            transition: 'var(--transition)',
+                            fontSize: isMobile ? '14px' : '16px'
                         }}
                     >
-                        Назад к главной
+                        {isMobile ? 'Назад' : 'Назад к главной'}
                     </Button>
 
                     {/* Заголовок */}
-                    <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: isMobile ? '32px' : '48px' }}>
                         <Title level={1} style={{
                             margin: '0 0 16px 0',
-                            fontSize: '48px',
+                            fontSize: isMobile ? '28px' : '48px',
                             fontWeight: '800',
                             color: 'black',
                             lineHeight: '1.1',
@@ -438,22 +499,22 @@ export default function CompanyDashboard() {
                             Панель управления
                         </Title>
                         <Text style={{
-                            fontSize: '18px',
+                            fontSize: isMobile ? '16px' : '18px',
                             color: 'var(--text-secondary)',
                             fontWeight: '500'
                         }}>
-                            Управляйте информацией о компании и практиках
+                            {isMobile ? 'Управление компанией' : 'Управляйте информацией о компании и практиках'}
                         </Text>
                     </div>
 
                     {/* Основная информация с вкладками */}
                     <Card
                         style={{
-                            marginBottom: '32px',
-                            borderRadius: 'var(--border-radius-lg)',
+                            marginBottom: isMobile ? '20px' : '32px',
+                            borderRadius: isMobile ? '12px' : 'var(--border-radius-lg)',
                             background: 'rgb(255, 255, 255)',
                             border: '1px solid #e2e8f0',
-                            boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
+                            boxShadow: isMobile ? '0 2px 8px rgba(0, 0, 0, 0.08)' : '0 4px 20px rgba(0, 0, 0, 0.1)',
                             overflow: 'hidden',
                             transition: 'none !important',
                             transform: 'none !important',
@@ -470,37 +531,40 @@ export default function CompanyDashboard() {
                         <Tabs
                             activeKey={activeTab}
                             onChange={setActiveTab}
-                            centered
-                            size="large"
+                            centered={!isMobile}
+                            size={isMobile ? "small" : "large"}
                             style={{
                                 width: '100%'
                             }}
                             tabBarStyle={{
                                 marginBottom: '0',
                                 borderBottom: '1px solid #f0f0f0',
-                                padding: '0 24px',
-                                background: '#fafafa'
+                                padding: isMobile ? '0 8px' : '0 24px',
+                                background: '#fafafa',
+                                overflowX: isMobile ? 'auto' : 'visible',
+                                whiteSpace: isMobile ? 'nowrap' : 'normal'
                             }}
+                            tabBarGutter={isMobile ? 8 : 16}
                             items={[
                                 {
                                     key: 'profile',
-                                    label: 'Профиль компании',
+                                    label: isMobile ? 'Профиль' : 'Профиль компании',
                                     children: (
-                                        <div style={{ padding: '48px' }}>
+                                        <div style={{ padding: isMobile ? '20px 16px' : '48px' }}>
                                             {isEditing ? (
                                                 <Form
                                                     form={form}
                                                     layout="vertical"
                                                     onFinish={handleSave}
-                                                    size="large"
+                                                    size={isMobile ? "middle" : "large"}
                                                 >
-                                                    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                                                    <div style={{ textAlign: 'center', marginBottom: isMobile ? '24px' : '40px' }}>
                                                         <Title level={2} style={{
                                                             margin: '0 0 16px 0',
                                                             background: 'var(--primary-gradient)',
                                                             WebkitBackgroundClip: 'text',
                                                             WebkitTextFillColor: 'transparent',
-                                                            fontSize: '32px',
+                                                            fontSize: isMobile ? '24px' : '32px',
                                                             fontWeight: '800',
                                                             letterSpacing: '-0.02em'
                                                         }}>
@@ -688,26 +752,26 @@ export default function CompanyDashboard() {
                                                         </div>
                                                     </Form.Item>
 
-                                                    <Divider style={{ margin: '32px 0' }} />
+                                                    <Divider style={{ margin: isMobile ? '24px 0' : '32px 0' }} />
 
                                                     <div style={{ textAlign: 'center' }}>
-                                                        <Space size="large">
+                                                        <Space size={isMobile ? "middle" : "large"}>
                                                             <Button
                                                                 type="primary"
                                                                 htmlType="submit"
                                                                 loading={loading}
                                                                 icon={<SaveOutlined />}
-                                                                size="large"
+                                                                size={isMobile ? "middle" : "large"}
                                                                 style={{
                                                                     borderRadius: 'var(--border-radius)',
-                                                                    height: '52px',
-                                                                    paddingLeft: '32px',
-                                                                    paddingRight: '32px',
+                                                                    height: isMobile ? '44px' : '52px',
+                                                                    paddingLeft: isMobile ? '24px' : '32px',
+                                                                    paddingRight: isMobile ? '24px' : '32px',
                                                                     fontWeight: '600',
                                                                     background: 'var(--primary-gradient)',
                                                                     border: 'none',
                                                                     boxShadow: 'var(--shadow-soft)',
-                                                                    fontSize: '16px',
+                                                                    fontSize: isMobile ? '14px' : '16px',
                                                                     transition: 'var(--transition)'
                                                                 }}
                                                             >
@@ -716,12 +780,12 @@ export default function CompanyDashboard() {
                                                             <Button
                                                                 icon={<CloseOutlined />}
                                                                 onClick={handleCancel}
-                                                                size="large"
+                                                                size={isMobile ? "middle" : "large"}
                                                                 style={{
                                                                     borderRadius: 'var(--border-radius)',
-                                                                    height: '52px',
-                                                                    paddingLeft: '32px',
-                                                                    paddingRight: '32px',
+                                                                    height: isMobile ? '44px' : '52px',
+                                                                    paddingLeft: isMobile ? '24px' : '32px',
+                                                                    paddingRight: isMobile ? '24px' : '32px',
                                                                     fontWeight: '600',
                                                                     background: 'rgba(255, 255, 255, 0.9)',
                                                                     border: '1px solid rgba(37, 99, 235, 0.2)',
@@ -736,7 +800,7 @@ export default function CompanyDashboard() {
                                                 </Form>
                                             ) : (
                                                 <>
-                                                    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+                                                    <div style={{ textAlign: 'center', marginBottom: isMobile ? '24px' : '40px' }}>
                                                         <Avatar
                                                             key={logoKey}
                                                             size={120}
@@ -776,7 +840,7 @@ export default function CompanyDashboard() {
                                                                 </Text>
                                                                 <br />
                                                                 <Text style={{
-                                                                    fontSize: '16px',
+                                                                    fontSize: isMobile ? '14px' : '16px',
                                                                     marginTop: '8px',
                                                                     display: 'block',
                                                                     color: 'var(--text-secondary)'
@@ -793,7 +857,7 @@ export default function CompanyDashboard() {
                                                                 </Text>
                                                                 <br />
                                                                 <Text style={{
-                                                                    fontSize: '16px',
+                                                                    fontSize: isMobile ? '14px' : '16px',
                                                                     marginTop: '8px',
                                                                     display: 'block',
                                                                     color: 'var(--text-secondary)'
@@ -839,19 +903,19 @@ export default function CompanyDashboard() {
                                                         </div>
                                                     )}
 
-                                                    <Divider style={{ margin: '32px 0' }} />
+                                                    <Divider style={{ margin: isMobile ? '24px 0' : '32px 0' }} />
 
                                                     <div style={{ textAlign: 'center' }}>
                                                         <Button
                                                             type="primary"
                                                             icon={<EditOutlined />}
                                                             onClick={handleEdit}
-                                                            size="large"
+                                                            size={isMobile ? "middle" : "large"}
                                                             style={{
                                                                 borderRadius: 'var(--border-radius)',
-                                                                height: '52px',
-                                                                paddingLeft: '32px',
-                                                                paddingRight: '32px',
+                                                                height: isMobile ? '44px' : '52px',
+                                                                paddingLeft: isMobile ? '24px' : '32px',
+                                                                paddingRight: isMobile ? '24px' : '32px',
                                                                 fontWeight: '600',
                                                                 background: 'var(--primary-gradient)',
                                                                 border: 'none',
@@ -870,9 +934,9 @@ export default function CompanyDashboard() {
                                 },
                                 {
                                     key: 'internships',
-                                    label: 'Управление практиками',
+                                    label: isMobile ? 'Практики' : 'Управление практиками',
                                     children: (
-                                        <div style={{ padding: '48px' }}>
+                                        <div style={{ padding: isMobile ? '20px 16px' : '48px' }}>
                                             <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <Title level={3} style={{ margin: 0 }}>Практики компании</Title>
                                                 <Button
@@ -934,19 +998,41 @@ export default function CompanyDashboard() {
                                                             title: 'Действия',
                                                             key: 'actions',
                                                             render: (_, record) => (
-                                                                <Space>
+                                                                <Space size={isMobile ? "small" : "middle"}>
                                                                     <Button
-                                                                        size="small"
+                                                                        size={isMobile ? "small" : "small"}
                                                                         onClick={() => handleEditInternship(record)}
+                                                                        icon={isMobile ? <EditOutlined /> : null}
+                                                                        style={isMobile ? {
+                                                                            fontSize: '10px',
+                                                                            padding: '2px 6px',
+                                                                            height: '24px',
+                                                                            width: '24px',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center'
+                                                                        } : {}}
+                                                                        title={isMobile ? 'Редактировать' : undefined}
                                                                     >
-                                                                        Редактировать
+                                                                        {isMobile ? '' : 'Редактировать'}
                                                                     </Button>
                                                                     <Button
-                                                                        size="small"
+                                                                        size={isMobile ? "small" : "small"}
                                                                         danger
                                                                         onClick={() => handleDeleteInternship(record.id)}
+                                                                        icon={isMobile ? <DeleteOutlined /> : null}
+                                                                        style={isMobile ? {
+                                                                            fontSize: '10px',
+                                                                            padding: '2px 6px',
+                                                                            height: '24px',
+                                                                            width: '24px',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center'
+                                                                        } : {}}
+                                                                        title={isMobile ? 'Удалить' : undefined}
                                                                     >
-                                                                        Удалить
+                                                                        {isMobile ? '' : 'Удалить'}
                                                                     </Button>
                                                                 </Space>
                                                             )
@@ -965,9 +1051,9 @@ export default function CompanyDashboard() {
                                 },
                                 {
                                     key: 'applications',
-                                    label: 'Входящие заявки',
+                                    label: isMobile ? 'Заявки' : 'Входящие заявки',
                                     children: (
-                                        <div style={{ padding: '48px' }}>
+                                        <div style={{ padding: isMobile ? '20px 16px' : '48px' }}>
                                             <div style={{ marginBottom: '24px' }}>
                                                 <Title level={3} style={{ margin: 0 }}>Заявки студентов</Title>
                                                 <Text type="secondary">Заявки на ваши практики</Text>
@@ -1030,41 +1116,87 @@ export default function CompanyDashboard() {
                                                         title: 'Действия',
                                                         key: 'actions',
                                                         render: (_, record) => (
-                                                            <Space>
+                                                            <Space size={isMobile ? "small" : "middle"} direction="horizontal">
                                                                 <Button
-                                                                    size="small"
+                                                                    size={isMobile ? "small" : "small"}
                                                                     type="primary"
                                                                     onClick={() => handleViewApplication(record.id)}
+                                                                    icon={isMobile ? <EyeOutlined /> : null}
+                                                                    style={isMobile ? {
+                                                                        fontSize: '10px',
+                                                                        padding: '2px 6px',
+                                                                        height: '24px',
+                                                                        width: '24px',
+                                                                        display: 'flex',
+                                                                        alignItems: 'center',
+                                                                        justifyContent: 'center'
+                                                                    } : {}}
+                                                                    title={isMobile ? 'Просмотреть' : undefined}
                                                                 >
-                                                                    Просмотреть
+                                                                    {isMobile ? '' : 'Просмотреть'}
                                                                 </Button>
                                                                 {record.status === 'pending' && (
                                                                     <>
                                                                         <Button
-                                                                            size="small"
+                                                                            size={isMobile ? "small" : "small"}
                                                                             type="primary"
-                                                                            style={{ background: '#52c41a', borderColor: '#52c41a' }}
+                                                                            icon={isMobile ? <CheckOutlined /> : null}
+                                                                            style={isMobile ? {
+                                                                                background: '#52c41a',
+                                                                                borderColor: '#52c41a',
+                                                                                fontSize: '10px',
+                                                                                padding: '2px 6px',
+                                                                                height: '24px',
+                                                                                width: '24px',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'center'
+                                                                            } : { background: '#52c41a', borderColor: '#52c41a' }}
                                                                             onClick={() => handleAcceptApplication(record.id)}
+                                                                            title={isMobile ? 'Принять' : undefined}
                                                                         >
-                                                                            Принять
+                                                                            {isMobile ? '' : 'Принять'}
                                                                         </Button>
                                                                         <Button
-                                                                            size="small"
+                                                                            size={isMobile ? "small" : "small"}
                                                                             danger
                                                                             onClick={() => handleRejectApplication(record.id)}
+                                                                            icon={isMobile ? <CloseCircleOutlined /> : null}
+                                                                            style={isMobile ? {
+                                                                                fontSize: '10px',
+                                                                                padding: '2px 6px',
+                                                                                height: '24px',
+                                                                                width: '24px',
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                justifyContent: 'center'
+                                                                            } : {}}
+                                                                            title={isMobile ? 'Отклонить' : undefined}
                                                                         >
-                                                                            Отклонить
+                                                                            {isMobile ? '' : 'Отклонить'}
                                                                         </Button>
                                                                     </>
                                                                 )}
                                                                 {record.status === 'rejected' && (
                                                                     <Button
-                                                                        size="small"
+                                                                        size={isMobile ? "small" : "small"}
                                                                         type="primary"
-                                                                        style={{ background: '#52c41a', borderColor: '#52c41a' }}
+                                                                        icon={isMobile ? <CheckOutlined /> : null}
+                                                                        style={isMobile ? {
+                                                                            background: '#52c41a',
+                                                                            borderColor: '#52c41a',
+                                                                            fontSize: '10px',
+                                                                            padding: '2px 6px',
+                                                                            height: '24px',
+                                                                            width: '24px',
+                                                                            display: 'flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center'
+                                                                        } : { background: '#52c41a', borderColor: '#52c41a' }}
                                                                         onClick={() => handleAcceptApplication(record.id)}
+                                                                        title={isMobile ? 'Принять' : undefined}
                                                                     >
-                                                                        Принять
+                                                                        {isMobile ? '' : 'Принять'}
                                                                     </Button>
                                                                 )}
                                                             </Space>

@@ -21,7 +21,7 @@ const contentStyle = {
 };
 
 const mobileContentStyle = {
-  minHeight: 'calc(100vh - 80px)',
+  minHeight: 'calc(100vh - 60px)',
   background: 'rgb(255, 255, 255)',
   padding: '0',
   margin: '0',
@@ -175,9 +175,16 @@ export default function AppContent() {
       {(student || company) && (
         <>
           <UnderHeader />
-          <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '0 24px 120px 24px' }}>
+          <div style={{ 
+            maxWidth: isMobile ? '100%' : '1400px', 
+            margin: '0 auto', 
+            padding: isMobile ? '0 16px 80px 16px' : '0 24px 120px 24px'
+          }}>
 
-            <div style={{ marginTop: '60px', marginBottom: '40px' }}>
+            <div style={{ 
+              marginTop: isMobile ? '32px' : '60px', 
+              marginBottom: isMobile ? '24px' : '40px' 
+            }}>
               <SearchFilters
                 onSearch={handleSearch}
                 onReset={handleReset}
@@ -189,6 +196,7 @@ export default function AppContent() {
                 onUniversityChange={handleUniversityChange}
                 onTechChange={setSelectedTechs}
                 isInitialized={isInitialized}
+                isMobile={isMobile}
               />
             </div>
 

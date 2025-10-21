@@ -6,7 +6,7 @@ import { companiesAPI, internshipsAPI, universitiesAPI } from '../services/api';
 const { Option } = Select;
 const { Text } = Typography;
 
-export default function SearchFilters({ onSearch, onReset, loading, selectedLocation, selectedUniversity, selectedTechs, onLocationChange, onUniversityChange, onTechChange, isInitialized }) {
+export default function SearchFilters({ onSearch, onReset, loading, selectedLocation, selectedUniversity, selectedTechs, onLocationChange, onUniversityChange, onTechChange, isInitialized, isMobile = false }) {
   const [locations, setLocations] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [technologies, setTechnologies] = useState([]);
@@ -121,19 +121,26 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
     <Card
       data-testid="search-filters"
       style={{
-        marginBottom: '40px',
-        borderRadius: '20px',
+        marginBottom: isMobile ? '24px' : '40px',
+        borderRadius: isMobile ? '16px' : '20px',
         background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%)',
         backdropFilter: 'blur(10px)',
         border: '1px solid rgba(255, 255, 255, 0.3)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        transition: 'all 0.3s ease'
+        boxShadow: isMobile ? '0 4px 16px rgba(0, 0, 0, 0.08)' : '0 8px 32px rgba(0, 0, 0, 0.1)',
+        transition: 'all 0.3s ease',
+        padding: isMobile ? '16px' : '24px'
       }}
     >
       <Space direction="vertical" size="middle" style={{ width: '100%' }}>
-        <Row gutter={[16, 16]}>
+        <Row gutter={isMobile ? [12, 12] : [16, 16]}>
           <Col xs={24} sm={24} md={6}>
-            <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
+            <Text style={{ 
+              marginBottom: isMobile ? '8px' : '12px', 
+              fontWeight: '600', 
+              color: '#4a5568', 
+              fontSize: isMobile ? '13px' : '14px', 
+              display: 'block' 
+            }}>
               Локация
             </Text>
             <Select
@@ -160,9 +167,9 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
               }}
               style={{
                 width: '100%',
-                borderRadius: '12px'
+                borderRadius: isMobile ? '8px' : '12px'
               }}
-              size="large"
+              size={isMobile ? 'middle' : 'large'}
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
@@ -176,7 +183,13 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
           </Col>
 
           <Col xs={24} sm={24} md={6}>
-            <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
+            <Text style={{ 
+              marginBottom: isMobile ? '8px' : '12px', 
+              fontWeight: '600', 
+              color: '#4a5568', 
+              fontSize: isMobile ? '13px' : '14px', 
+              display: 'block' 
+            }}>
               Учебное заведение
             </Text>
             <Select
@@ -203,9 +216,9 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
               }}
               style={{
                 width: '100%',
-                borderRadius: '12px'
+                borderRadius: isMobile ? '8px' : '12px'
               }}
-              size="large"
+              size={isMobile ? 'middle' : 'large'}
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
@@ -220,7 +233,13 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
           </Col>
 
           <Col xs={24} sm={24} md={12}>
-            <Text style={{ marginBottom: '12px', fontWeight: '600', color: '#4a5568', fontSize: '14px', display: 'block' }}>
+            <Text style={{ 
+              marginBottom: isMobile ? '8px' : '12px', 
+              fontWeight: '600', 
+              color: '#4a5568', 
+              fontSize: isMobile ? '13px' : '14px', 
+              display: 'block' 
+            }}>
               Стек технологий
             </Text>
             <Select
@@ -240,10 +259,10 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
               }}
               style={{
                 width: '100%',
-                borderRadius: '12px'
+                borderRadius: isMobile ? '8px' : '12px'
               }}
-              size="large"
-              maxTagCount="responsive"
+              size={isMobile ? 'middle' : 'large'}
+              maxTagCount={isMobile ? 2 : "responsive"}
               tagRender={tagRender}
               filterOption={(input, option) =>
                 option.children.toLowerCase().includes(input.toLowerCase())
@@ -258,23 +277,24 @@ export default function SearchFilters({ onSearch, onReset, loading, selectedLoca
           </Col>
         </Row>
 
-        <Row justify="end">
+        <Row justify={isMobile ? "center" : "end"}>
           <Space>
             <Button
               type="default"
               icon={<ReloadOutlined />}
               onClick={handleReset}
               disabled={loading}
-              size="large"
+              size={isMobile ? "middle" : "large"}
               style={{
-                borderRadius: '12px',
-                height: '44px',
-                fontSize: '14px',
+                borderRadius: isMobile ? '8px' : '12px',
+                height: isMobile ? '36px' : '44px',
+                fontSize: isMobile ? '13px' : '14px',
                 fontWeight: '600',
                 background: 'rgba(102, 126, 234, 0.1)',
                 border: '1px solid rgba(102, 126, 234, 0.3)',
                 color: '#667eea',
-                transition: 'all 0.3s ease'
+                transition: 'all 0.3s ease',
+                padding: isMobile ? '0 16px' : '0 24px'
               }}
             >
               Сбросить

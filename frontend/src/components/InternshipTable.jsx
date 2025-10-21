@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 import RatingDisplay from './RatingDisplay';
+import { resourceLoader } from '../utils/resourceLoader';
 
 const { Text, Link } = Typography;
 
@@ -219,6 +220,24 @@ const InternshipTable = memo(function InternshipTable({ data, loading, paginatio
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Предзагружаем checkblue.png только если есть компании с синей галочкой
+  useEffect(() => {
+    const preloadCheckIcon = async () => {
+      const hasCompaniesWithCheckmark = data?.results?.some(company => company.has_blue_checkmark);
+      if (hasCompaniesWithCheckmark) {
+        try {
+          await resourceLoader.load('/checkblue.png', 'image');
+        } catch (error) {
+          console.warn('Ошибка предзагрузки checkblue.png:', error);
+        }
+      }
+    };
+
+    if (data?.results) {
+      preloadCheckIcon();
+    }
+  }, [data]);
 
 
   const handleCompanyClick = useCallback((record) => {

@@ -18,6 +18,7 @@ import {
 } from 'antd';
 import { ArrowLeftOutlined, GlobalOutlined } from '@ant-design/icons';
 import { companiesAPI, internshipsAPI, companyDetailAPI } from '../services/api';
+import { resourceLoader } from '../utils/resourceLoader';
 import { useAuth } from '../contexts/AuthContext';
 import AuthModal from './AuthModal';
 import MapComponent from './MapComponent';
@@ -40,6 +41,23 @@ export default function CompanyDetail() {
   useEffect(() => {
     fetchCompanyData();
   }, [companyId]);
+
+  // Предзагружаем checkblue.png если компания имеет синюю галочку
+  useEffect(() => {
+    const preloadCheckIcon = async () => {
+      if (company?.has_blue_checkmark) {
+        try {
+          await resourceLoader.load('/checkblue.png', 'image');
+        } catch (error) {
+          console.warn('Ошибка предзагрузки checkblue.png:', error);
+        }
+      }
+    };
+
+    if (company) {
+      preloadCheckIcon();
+    }
+  }, [company]);
 
   const fetchCompanyData = async () => {
     setLoading(true);

@@ -28,6 +28,7 @@ export default function StudentDashboard() {
   const [avatarKey, setAvatarKey] = useState(0); // Для принудительного обновления аватара
   const [avatarError, setAvatarError] = useState(false); // Для обработки ошибок загрузки аватара
   const [avatarUrl, setAvatarUrl] = useState(null); // Локальное состояние для URL аватара
+  const [isMobile, setIsMobile] = useState(false); // Состояние для определения мобильного устройства
 
   // Обновляем данные студента при изменении
   useEffect(() => {
@@ -91,6 +92,20 @@ export default function StudentDashboard() {
       setAvatarUrl(null);
     }
   }, [student]);
+
+  // Определяем мобильные устройства
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
 
   // Загружаем список университетов
